@@ -1,0 +1,40 @@
+esc to quit
+r resets
+R resets to 5 particles
+q add 3 particles
+1 add 1 particle
+Q remove 5 particles
+
+t Speed Increase
+T Speed decrease
+w y direction up
+s y direction down
+a x direction left
+s x direction right
+e z direction far
+f z direction close
+
+x toggles camera rotation around x axis
+y toggles camera rotation around y axis
+z toggles camera rotation around z axis
+
+h hurricane mode (extra)
+c hit multiple times to toggle the spray mode (tight and lose)
+b enable/disable backface culling
+
+MOUSE
+
+	
+printf("Particle Engine\nEsc: Quit\nR: Reset the system back to 5 particles\nr: Reset the system with the same number of particles"
+		"\nq: Add 3 particles\nQ: Remove 5 particles\n1: Add 1 Particle\n");
+printf("t: Increases speed of the particles\nT: decreases the speed of particles\nh: Enables/Disables the hurricane effect");
+printf("c: Toggle between loose and tight sprays");	
+printf("z: Switch camera angle to rotate around z axis\nx: Switch camera angle to rotate around x axis\n");
+printf("y: Switch camera angle to rotate around y axis\n");
+printf("b: Enable/Disable Back Face Culling\n\n~ enables or disables the user target."
+		"This will be a\ntarget on the screen to alter where the particle moves towards\n");
+printf("To change this use\nw: move Y direction up\ns: move Y direction down\na: move X direction"
+		" left\nd: move X direction right\n");
+printf("e: move Z direction left\nf: move Z direction right\n");
+printf("MOUSE\nLeft Click: Increase counter clockwise rotation\nRight Click:"
+		" Increase clockwise rotation\nMiddle Click to access the menu!\n");
