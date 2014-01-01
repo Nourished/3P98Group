@@ -1,35 +1,16 @@
-<<<<<<< HEAD
-﻿Build started 1/1/2014 11:53:37 AM.
+﻿Build started 1/1/2014 6:01:53 PM.
      1>Project "C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\ParticleEngine.vcxproj" on node 2 (Build target(s)).
-     1>Link:
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp
+         Main.cpp
+       Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.exe" /INCREMENTAL /NOLOGO opengl32.lib freeglut.lib FreeImage.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.lib" /MACHINE:X86 Debug\Main.obj
          Debug\Particle.obj
          Debug\Player.obj
          Debug\RNG.obj
-     1>Player.obj : error LNK2005: "class RNG rnd" (?rnd@@3VRNG@@A) already defined in Particle.obj
-     1>Player.obj : error LNK2019: unresolved external symbol "public: __thiscall Coordinate::Coordinate(void)" (??0Coordinate@@QAE@XZ) referenced in function "public: __thiscall Player::Player(class Coordinate,class Coordinate)" (??0Player@@QAE@VCoordinate@@0@Z)
-     1>Player.obj : error LNK2019: unresolved external symbol "public: __thiscall Coordinate::~Coordinate(void)" (??1Coordinate@@QAE@XZ) referenced in function "public: __thiscall Player::Player(class Coordinate,class Coordinate)" (??0Player@@QAE@VCoordinate@@0@Z)
-     1>C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.exe : fatal error LNK1120: 2 unresolved externals
-     1>Done Building Project "C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\ParticleEngine.vcxproj" (Build target(s)) -- FAILED.
-=======
-﻿Build started 1/1/2014 11:54:04 AM.
-     1>Project "C:\Users\Eric\Documents\GitHub\3P98Group\ParticleEngine\ParticleEngine.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Player.cpp
-         Player.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Eric\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Eric\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Eric\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.lib" /MACHINE:X86 Debug\Main.obj
-         Debug\Particle.obj
-         Debug\Player.obj
-         Debug\RNG.obj
-         ParticleEngine.vcxproj -> C:\Users\Eric\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.exe
-     1>Done Building Project "C:\Users\Eric\Documents\GitHub\3P98Group\ParticleEngine\ParticleEngine.vcxproj" (Build target(s)).
->>>>>>> 7f128e864ab5640dc52306bed1155c04c739d12e
+         ParticleEngine.vcxproj -> C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.exe
+     1>Done Building Project "C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\ParticleEngine.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-<<<<<<< HEAD
-Time Elapsed 00:00:00.91
-=======
-Time Elapsed 00:00:00.30
->>>>>>> 7f128e864ab5640dc52306bed1155c04c739d12e
+Time Elapsed 00:00:01.18

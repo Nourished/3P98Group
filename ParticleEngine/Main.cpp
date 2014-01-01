@@ -31,9 +31,10 @@ float ambientLight[4] = {0.3, .4, 1.0, 1.0};
 float lightPos[4] = {-20, 25, 15, 1};
 
 // Objects in picture	Pos X,Y,Z, Vel X,Y,Z
-float pos[4][6] =	{{0, -1, 0, 65, 1, 65},		// Ground position
+float pos[4][6] =	{{0, -1, 0, 100, 1, 100},		// Ground position
 					{0, 10, 0, 8, 5, 8},		// Spout 
-					{-15, 0, 15, 8, 1, 8}};	// Empty hole
+					{-15, 0, 15, 8, 1, 8},
+					{25,50,0,10,50,10}};	// Empty hole
 
 // X for user controlled particle aiming
 float userVel[3] = {-25, 15, -20};	// wasd + ef keys controls a point to aim
@@ -182,7 +183,7 @@ void display(void){
 	light();
 	glLoadIdentity();
 	// Look at it bro
-	gluLookAt(0, 4, 10, 0, 1, 1, 0, 2, 0);
+	gluLookAt(0, 2, 10, 0, -2, -1, 0, 1, 0);
 	// Rotate based on user selection
 	switch(axisRotate){
 		case 0:
@@ -197,8 +198,19 @@ void display(void){
 	}
 	// Draw ground
 	glPushMatrix();
-	drawFloor(pos[0]);
+    drawFloor(pos[0]);
+	//GLUquadricObj *obj = gluNewQuadric(); 
+   // gluCylinder(obj, 1.0, 1, 3, 30, 30);
 	glPopMatrix();
+
+	
+ 
+
+	// Draw tower
+	glPushMatrix();
+	drawTower(pos[3]);
+	glPopMatrix();
+
 	// Draw spout
 	glPushMatrix();
 	drawSpout(pos[1]);
@@ -606,7 +618,7 @@ void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glClearColor(1, 1, 1, 1);
-	glOrtho(-100, 100, -100, 100, -100, 100);	
+	glOrtho(-150, 150, -150, 150, -150, 150);	
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);
