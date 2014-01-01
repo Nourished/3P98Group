@@ -7,30 +7,42 @@
 
 #include "Player.h"
 #include "glut.h"
-#include "RNG.h"
 #include <cstdio>
-
-// Random generator
-RNG rnd;
 
 Player::~Player(){
 }
+
+// Inital Player generation set fields
+Player::Player(){
+	partType = 1;
+	size = 2;
+	age = 1;
+	speed = 5.0;
+	alpha = 1.0;
+
+		
+	// Colour
+	colour[0] = 0.5;
+	colour[1] = 0.5;
+	colour[2] = 0.5;
+}
+
 
 // Inital Player generation set fields
 Player::Player(Coordinate p, Coordinate v){
 	partType = 1;
 	size = 2;
 	age = 1;
-	speed = rnd.random(4.0, 8.0);
+	speed = 5.0;
 	alpha = 1.0;
 
 	pos = p;
 	vel = v;
 		
 	// Colour
-	colour[0] = rnd.random(0.01, 1.0);
-	colour[1] = rnd.random(0.01, 1.0);
-	colour[2] = rnd.random(0.01, 1.0);
+	colour[0] = 0.5;
+	colour[1] = 0.5;
+	colour[2] = 0.5;
 }
 
 // Set the status of the player (shooting / not shooting)
@@ -110,7 +122,7 @@ Coordinate Player::getVelocity(){
 void Player::resetPosition(Coordinate p, Coordinate v){
 
 	age = 1;
-	speed = rnd.random(4.0, 8.0);
+	speed = 5.0;
 	
 	// Position
 	pos = p;

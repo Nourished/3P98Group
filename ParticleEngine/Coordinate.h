@@ -5,29 +5,34 @@ class Coordinate {
 	
 	public:
 		double x, y, z;
-		Coordinate();
-		~Coordinate();
+		Coordinate::Coordinate(){};
+		Coordinate::~Coordinate(){};
 
-		double getX(){
+		double Coordinate::getX(){
 			return x;
 		}
-		double getY(){
+		double Coordinate::getY(){
 			return y;
 		}
-		double getZ(){
+		double Coordinate::getZ(){
 			return z;
 		}
 
-		void setX(double x1){
+		void Coordinate::setX(double x1){
 			x = x1;
 		}
-		void setY(double y1){
+		void Coordinate::setY(double y1){
 			y = y1;
 
 		}
-		void setZ(double z1){
+		void Coordinate::setZ(double z1){
 			z = z1;
 		}
 
-	Coordinate(double x, double y, double z);
+	Coordinate::Coordinate(double x1, double y1, double z1){
+		x = x1;
+		y = y1;
+		z = z1;
+	}
+
 };
