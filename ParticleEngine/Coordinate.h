@@ -1,38 +1,47 @@
 // Simple class which will contain x,y,z values
 // Will be used with collision detection (i assume)
+#ifndef _COORDINATE_
+#define _COORDINATE_
 
 class Coordinate {		
 	
 	public:
-		double x, y, z;
-		Coordinate::Coordinate(){};
-		Coordinate::~Coordinate(){};
+		float x, y, z;
 
-		double Coordinate::getX(){
+		Coordinate::Coordinate(){
+			x = y = z = 0.0;
+		}
+		Coordinate::~Coordinate(){}
+
+		Coordinate::Coordinate(float x1, float y1, float z1){
+			x = x1;
+			y = y1;
+			z = z1;
+		};
+
+		float Coordinate::getX(){
 			return x;
 		}
-		double Coordinate::getY(){
+		float Coordinate::getY(){
 			return y;
 		}
-		double Coordinate::getZ(){
+		float Coordinate::getZ(){
 			return z;
 		}
 
-		void Coordinate::setX(double x1){
+		void Coordinate::setX(float x1){
 			x = x1;
 		}
-		void Coordinate::setY(double y1){
+		void Coordinate::setY(float y1){
 			y = y1;
 
 		}
-		void Coordinate::setZ(double z1){
+		void Coordinate::setZ(float z1){
 			z = z1;
 		}
 
-	Coordinate::Coordinate(double x1, double y1, double z1){
-		x = x1;
-		y = y1;
-		z = z1;
-	}
+	
 
 };
+
+#endif

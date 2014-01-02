@@ -5,18 +5,21 @@
 // Including speed, velocity, acceleration, position
 // Colour, Player type
 
+#define _USE_MATH_DEFINES	// Pi variable
+
 #include "Player.h"
 #include "glut.h"
 #include <cstdio>
+#include <math.h>
 
 Player::~Player(){
 }
 
 // Inital Player generation set fields
 Player::Player(){
-	partType = 1;
+	playerStatus = 1;
 	size = 2;
-	age = 1;
+	lives = 3;
 	speed = 5.0;
 	alpha = 1.0;
 
@@ -28,22 +31,6 @@ Player::Player(){
 }
 
 
-// Inital Player generation set fields
-Player::Player(Coordinate p, Coordinate v){
-	partType = 1;
-	size = 2;
-	age = 1;
-	speed = 5.0;
-	alpha = 1.0;
-
-	pos = p;
-	vel = v;
-		
-	// Colour
-	colour[0] = 0.5;
-	colour[1] = 0.5;
-	colour[2] = 0.5;
-}
 
 // Set the status of the player (shooting / not shooting)
 // True == shooting, false = not shooting
@@ -56,13 +43,28 @@ bool Player::getShooting(){
 }
 
 // Returns the age value
-int Player::ageStatus(){
-	return age;
+int Player::numberofLives(){
+	return lives;
 }
 
 // Sets the age value
-void Player::setAgeStatus(int aStatus){
-	age = aStatus;
+void Player::setLives(int aStatus){
+	lives = aStatus;
+}
+
+// Add/Subtract from the up/down movement
+void Player::addYMovement(float yMove){
+	pos.y += yMove;
+
+}
+
+// Add/Subtract from the left/right movement
+// xzMove is the angle from its original position
+// 155 is radius away from the origin
+void Player::addXZMovement(float xzMove){
+	float radian = xzMove * (M_PI/180);
+	pos.x = 155 * cosf(radian);
+	pos.z = 155 * sinf(radian);
 }
 
 // Set Player size
@@ -89,7 +91,7 @@ void Player::setColour(float r, float g, float b){
 
 // Set the Player type
 void Player::setPlayerType(int a){
-	partType = a;
+	playerStatus = a;
 }
 
 // Set the alpha (visibility) of the Player
@@ -109,42 +111,22 @@ Coordinate Player::getPosition(){
 }
 
 
-// Set the velocity
-void Player::setVelocity(Coordinate v){
-	vel = v;
-}
-
-Coordinate Player::getVelocity(){
-	return vel;
-}
-
 // used to reset the position to a user defined point and velocity
-void Player::resetPosition(Coordinate p, Coordinate v){
+void Player::resetPosition(Coordinate p){
 
-	age = 1;
+	lives = 1;
 	speed = 5.0;
 	
 	// Position
 	pos = p;
-	// Velocity
-	vel = v;
+
 }
 
 // update the Player
 // This will calculate the new pos and velocity based on acceleration and speed
 void Player::Update(){
 	
-	Coordinate newPos;
-	double pSpeed = (speed / 100.0);	// Half the percentage of max speed (10)
-
-	//age += 0.1; // Age > 1000 we reset it
-
-	newPos.x = pos.x + (vel.x * pSpeed);
-	newPos.y = pos.y + (vel.y * pSpeed);
-	newPos.z = pos.z + (vel.z * pSpeed);
-
-	// Update the Players position
-	setPosition(newPos);
+	// Collision detection	
 	
 }
 
@@ -156,7 +138,7 @@ void Player::Render(){
 	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it
 	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
 	glRotated(1.0, 1.0, 1.0, 0.0);			
-	switch (partType){					// Draw the specific type of Player
+	switch (playerStatus){					// Draw the specific type of Player
 		case 1:
 			glutSolidSphere(size, 15, 15);
 			break;

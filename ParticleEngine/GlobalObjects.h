@@ -1,5 +1,6 @@
 // Eric Gummerson	4585469
 // DrawObjects.h
+#include "Coordinate.h"
 
 void drawTower(float c[6]){
 	float w = c[3];
@@ -87,5 +88,7 @@ void drawFloor(float c[6]){
     gluCylinder(qobj, 150, 150, 10, 50, 50);
     glEnd();
 }
+
+
 
 

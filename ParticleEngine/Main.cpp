@@ -11,12 +11,15 @@
 #include "Particle.h"
 #include "GlobalObjects.h"
 #include "RNG.h"
+#include "Player.h"
+//#include "Coordinate.h"
 
 
 RNG randomGen;
 
 /////// Number of particles ///////
 std::vector<Particle> pList;
+Player globalPlayer;
 // Global information about the particle list
 int numberOfParticles = 20;	// number of particles allowed
 int spawnSettings = 1;		// where the particle is spawning and headed
@@ -34,10 +37,10 @@ float lightPos[4] = {-20, 25, 15, 1};
 float pos[4][6] =	{{0, -1, 0, 100, 1, 100},		// Ground position
 					{0, 10, 0, 8, 5, 8},		// Spout 
 					{-15, 0, 15, 8, 1, 8},
-					{25,50,0,10,50,10}};	// Empty hole
+					{25, 50, 0, 10, 50, 10}};	// Empty hole
 
 // X for user controlled particle aiming
-float userVel[3] = {-25, 15, -20};	// wasd + ef keys controls a point to aim
+Coordinate playerSpawn(155.0, 15.0, 0.0);	// Players spawn position
 
 int backFaceCulling = 0;	// Backface culling 0 means not true
 
@@ -106,10 +109,7 @@ void checkParticles(){
 					p[0]  = randomGen.stdDeviation(pos[1][0], 3.0);
 					p[1]  = randomGen.stdDeviation(pos[1][1], 3.0);
 					p[2]  = randomGen.stdDeviation(pos[1][2], 4.0);
-					// Velocity
-					v[0] = userVel[0];
-					v[1]  = userVel[1];
-					v[2] = userVel[2];
+								
 					break;
 				case 3:
 					p[0]  = randomGen.stdDeviation(pos[1][0], 2.0);
@@ -231,6 +231,11 @@ void display(void){
 		//glPopMatrix();
 	//}
 	//**/ //end of commented block --------
+
+	// Draw player
+	glPushMatrix();	
+	globalPlayer.Render();
+	glPopMatrix();
 	glFlush();
 	glutSwapBuffers();
 }
@@ -308,22 +313,22 @@ void keys(unsigned char key, int x, int y){
 			}	
 			break;
 		case 'w':	// Y Dir Up
-			userVel[1] += 0.5;
+			
 			break;
 		case 's':	// Y Dir Down
-			userVel[1] -= 0.5;
+			
 			break;
 		case 'a':	// X Dir Left
-			userVel[0] -= 0.5;
+			
 			break;
 		case 'd':	// x Dir Right
-			userVel[0] += 0.5;
+			
 			break;
 		case 'e':	// z Dir Far
-			userVel[2] -= 0.5;
+			
 			break;
 		case 'f':	// z Dir Close
-			userVel[2] += 0.5;
+			
 			break;
 		case 'q':	// Add more particles by 3
 			numberOfParticles += 3;
@@ -620,7 +625,8 @@ int main(int argc, char** argv)
 		newPart.resetPosition();
 		pList.push_back(newPart);
 	}
-	
+
+	globalPlayer.setPosition(playerSpawn);
 	glutInit(&argc, argv);		
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(600, 600);

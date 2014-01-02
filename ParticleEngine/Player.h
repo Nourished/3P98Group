@@ -5,13 +5,13 @@
 class Player {	
 	
 	protected: 
-		Coordinate pos, vel;// Position and velocity of the player
-		int age;			// Can be used for powerups?
+		Coordinate pos;		// Position of the player
+		int lives;			// Number of lives
 		float alpha;		// Visibility
 		float colour[3];	// Colour
-		int partType;		// Used for the Player shape/object
+		int playerStatus;	// 1 = alive, 2 = reviving, 3 = dead
 		float size;			// Size of the player, powerups can affect?
-		double speed;		// Is this needed?
+		double speed;		// For powerups
 		int direction;		// Which direction the player is shooting
 		bool shooting;		// Is the player shooting
 
@@ -22,9 +22,11 @@ class Player {
 	void setShooting(bool shoot);
 	bool getShooting();
 
-	int ageStatus();
-	void setAgeStatus(int aStatus);
+	int numberofLives();
+	void setLives(int l);
 
+	void addYMovement(float yMove);
+	void addXZMovement(float xzMove);
 	void setSize(float newSize);
 	void setSpeed(double sp);
 	void setColour(float r, float g, float b);
@@ -34,15 +36,10 @@ class Player {
 	void setPosition(Coordinate p);
 	Coordinate getPosition();
 
-	void setVelocity(Coordinate v);
-	Coordinate getVelocity();
-
-	void resetPosition(Coordinate p, Coordinate v); // Reset the position
-
-	void Update();
-	void Render();
 	
+	void resetPosition(Coordinate p); // Reset the position
 
-	Player(Coordinate p, Coordinate v);
+	void Update();	// Collision
+	void Render();	// Draw
 
 };
