@@ -25,9 +25,9 @@ Player::Player(){
 
 		
 	// Colour
-	colour[0] = 0.5;
-	colour[1] = 0.5;
-	colour[2] = 0.5;
+	colour[0] = 0.2;
+	colour[1] = 0.2;
+	colour[2] = 0.2;
 }
 
 
@@ -55,6 +55,10 @@ void Player::setLives(int aStatus){
 // Add/Subtract from the up/down movement
 void Player::addYMovement(float yMove){
 	pos.y += yMove;
+	if(pos.y > 125)
+		pos.y = 125;
+	if(pos.y < 1.0)
+		pos.y = 1.0;
 
 }
 

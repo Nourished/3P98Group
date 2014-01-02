@@ -28,20 +28,21 @@ int shapeSettings = 1;		// shape of particle
 int colourSettings = 5;		// 5 is random 1-4 red green blue yellow
 int tornadoEffect = 0;	// Hurricane effect 0 no, 1 yes
 double gSpeed = 5.0;		// Speed
-
+float angleOfUser = 222.0;
 // Light values, played with them to get a bright green look
 float ambientLight[4] = {0.3, .4, 1.0, 1.0};
-float lightPos[4] = {-20, 25, 15, 1};
+float lightPos[4] = {160, 70, 0, 1};
 
 // Objects in picture	Pos X,Y,Z, Vel X,Y,Z
-float pos[4][6] =	{{0, -1, 0, 100, 1, 100},		// Ground position
+float pos[4][6] =	{{0, -1, 0, 100, 1, 100},	// Ground position
 					{0, 10, 0, 8, 5, 8},		// Spout 
-					{-15, 0, 15, 8, 1, 8},
-					{25, 50, 0, 10, 50, 10}};	// Empty hole
+					{-15, 0, 15, 8, 1, 8},		
+					{25, 50, 0, 10, 50, 10}};	// tower
 
 // X for user controlled particle aiming
-Coordinate playerSpawn(155.0, 15.0, 0.0);	// Players spawn position
+Coordinate playerSpawn(155, 15.0, 0);	// Players spawn position
 
+bool keyStates[256] = {false}; // Create an array of boolean values of length 256 (0-255)  
 int backFaceCulling = 0;	// Backface culling 0 means not true
 
 // Camera Related Settings
@@ -54,6 +55,25 @@ void light(){
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 }
+
+void keyOperations (void) {  
+	if(keyStates['w']){
+		globalPlayer.addYMovement(1.0);
+	}
+	if(keyStates['s']){
+		globalPlayer.addYMovement(-1.0);
+	}
+	if(keyStates['a']){
+		angleOfUser += 2.0;
+		globalPlayer.addXZMovement(angleOfUser);
+	}
+	if(keyStates['d']){
+		angleOfUser -= 2.0;
+		globalPlayer.addXZMovement(angleOfUser);
+	}
+
+}  
+
 
 // Called from update, this will check the particle list
 // Remove the particles that have died of age or out of boundaries
@@ -181,9 +201,20 @@ void display(void){
 	glMatrixMode(GL_MODELVIEW);
 	// Light it up everytime
 	light();
+	keyOperations();
 	glLoadIdentity();
+
+	// Camera
+	//glPushMatrix();
+	gluLookAt(0, 4, 10, 0, 1, 1, 0, 2, 0);
 	// Look at it bro
-	gluLookAt(0, 2, 10, 0, -2, -1, 0, 1, 0);
+	Coordinate pP(globalPlayer.getPosition());
+	Coordinate eye(pP.getX(), pP.getY(), pP.getZ());
+	//glTranslatef(pP.getX(), pP.getY(), pP.getZ());
+	//gluLookAt(eye.getX(), eye.getY(), eye.getZ(), 0, pP.getY(), 0, 0, 5, 0);
+	//glRotatef(angleOfUser, 0, 1, 0);
+
+	//glPopMatrix();
 	// Rotate based on user selection
 	switch(axisRotate){
 		case 0:
@@ -240,8 +271,15 @@ void display(void){
 	glutSwapBuffers();
 }
 
+
+
+void keyUp (unsigned char key, int x, int y) {  
+	keyStates[key] = false; // Set the state of the current key to not pressed  
+}  
+
 // Keyboard function
 void keys(unsigned char key, int x, int y){
+	keyStates[key] = true;
 	switch(key){
 
 		case 0x1B:	// Quit - free memory
@@ -261,6 +299,8 @@ void keys(unsigned char key, int x, int y){
 			colourSettings = 5;
 			shapeSettings = 1;
 			sizeSettings = 2;
+			globalPlayer.setPosition(playerSpawn);
+			angleOfUser = 222.0;
 			printf("%d Particles on Screen.  ", numberOfParticles);
 			printf("Particles will resume original random behaviour\n");
 			for (int i = 0; i < numberOfParticles; i++){
@@ -312,30 +352,13 @@ void keys(unsigned char key, int x, int y){
 				printf("Particles will travel in a loose spray\n");
 			}	
 			break;
-		case 'w':	// Y Dir Up
-			
-			break;
-		case 's':	// Y Dir Down
-			
-			break;
-		case 'a':	// X Dir Left
-			
-			break;
-		case 'd':	// x Dir Right
-			
-			break;
-		case 'e':	// z Dir Far
-			
-			break;
-		case 'f':	// z Dir Close
-			
-			break;
 		case 'q':	// Add more particles by 3
 			numberOfParticles += 3;
 			break;
 		case '1':	// Add 1 more particle
 			numberOfParticles += 1;
 			break;
+		
 		case 'Q':	// Remove particles
 			numberOfParticles -= 5;
 			if(numberOfParticles <= 0)
@@ -348,7 +371,7 @@ void keys(unsigned char key, int x, int y){
 				backFaceCulling = 0;
 			}else {
 				printf("Back Face Culling Enabled\n");
-				glFrontFace(GL_CW);
+				glFrontFace(GL_CCW);
 				glEnable(GL_CULL_FACE);
 				glCullFace(GL_FRONT);
 				backFaceCulling = 1;
@@ -374,6 +397,7 @@ void keys(unsigned char key, int x, int y){
 			break;
 	}
 }
+
 
 // Menu for the particle type
 void menuParticleType(int value){
@@ -604,7 +628,7 @@ void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glClearColor(1, 1, 1, 1);
-	glOrtho(-150, 150, -150, 150, -150, 150);	
+	glOrtho(-200, 200, -200, 200, -200, 200);	
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);
@@ -633,7 +657,8 @@ int main(int argc, char** argv)
 	glutCreateWindow("Particle Fountain");
 	glutDisplayFunc(display);	
 	glutMouseFunc(mouse);
-	glutKeyboardFunc(keys);	
+	glutKeyboardFunc(keys);
+	glutKeyboardUpFunc(keyUp);  
 	init();
 	
 	glutTimerFunc(25, update, 0);
