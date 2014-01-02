@@ -198,58 +198,39 @@ void display(void){
 	}
 	// Draw ground
 	glPushMatrix();
-    drawFloor(pos[0]);
-	//GLUquadricObj *obj = gluNewQuadric(); 
-   // gluCylinder(obj, 1.0, 1, 3, 30, 30);
-	glPopMatrix();
-
-	
- 
+    drawFloor(pos[0]);	
+	glPopMatrix();	 
 
 	// Draw tower
 	glPushMatrix();
 	drawTower(pos[3]);
 	glPopMatrix();
 
-	// Draw spout
-	glPushMatrix();
-	drawSpout(pos[1]);
-	glPopMatrix();
-	// Draw black hole
-	glPushMatrix();
-	drawHole(pos[2]);
-	glPopMatrix();
-
-	// Draw user target if the mode is enabled
-	if(spawnSettings == 2){
-		glPushMatrix();
-		drawUserTarget(userVel, 2, 2, 2);
-		glPopMatrix();
-	}
-
-	// Draw Particles
-	for (int i = 0; i < numberOfParticles; i++){
-		glPushMatrix();
+	// commented out till needed
+	// Draw Particles (enemies)
+	//for (int i = 0; i < numberOfParticles; i++){
+		//glPushMatrix();
 		// Tornado causes the particles to be skeewed by the camera rotation
 		// High speeds cause the particles to bounce and spin in circles
 		// on the floor 
-		if(tornadoEffect){
-			switch(axisRotate){
-				case 0:
-					glRotatef(angle[0], 1, 0, 0);
-					break;
-				case 1:
-					glRotatef(angle[1], 0, 1, 0);
-					break;
-				case 2:
-					glRotatef(angle[2], 0, 0, 1);
-					break;
-			}
-		}
+		//if(tornadoEffect){
+			//switch(axisRotate){
+			//	case 0:
+				//	glRotatef(angle[0], 1, 0, 0);
+			//		break;
+			//	case 1:
+			//		glRotatef(angle[1], 0, 1, 0);
+			//		break;
+			//	case 2:
+			//		glRotatef(angle[2], 0, 0, 1);
+			//		break;
+			//}
+		//}
 		// Render the particle and draw it
-		pList[i].Render();
-		glPopMatrix();
-	}
+		//pList[i].Render();
+		//glPopMatrix();
+	//}
+	//**/ //end of commented block --------
 	glFlush();
 	glutSwapBuffers();
 }
