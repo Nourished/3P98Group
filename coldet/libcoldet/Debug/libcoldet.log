@@ -1,9 +1,0 @@
-﻿Build started 1/2/2014 1:21:00 PM.
-     1>Project "C:\Users\Eric\Documents\GitHub\3P98Group\coldet\libcoldet\libcoldet.vcxproj" on node 2 (Build target(s)).
-     1>Lib:
-         libcoldet.vcxproj -> C:\Users\Eric\Documents\GitHub\3P98Group\coldet\tests\unit\Debug\libcoldet.lib
-     1>Done Building Project "C:\Users\Eric\Documents\GitHub\3P98Group\coldet\libcoldet\libcoldet.vcxproj" (Build target(s)).
-
-Build succeeded.
-
-Time Elapsed 00:00:00.03
