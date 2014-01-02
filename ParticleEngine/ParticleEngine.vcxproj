@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColDet.h" />
     <ClInclude Include="Coordinate.h" />
     <ClInclude Include="GlobalObjects.h" />
     <ClInclude Include="Particle.h" />
