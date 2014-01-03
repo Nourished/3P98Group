@@ -14,13 +14,13 @@ void drawTower(float c[6]){
 
 
 	
-	glColor4f(0.5, 0.5, 0.5, 1); 
+	glColor4f(0.0, 1.0, 0.0, 1); // red
 	// Right Side
 	glBegin(GL_POLYGON);
 	glVertex3fv(verticies[6]);
-	glVertex3fv(verticies[7]);
-	glVertex3fv(verticies[5]);
 	glVertex3fv(verticies[4]);
+	glVertex3fv(verticies[5]);
+	glVertex3fv(verticies[7]);
 	glEnd();
 	
 	// Back Side
@@ -33,26 +33,26 @@ void drawTower(float c[6]){
 
 	// Bottom
 	glBegin(GL_POLYGON);
-	glVertex3fv(verticies[5]);
-	glVertex3fv(verticies[4]);
-	glVertex3fv(verticies[0]);
 	glVertex3fv(verticies[1]);
+	glVertex3fv(verticies[0]);
+	glVertex3fv(verticies[4]);
+	glVertex3fv(verticies[5]);
 	glEnd();
 
 	// Top Side
 	glBegin(GL_POLYGON);
 	glVertex3fv(verticies[2]);
-	glVertex3fv(verticies[3]);
-	glVertex3fv(verticies[7]);
 	glVertex3fv(verticies[6]);
+	glVertex3fv(verticies[7]);
+	glVertex3fv(verticies[3]);
 	glEnd();
 
 	// Front Side
 	glBegin(GL_POLYGON);	
-	glVertex3fv(verticies[2]);
-	glVertex3fv(verticies[6]);
-	glVertex3fv(verticies[4]);
 	glVertex3fv(verticies[0]);
+	glVertex3fv(verticies[4]);
+	glVertex3fv(verticies[6]);
+	glVertex3fv(verticies[2]);
 	glEnd();
 	
 	// Left Side
@@ -61,7 +61,7 @@ void drawTower(float c[6]){
 	glVertex3fv(verticies[0]);
 	glVertex3fv(verticies[2]);
 	glVertex3fv(verticies[3]);
-	glEnd();	
+	glEnd();		
 
 	// Circle
 	glColor4f(1.0, 0.0, 0.0, 1);
@@ -91,21 +91,21 @@ void drawBuilding(float c[6]){
 
 
 	
-	glColor4f(0.5, 0.3, 0.9, 1); 
+	glColor4f(1.0, 0.0, 0.0, 1); // red
 	// Right Side
 	glBegin(GL_POLYGON);
 	glVertex3fv(verticies[6]);
-	glVertex3fv(verticies[7]);
-	glVertex3fv(verticies[5]);
 	glVertex3fv(verticies[4]);
+	glVertex3fv(verticies[5]);
+	glVertex3fv(verticies[7]);
 	glEnd();
 	
 	// Back Side
 	glBegin(GL_POLYGON);
 	glVertex3fv(verticies[1]);
-	glVertex3fv(verticies[5]);
-	glVertex3fv(verticies[7]);
 	glVertex3fv(verticies[3]);
+	glVertex3fv(verticies[7]);
+	glVertex3fv(verticies[5]);
 	glEnd();
 
 	// Bottom
