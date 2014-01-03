@@ -14,7 +14,6 @@
 #include "Player.h"
 //#include "Coordinate.h"
 
-
 RNG randomGen;
 
 /////// Number of particles ///////
@@ -28,16 +27,17 @@ int shapeSettings = 1;		// shape of particle
 int colourSettings = 5;		// 5 is random 1-4 red green blue yellow
 int tornadoEffect = 0;	// Hurricane effect 0 no, 1 yes
 double gSpeed = 5.0;		// Speed
-float angleOfUser = 222.0;
+float angleOfUser = 0.0;
 // Light values, played with them to get a bright green look
 float ambientLight[4] = {0.3, .4, 1.0, 1.0};
-float lightPos[4] = {160, 70, 0, 1};
+float lightPos[4] = {90, 70, 0, 1};
 
 // Objects in picture	Pos X,Y,Z, Vel X,Y,Z
-float pos[4][6] =	{{0, -1, 0, 100, 1, 100},	// Ground position
+float pos[5][6] =	{{0, -1, 0, 100, 1, 100},	// Ground position
 					{0, 10, 0, 8, 5, 8},		// Spout 
 					{-15, 0, 15, 8, 1, 8},		
-					{25, 50, 0, 10, 50, 10}};	// tower
+					{0, 50, 0, 10, 50, 10}, // tower
+					{-25, 25, 50, 10, 25, 10}};	//buidling 1
 
 // X for user controlled particle aiming
 Coordinate playerSpawn(155, 15.0, 0);	// Players spawn position
@@ -206,12 +206,12 @@ void display(void){
 
 	// Camera
 	//glPushMatrix();
-	gluLookAt(0, 4, 10, 0, 1, 1, 0, 2, 0);
+	//gluLookAt(0, 4, 10, 0, 1, 1, 0, 2, 0);
 	// Look at it bro
 	Coordinate pP(globalPlayer.getPosition());
-	Coordinate eye(pP.getX(), pP.getY(), pP.getZ());
+	//Coordinate eye(pP.getX(), pP.getY(), pP.getZ());
 	//glTranslatef(pP.getX(), pP.getY(), pP.getZ());
-	//gluLookAt(eye.getX(), eye.getY(), eye.getZ(), 0, pP.getY(), 0, 0, 5, 0);
+	gluLookAt(pP.getX(), pP.getY(), pP.getZ(), 0, pP.getY(), 0, 0, 1, 0);
 	//glRotatef(angleOfUser, 0, 1, 0);
 
 	//glPopMatrix();
@@ -235,6 +235,11 @@ void display(void){
 	// Draw tower
 	glPushMatrix();
 	drawTower(pos[3]);
+	glPopMatrix();
+
+	// Draw buidling 1
+	glPushMatrix();
+	drawBuilding(pos[4]);
 	glPopMatrix();
 
 	// commented out till needed
@@ -628,7 +633,7 @@ void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glClearColor(1, 1, 1, 1);
-	glOrtho(-200, 200, -200, 200, -200, 200);	
+	glOrtho(-200, 200, -200, 200, -200, 325);	
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);

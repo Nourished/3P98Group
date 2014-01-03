@@ -21,9 +21,7 @@ Player::Player(){
 	size = 2;
 	lives = 3;
 	speed = 5.0;
-	alpha = 1.0;
-
-		
+	alpha = 1.0;		
 	// Colour
 	colour[0] = 0.2;
 	colour[1] = 0.2;
@@ -141,7 +139,7 @@ void Player::Render(){
 	glPushMatrix();
 	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it
 	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
-	glRotated(1.0, 1.0, 1.0, 0.0);			
+	//glRotated(1.0, 1.0, 1.0, 0.0);			
 	switch (playerStatus){					// Draw the specific type of Player
 		case 1:
 			glutSolidSphere(size, 15, 15);
