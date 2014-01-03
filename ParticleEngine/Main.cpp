@@ -8,25 +8,20 @@
 
 #include <vector>
 #include "glut.h"
-#include "Particle.h"
 #include "GlobalObjects.h"
 #include "RNG.h"
 #include "Player.h"
-//#include "Coordinate.h"
+#include "Bullet.h"
 
 RNG randomGen;
 
-/////// Number of particles ///////
-std::vector<Particle> pList;
+/////// Number of bullets ///////
+std::vector<Bullet> bList;
 Player globalPlayer;
-// Global information about the particle list
-int numberOfParticles = 20;	// number of particles allowed
-int spawnSettings = 1;		// where the particle is spawning and headed
-int sizeSettings = 2;		// size
-int shapeSettings = 1;		// shape of particle
-int colourSettings = 5;		// 5 is random 1-4 red green blue yellow
-int tornadoEffect = 0;	// Hurricane effect 0 no, 1 yes
-double gSpeed = 5.0;		// Speed
+// Global information about the game
+int numberOfBullets = 0;
+float bulletTimer = 0.4;
+int playerBulletType = 1;
 float angleOfUser = 0.0;
 // Light values, played with them to get a bright green look
 float ambientLight[4] = {0.3, .4, 1.0, 1.0};
@@ -47,7 +42,7 @@ int backFaceCulling = 0;	// Backface culling 0 means not true
 
 // Camera Related Settings
 int axisRotate = 1; // x - 0, y - 1, z - 2, used to rotate around this axis
-float angle[3] = {10, 25, 10};
+float angle = 10;
 float angleSpeed = 0.0;
 
 // Light up the screen
@@ -57,140 +52,53 @@ void light(){
 }
 
 void keyOperations (void) {  
-	if(keyStates['w']){
+	if(keyStates['w'] || keyStates['W']){ // Up
 		globalPlayer.addYMovement(1.0);
 	}
-	if(keyStates['s']){
+	if(keyStates['s'] || keyStates['S']){ // Down
 		globalPlayer.addYMovement(-1.0);
 	}
-	if(keyStates['a']){
-		angleOfUser += 2.0;
+	if(keyStates['a'] || keyStates['A']){ // Left
+		angleOfUser += 1.2;
 		globalPlayer.addXZMovement(angleOfUser);
 	}
-	if(keyStates['d']){
-		angleOfUser -= 2.0;
+	if(keyStates['d'] || keyStates['D']){ // Right
+		angleOfUser -= 1.2;
 		globalPlayer.addXZMovement(angleOfUser);
+	}
+	if(keyStates[','] || keyStates['<']){ // Shoot right
+		if(bulletTimer < 0.05){
+			Bullet newBullet(playerBulletType, true, angleOfUser, globalPlayer.getPosition());
+			numberOfBullets++;
+			bList.push_back(newBullet);
+			bulletTimer += 0.20;
+		}
+	}
+	if(keyStates['.'] || keyStates['>']){ // Shoot left
+		if(bulletTimer < 0.05){
+			Bullet newBullet(playerBulletType, false, angleOfUser, globalPlayer.getPosition());
+			numberOfBullets++;
+			bList.push_back(newBullet);
+			bulletTimer += 0.20;
+		}
 	}
 
 }  
 
 
-// Called from update, this will check the particle list
-// Remove the particles that have died of age or out of boundaries
-// Resize the list if particles were removed from user
-// Adds x number of particles to get it back to the proper size
-void checkParticles(){
 
-	int numElements = pList.size();	
-	// If particles were removed, resize the list
-	if(numElements > numberOfParticles)
-		pList.resize(numberOfParticles);
+
+// Called from update, this will remove bullets that have expired
+void checkBullets(){
 
 	// Soft reset, the particle has stopped moving, or off screen
-	for(size_t i = 0; i < pList.size(); i++){
-		if(pList[i].isAlive() == 0){
+	for(size_t i = 0; i < bList.size(); i++){
+		if(bList[i].getAge() == 0){
 			// Add new elements to the list
-			pList.erase(pList.begin() + i);
-			// Or reset their position
-			//pList[i].resetPosition();
+			bList.erase(bList.begin() + i);
+			numberOfBullets--;
 		}
-	}
-
-	// Calculate the number of particles in the list and 
-	// subtract it from the current particle number allowed
-	double p[3];
-	double v[3];
-	float co[3];	
-
-	numElements = pList.size();
-	if(numElements < numberOfParticles){
-		// Add x number of particles
-		// Give it a the position specified
-		for(int i = 0; i < numberOfParticles-numElements; i++){
-			Particle newPart;
-
-			// Spawn settings determined by user
-			// 1 for normal out of box
-			// 2 for out of box but towards a user generated velocity
-			// 3 for a small spray
-			// 4 for a large spray
-			switch(spawnSettings){
-				case 1: // default
-					p[0]  = randomGen.stdDeviation(pos[1][0], 2.0);
-					p[1]  = randomGen.stdDeviation(pos[1][1], 3.0);
-					p[2]  = randomGen.stdDeviation(pos[1][2], 2.0);
-					// Velocity
-					v[0] = randomGen.stdDeviation(-1.7, 5.2);
-					v[1]  = randomGen.stdDeviation(21.0, 3.0);
-					v[2] = randomGen.stdDeviation(-2.6, 4.0);
-
-					break;
-				case 2: // special user
-					p[0]  = randomGen.stdDeviation(pos[1][0], 3.0);
-					p[1]  = randomGen.stdDeviation(pos[1][1], 3.0);
-					p[2]  = randomGen.stdDeviation(pos[1][2], 4.0);
-								
-					break;
-				case 3:
-					p[0]  = randomGen.stdDeviation(pos[1][0], 2.0);
-					p[1]  = randomGen.stdDeviation(pos[1][1], 3.0);
-					p[2]  = randomGen.stdDeviation(pos[1][2], 2.0);
-					// Velocity
-					v[0] = randomGen.stdDeviation(0, 1.2);
-					v[1]  = randomGen.stdDeviation(19.0, 1.0);
-					v[2] = randomGen.stdDeviation(3, 0.5);
-
-					break;
-				case 4:
-					p[0]  = randomGen.stdDeviation(pos[1][0], 2.0);
-					p[1]  = randomGen.stdDeviation(pos[1][1], 3.0);
-					p[2]  = randomGen.stdDeviation(pos[1][2], 2.0);
-					// Velocity
-					v[0] = randomGen.stdDeviation(0, 10);
-					v[1]  = randomGen.stdDeviation(19.0, 5.0);
-					v[2] = randomGen.stdDeviation(0, 10);
-
-					break;
-			}
-
-			// Colour settings based on menu
-			switch(colourSettings){
-				case 1: // default
-					co[0] = 1.0;
-					co[1] = 0.0;
-					co[2] = 0.0;			
-				case 2:
-					co[0] = 0.0;
-					co[1] = 1.0;
-					co[2] = 0.0;	
-					break;
-				case 3:
-					co[0] = 0.0;
-					co[1] = 0.0;
-					co[2] = 1.0;	
-					break;
-				case 4:
-					co[0] = 1.0;
-					co[1] = 1.0;
-					co[2] = 0.0;	
-					break;
-				case 5:
-					co[0] = randomGen.random(0.01, 1.0);
-					co[1] = randomGen.random(0.01, 1.0);
-					co[2] = randomGen.random(0.01, 1.0);			
-			}
-
-			// Set the values
-			newPart.setPosition(p[0], p[1], p[2]);
-			newPart.setVelocity(v[0], v[1], v[2]);
-			newPart.setColour(co[0], co[1], co[2]);  //Colour
-			newPart.setSize(sizeSettings);
-			newPart.setParticleType(shapeSettings);
-			newPart.setSpeed(randomGen.random(gSpeed-1.5, gSpeed+1.5));
-			// Add it to the list
-			pList.push_back(newPart);
-		}
-	}
+	}	
 
 }
 
@@ -218,13 +126,13 @@ void display(void){
 	// Rotate based on user selection
 	switch(axisRotate){
 		case 0:
-			glRotatef(angle[0], 1, 0, 0);
+			glRotatef(angle, 1, 0, 0);
 			break;
 		case 1:
-			glRotatef(angle[1], 0, 1, 0);
+			glRotatef(angle, 0, 1, 0);
 			break;
 		case 2:
-			glRotatef(angle[2], 0, 0, 1);
+			glRotatef(angle, 0, 0, 1);
 			break;
 	}
 	// Draw ground
@@ -242,32 +150,13 @@ void display(void){
 	drawBuilding(pos[4]);
 	glPopMatrix();
 
-	// commented out till needed
-	// Draw Particles (enemies)
-	//for (int i = 0; i < numberOfParticles; i++){
-		//glPushMatrix();
-		// Tornado causes the particles to be skeewed by the camera rotation
-		// High speeds cause the particles to bounce and spin in circles
-		// on the floor 
-		//if(tornadoEffect){
-			//switch(axisRotate){
-			//	case 0:
-				//	glRotatef(angle[0], 1, 0, 0);
-			//		break;
-			//	case 1:
-			//		glRotatef(angle[1], 0, 1, 0);
-			//		break;
-			//	case 2:
-			//		glRotatef(angle[2], 0, 0, 1);
-			//		break;
-			//}
-		//}
-		// Render the particle and draw it
-		//pList[i].Render();
-		//glPopMatrix();
-	//}
-	//**/ //end of commented block --------
-
+	// Bullets
+	for (int i = 0; i < numberOfBullets; i++){
+		glPushMatrix();
+		bList[i].Render();
+		glPopMatrix();
+	}
+	
 	// Draw player
 	glPushMatrix();	
 	globalPlayer.Render();
@@ -291,26 +180,13 @@ void keys(unsigned char key, int x, int y){
 			exit(0);
 			return;
 			break;
-		case 'R':	// Reset to 5 particles
-			numberOfParticles = 5;			
 		case 'r':	// Reset keep same amount of particles
 							// Reset camera angles, speed, spawn settings
-			angle[0] = 10;
-			angle[1] = 25;
-			angle[2] = 10;
+			angle = 10;
 			axisRotate = 1;
-			angleSpeed = 0;
-			spawnSettings = 1;
-			colourSettings = 5;
-			shapeSettings = 1;
-			sizeSettings = 2;
+			angleSpeed = 0;			
 			globalPlayer.setPosition(playerSpawn);
 			angleOfUser = 222.0;
-			printf("%d Particles on Screen.  ", numberOfParticles);
-			printf("Particles will resume original random behaviour\n");
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].resetPosition();
-			}
 			glutPostRedisplay();
 			break;
 		case 'z':	// Change rotation axis to z
@@ -325,50 +201,8 @@ void keys(unsigned char key, int x, int y){
 			axisRotate = 1;
 			printf("Rotating around y axis now!\n");
 			break;	
-		case 'h':	// Hurricane affect
-			if(tornadoEffect == 1){
-				printf("TORNADO MODE DISABLED\n");
-				tornadoEffect = 0;
-				angleSpeed = 0;
-			}else {
-				printf("TORNADO MODE ENABLED\n");
-				tornadoEffect = 1;
-				angleSpeed = 0.6;
-			}
-			break;
-		case '`':	// User target
-		case '~':
-			if(spawnSettings == 1){
-				spawnSettings = 2;
-				printf("Particles will travel towards the X\n");
-			}
-			else {
-				spawnSettings = 1;
-				printf("Particles will resume original random behaviour\n");
-			}
-			break;
-		case 'c':	// Spray mode, hit to toggle between tight and loose
-			if(spawnSettings < 3 || spawnSettings == 4){
-				spawnSettings = 3;
-				printf("Particles will travel in a tight spray\n");
-			}
-			else if(spawnSettings == 3){
-				spawnSettings = 4;
-				printf("Particles will travel in a loose spray\n");
-			}	
-			break;
-		case 'q':	// Add more particles by 3
-			numberOfParticles += 3;
-			break;
-		case '1':	// Add 1 more particle
-			numberOfParticles += 1;
-			break;
-		
-		case 'Q':	// Remove particles
-			numberOfParticles -= 5;
-			if(numberOfParticles <= 0)
-				numberOfParticles = 1;
-			break;
+		case '1':	// Add 1 enemy			
+			break;		
 		case 'b':	// Back face culling
 			if(backFaceCulling){
 				printf("Back Face Culling Disabled\n");
@@ -382,67 +216,16 @@ void keys(unsigned char key, int x, int y){
 				backFaceCulling = 1;
 			}
 			break;
-		case 't':	// Speed of particles increased
-			gSpeed += 0.5;
-			if(gSpeed > 8)
-				gSpeed = 8;
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setSpeed(randomGen.random(gSpeed, gSpeed+2.0));
-			}
-			glutPostRedisplay();
-			break;
-		case 'T':	// Speed of particles decreased
-			gSpeed -= 0.5;
-			if(gSpeed < 1.0)
-				gSpeed = 1.0;
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setSpeed(randomGen.random(gSpeed-2, gSpeed));
-			}
-			glutPostRedisplay();
-			break;
 	}
 }
 
 
 // Menu for the particle type
-void menuParticleType(int value){
-	shapeSettings = value;
+void menuParticleType(int value){	
 	switch(value){
 		case 1:
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setParticleType(1);
-				glPopMatrix();
-			}
-			break;		
-		case 2:
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setParticleType(2);
-				glPopMatrix();
-			}
 			break;
-
-		case 3:
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setParticleType(3);
-				glPopMatrix();
-			}
-		break;
-
-		case 4:
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setParticleType(4);
-				glPopMatrix();
-			}
-		break;
-
-		case 5:
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setParticleType(5);
-				glPopMatrix();
-			}
-		break;
 	}
-		
 }
 
 // Menu for quitting
@@ -452,34 +235,9 @@ void menuMain(int value){
 }
 
 // Menu for the colours
-void menuColour(int value){
-	colourSettings = value;
+void menuColour(int value){	
 	switch(value){
 		case 1:
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setColour(1, 0, 0);
-			}
-			break;
-		case 2:
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setColour(0, 1, 0);
-			}
-			break;
-		case 3:
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setColour(0, 0, 1);
-			}
-			break;
-		case 4:
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setColour(1, 1, 0);
-			}
-			break;
-		case 5:
-			for (int i = 0; i < numberOfParticles; i++){
-				pList[i].setColour(randomGen.random(0.01, 1.0), randomGen.random(0.01, 1.0),
-									randomGen.random(0.01, 1.0));
-			}
 			break;
 	}
 }
@@ -497,33 +255,9 @@ void menuLight(int value){
 }
 
 // Menu for the particle size
-void menuSize(int value){
-	sizeSettings = value;
+void menuSize(int value){	
 	switch(value){
-		case 1:
-			for (int i = 0; i < numberOfParticles; i++){
-					pList[i].setSize(1);
-				}
-			break;
-		case 2:
-			for (int i = 0; i < numberOfParticles; i++){
-					pList[i].setSize(2);
-				}
-			break;
-		case 3:
-			for (int i = 0; i < numberOfParticles; i++){
-					pList[i].setSize(3);
-				}
-			break;
-		case 4:
-			for (int i = 0; i < numberOfParticles; i++){
-					pList[i].setSize(4);
-				}
-			break;
-		case 5:
-			for (int i = 0; i < numberOfParticles; i++){
-					pList[i].setSize(5);
-				}
+		case 1:			
 			break;
 	}
 }
@@ -545,17 +279,12 @@ void mouse(int button, int state, int x, int y){
 // Initalize the menus and print the commands
 void initMenus(){
 
-	printf("Particle Engine\nEsc: Quit\nR: Reset the system back to 5 particles\nr: Reset the system with the same number of particles"
-			"\nq: Add 3 particles\nQ: Remove 5 particles\n1: Add 1 Particle\n");
-	printf("t: Increases speed of the particles\nT: decreases the speed of particles\nh: Enables/Disables the hurricane effect");
-	printf("c: Toggle between loose and tight sprays");	
-	printf("z: Switch camera angle to rotate around z axis\nx: Switch camera angle to rotate around x axis\n");
+	printf("Particle Engine\nEsc: Quit\nR: Reset\nz: Switch camera angle to rotate around z axis");
+	printf("\nx: Switch camera angle to rotate around x axis\n");
 	printf("y: Switch camera angle to rotate around y axis\n");
-	printf("b: Enable/Disable Back Face Culling\n\n~ enables or disables the user target."
-			"This will be a\ntarget on the screen to alter where the particle moves towards\n");
-	printf("To change this use\nw: move Y direction up\ns: move Y direction down\na: move X direction"
-			" left\nd: move X direction right\n");
-	printf("e: move Z direction left\nf: move Z direction right\n");
+	printf("b: Enable/Disable Back Face Culling\n");
+	printf("w: move Y direction up\ns: move Y direction down\na: move player left"
+			"\nd: move player right\n");
 	printf("MOUSE\nLeft Click: Increase counter clockwise rotation\nRight Click:"
 			" Increase clockwise rotation\nMiddle Click to access the menu!\n");
 	
@@ -564,16 +293,13 @@ void initMenus(){
 	glutAddMenuEntry("Sphere", 1);
 	glutAddMenuEntry("Cube", 2);
 	glutAddMenuEntry("Wire Sphere", 3);
-	glutAddMenuEntry("Wire Cube", 4);
-	glutAddMenuEntry("Points", 5);
+
 
 	// Particle colour menu
 	glutCreateMenu(menuColour);
 	glutAddMenuEntry("Red", 1);
 	glutAddMenuEntry("Green", 2);
-	glutAddMenuEntry("Blue", 3);
-	glutAddMenuEntry("Yellow", 4);
-	glutAddMenuEntry("stdDeviationom", 5);
+
 
 	// Particle size menu
 	glutCreateMenu(menuSize);
@@ -602,26 +328,17 @@ void initMenus(){
 // Update the program
 void update(int value){
 
-	// Check the particle list
-	checkParticles();
+	// Update bullets, remove bullets that have expired
+	checkBullets();
+	bulletTimer -= 0.03;
 
 	// Update the camera rotation
-	switch(axisRotate){
-		case 0:
-			angle[0] += angleSpeed;
-			break;
-		case 1:
-			angle[1] += angleSpeed;
-			break;
-		case 2:
-			angle[2] += angleSpeed;
-			break;
-	}
+	angle += angleSpeed;
+			
 	// Update the particles
-	for (int i = 0; i < numberOfParticles; i++){
-		pList[i].Update();
+	for (int i = 0; i < numberOfBullets; i++){
+		bList[i].Update();
 	}
-
 	// Redisplay the updates
 	glutPostRedisplay();
 	// Call it again
@@ -648,13 +365,7 @@ void init(void){
 // Main
 int main(int argc, char** argv)
 {
-	// Create a particle list
-	for (int i = 0; i < numberOfParticles; i++){
-		Particle newPart;	
-		newPart.resetPosition();
-		pList.push_back(newPart);
-	}
-
+	
 	globalPlayer.setPosition(playerSpawn);
 	glutInit(&argc, argv);		
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
