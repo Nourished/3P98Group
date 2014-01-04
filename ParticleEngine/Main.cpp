@@ -127,10 +127,7 @@ void display(void){
 	//gluLookAt(0, 4, 10, 0, 1, 1, 0, 2, 0);
 	// Look at it bro
 	Coordinate pP(globalPlayer.getPosition());
-	//Coordinate eye(pP.getX(), pP.getY(), pP.getZ());
-	//glTranslatef(pP.getX(), pP.getY(), pP.getZ());
-	gluLookAt(pP.getX(), pP.getY(), pP.getZ(), 0, pP.getY(), 0, 0, 1, 0);
-	//glRotatef(angleOfUser, 0, 1, 0);
+	gluLookAt(pP.getX(), pP.getY(), pP.getZ(), 0, pP.getY(), 0, 0, 1, 0);	
 
 	//glPopMatrix();
 	// Rotate based on user selection
@@ -145,8 +142,8 @@ void display(void){
 			glRotatef(angle, 0, 0, 1);
 			break;
 	}
-	 glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 
-            0, 0, 64, 64, 0);
+	 //(GL_TEXTURE_2D, 0, GL_RGBA, 
+      //      0, 0, 64, 64, 0);
 	
 	// Draw ground
 	glPushMatrix();
@@ -158,8 +155,7 @@ void display(void){
 	drawTower(pos[3]);
 	glPopMatrix();
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 
-                       0, GL_RGB, GL_UNSIGNED_BYTE,  imgPixels);
+
 	// Draw buidling 1
 	glPushMatrix();	
 	drawBuilding(pos[4]);
@@ -423,7 +419,7 @@ void init(void){
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);
 	glEnable (GL_BLEND); 
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);

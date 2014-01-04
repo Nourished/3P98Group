@@ -94,25 +94,25 @@ void drawBuilding(float c[6]){
 	glColor4f(1.0, 1.0, 1.0, 1); // red
 	// Right Side
 	glBegin(GL_POLYGON);
-	glTexCoord2d(0.0,0.0);
+	glTexCoord2d(0.0, 1.0);
 	glVertex3fv(verticies[6]);
-	glTexCoord2d(1.0,0.0);
+	glTexCoord2d(0.0, 0.0);
 	glVertex3fv(verticies[4]);
-	glTexCoord2d(1.0,1.0);
+	glTexCoord2d(1.0, 0.0);
 	glVertex3fv(verticies[5]);
-	glTexCoord2d(0.0,1.0);
+	glTexCoord2d(1.0, 1.0);
 	glVertex3fv(verticies[7]);
 	glEnd();
 	
 	// Back Side
 	glBegin(GL_POLYGON);
-	glTexCoord2d(0.0,0.0);
+	glTexCoord2d(0.0, 0.0);
 	glVertex3fv(verticies[1]);
-	glTexCoord2d(1.0,0.0);
+	glTexCoord2d(0.0, 1.0);
 	glVertex3fv(verticies[3]);
-	glTexCoord2d(1.0,1.0);
+	glTexCoord2d(1.0, 1.0);
 	glVertex3fv(verticies[7]);
-	glTexCoord2d(0.0,1.0);
+	glTexCoord2d(1.0, 0.0);
 	glVertex3fv(verticies[5]);
 	glEnd();
 
@@ -134,25 +134,25 @@ void drawBuilding(float c[6]){
 
 	// Front Side
 	glBegin(GL_POLYGON);	
-	glTexCoord2d(0.0,0.0);
+	glTexCoord2d(0.0, 0.0);
 	glVertex3fv(verticies[0]);
-	glTexCoord2d(1.0,0.0);
+	glTexCoord2d(1.0, 0.0);
 	glVertex3fv(verticies[4]);
-	glTexCoord2d(1.0,1.0);
+	glTexCoord2d(1.0, 1.0);
 	glVertex3fv(verticies[6]);
-	glTexCoord2d(0.0,1.0);
+	glTexCoord2d(0.0, 1.0);
 	glVertex3fv(verticies[2]);
 	glEnd();
 	
-	// Left Side
+	// Left Side	
 	glBegin(GL_POLYGON);
-	glTexCoord2d(0.0,0.0);
+	glTexCoord2d(0.0, 0.0);
 	glVertex3fv(verticies[1]);
-	glTexCoord2d(1.0,0.0);
+	glTexCoord2d(1.0, 0.0);
 	glVertex3fv(verticies[0]);
-	glTexCoord2d(1.0,1.0);
+	glTexCoord2d(1.0, 1.0);
 	glVertex3fv(verticies[2]);
-	glTexCoord2d(0.0,1.0);
+	glTexCoord2d(0.0, 1.0);
 	glVertex3fv(verticies[3]);
 	glEnd();	
 }
