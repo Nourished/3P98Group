@@ -4,6 +4,7 @@
 // Contains information on the Bullet
 // Including speed, velocity, acceleration, position
 // Colour, Bullet type
+// THIS IS THE BULLET CLASS
 
 #define _USE_MATH_DEFINES	// Pi variable
 
