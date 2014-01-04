@@ -91,7 +91,7 @@ void drawBuilding(float c[6]){
 
 
 	
-	glColor4f(1.0, 1.0, 1.0, 1); // red
+	glColor4f(1.0, 1.0,  1.0, 1); // white
 	// Right Side
 	glBegin(GL_POLYGON);
 	glTexCoord2d(0.0, 1.0);

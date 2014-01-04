@@ -55,6 +55,9 @@ void* imgPixels;
 int imgWidth;   // Width of the texture image.
 int imgHeight;  // Height of the texture image.
 
+GLuint textures[2];
+
+
 // Light up the screen
 void light(){
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
@@ -144,6 +147,8 @@ void display(void){
 	}
 	 //(GL_TEXTURE_2D, 0, GL_RGBA, 
       //      0, 0, 64, 64, 0);
+
+
 	
 	// Draw ground
 	glPushMatrix();
@@ -155,11 +160,11 @@ void display(void){
 	drawTower(pos[3]);
 	glPopMatrix();
 
-
-	// Draw buidling 1
+		// Draw buidling 1
 	glPushMatrix();	
 	drawBuilding(pos[4]);
 	glPopMatrix();
+
 
 	// Particles (Enemies)
 	//for (int i = 0; i < numberOfParticles; i++){
@@ -343,40 +348,39 @@ void initMenus(){
 	glutAttachMenu(GLUT_MIDDLE_BUTTON);
 }
 
-void loadTexture(){
-	FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename("concrete.png");
+void loadTexture(const char *filename, int textID){
+	FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename);
 	if (format == FIF_UNKNOWN) {
         printf("Unknown file type for texture image file %s\n");
        
     }
 
-	 FIBITMAP* bitmap = FreeImage_Load(format, "concrete.png", 0);
+	 FIBITMAP* bitmap = FreeImage_Load(format, filename, 0);
 
 	 if (!bitmap) {
         printf("Failed to load image concrete.png \n");       
     }
 	  FIBITMAP* bitmap2 = FreeImage_ConvertTo24Bits(bitmap);
+
 	  FreeImage_Unload(bitmap);
 	  imgPixels = FreeImage_GetBits(bitmap2);  // Get the data we need!
       imgWidth = FreeImage_GetWidth(bitmap2);
       imgHeight = FreeImage_GetHeight(bitmap2);
 
 	  if (imgPixels) {
-        printf("\n Texture image loaded from file concrete.png, size %dx%d\n", 
+        printf("\n Texture image loaded from file %s, size %dx%d\n", filename,
                           imgWidth, imgHeight);
     }
     else {
-        printf("Failed to get texture data from concrete.png \n");
+        printf("Failed to get texture data from %s \n", filename);
     }
 
 	if ( imgPixels ) { // The image data exists      
-		 int format;
-         format = GL_RGB;    
-         // format = GL_BGR;
-		  glBindTexture(GL_TEXTURE_2D, 0);
+		 
+		  glBindTexture(GL_TEXTURE_2D, textures[textID]);		  
 		 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);   // Linear Min Filter
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // Linear Mag Filter
-         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgWidth, imgHeight, 0, GL_RGB,      GL_UNSIGNED_BYTE, imgPixels);
+		 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // Linear Mag Filter
+         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_BGR_EXT,      GL_UNSIGNED_BYTE, imgPixels);
          glEnable(GL_TEXTURE_2D);
      
 	} else { // The image data was not loaded, so don't attempt to use the texture.
@@ -420,11 +424,12 @@ void init(void){
 	glShadeModel(GL_SMOOTH);
 	glEnable (GL_BLEND); 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_COLOR_MATERIAL);
+	//glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 	initMenus();
-	loadTexture();
+	glGenTextures(2, textures); //specify the number of textures
+	loadTexture("brickwall.png",0);
 }
 
 // Main
