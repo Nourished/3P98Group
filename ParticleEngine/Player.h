@@ -1,5 +1,6 @@
-// Eric Gummerson	4585469
 // Player.h
+// Player class
+
 #include "Coordinate.h"
 
 class Player {	
