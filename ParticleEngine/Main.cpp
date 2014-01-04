@@ -12,23 +12,27 @@
 #include "RNG.h"
 #include "Player.h"
 #include "Bullet.h"
-#include "Particle.h"
-
+#include "Enemy.h"
+#include "ColDet.h"
 #include <freeimage.h>
 
 RNG randomGen;
+ColDet cd;
+
 
 /////// Number of bullets ///////
 std::vector<Bullet> bList;
 /////// Number of particles ///////
-std::vector<Particle> pList;
+std::vector<Enemy> eList;
 Player globalPlayer;
 // Global information about the game
 int numberOfBullets = 0;
-int numberOfParticles = 50;
-float bulletTimer = 0.4;
-int playerBulletType = 1;
-float angleOfUser = 0.0;
+int numberOfEnemies = 0;
+// Bullet information
+float bulletTimer = 0.05; // Used to maintain 3 of bullets being spawned
+int playerBulletType = 1; // Powerups alter the bullet types
+float angleOfUser = 0.0;	// Angle to figure out the location of the player on the circle
+
 // Light values, played with them to get a bright green look
 float ambientLight[4] = {0.3, .4, 1.0, 1.0};
 float lightPos[4] = {90, 70, 0, 1};
@@ -40,10 +44,12 @@ float pos[5][6] =	{{0, -1, 0, 100, 1, 100},	// Ground position
 					{0, 50, 0, 10, 50, 10}, // tower
 					{-25, 25, 50, 10, 25, 10}};	//buidling 1
 
-// X for user controlled particle aiming
-Coordinate playerSpawn(155, 15.0, 0);	// Players spawn position
+// Coordinates
+Coordinate playerSpawn(155.0, 15.0, 0);	// Players spawn position
+Coordinate enemySpawn(155.0, 25.0, 0.0);	// Enemy spawn, changes
 
 bool keyStates[256] = {false}; // Create an array of boolean values of length 256 (0-255)  
+
 int backFaceCulling = 0;	// Backface culling 0 means not true
 
 // Camera Related Settings
@@ -51,10 +57,10 @@ int axisRotate = 1; // x - 0, y - 1, z - 2, used to rotate around this axis
 float angle = 10;
 float angleSpeed = 0.0;
 
+// Texture gloabls
 void* imgPixels;
 int imgWidth;   // Width of the texture image.
 int imgHeight;  // Height of the texture image.
-
 GLuint textures[4];
 
 
@@ -64,35 +70,37 @@ void light(){
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 }
 
+// Keys operations that will be used a lot - movement and shooting
 void keyOperations (void) {  
 	if(keyStates['w'] || keyStates['W']){ // Up
-		globalPlayer.addYMovement(1.0);
+		globalPlayer.addYMovement(1.5);
 	}
 	if(keyStates['s'] || keyStates['S']){ // Down
-		globalPlayer.addYMovement(-1.0);
+		globalPlayer.addYMovement(-1.5);
 	}
 	if(keyStates['a'] || keyStates['A']){ // Left
-		angleOfUser += 1.2;
+		angleOfUser += 0.8;
 		globalPlayer.addXZMovement(angleOfUser);
 	}
 	if(keyStates['d'] || keyStates['D']){ // Right
-		angleOfUser -= 1.2;
+		angleOfUser -= 0.8;
 		globalPlayer.addXZMovement(angleOfUser);
 	}
 	if(keyStates[','] || keyStates['<']){ // Shoot right
 		if(bulletTimer < 0.05){
+			bulletTimer += 0.20;
 			Bullet newBullet(playerBulletType, true, angleOfUser, globalPlayer.getPosition());
 			numberOfBullets++;
 			bList.push_back(newBullet);
-			bulletTimer += 0.20;
+			
 		}
 	}
 	if(keyStates['.'] || keyStates['>']){ // Shoot left
 		if(bulletTimer < 0.05){
+			bulletTimer += 0.20;
 			Bullet newBullet(playerBulletType, false, angleOfUser, globalPlayer.getPosition());
 			numberOfBullets++;
-			bList.push_back(newBullet);
-			bulletTimer += 0.20;
+			bList.push_back(newBullet);			
 		}
 	}
 
@@ -101,15 +109,27 @@ void keyOperations (void) {
 
 
 
-// Called from update, this will remove bullets that have expired
-void checkBullets(){
+// Called from update, this will function checks the
+// lists including, enemy and bullets. Removes them from the lists if they have collided!
+void checkLists(){
 
-	// Soft reset, the particle has stopped moving, or off screen
+	// Remove bullets with age == 0
+	// This means they have expired or collided
 	for(size_t i = 0; i < bList.size(); i++){
 		if(bList[i].getAge() == 0){
-			// Add new elements to the list
+			// Remove the bullet from the list
 			bList.erase(bList.begin() + i);
 			numberOfBullets--;
+		}
+	}	
+
+	// Remove enemies with age == 0
+	// This means they have collided
+	for(size_t i = 0; i < eList.size(); i++){
+		if(eList[i].getAge() == 0){
+			// Remove the enemy from the list
+			eList.erase(eList.begin() + i);
+			numberOfEnemies--;
 		}
 	}	
 
@@ -174,17 +194,18 @@ void display(void){
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 
-	// Particles (Enemies)
-	//for (int i = 0; i < numberOfParticles; i++){
-	//	glPushMatrix();
-	//	pList[i].Render();
-	//	glPopMatrix();
-	//}
-
+	
 	// Bullets
-	for (int i = 0; i < numberOfBullets; i++){
+	for (size_t i = 0; i < bList.size(); i++){
 		glPushMatrix();
 		bList[i].Render();
+		glPopMatrix();
+	}
+
+	// Enemies
+	for (size_t i = 0; i < eList.size(); i++){
+		glPushMatrix();
+		eList[i].Render();
 		glPopMatrix();
 	}
 	
@@ -254,7 +275,11 @@ void keys(unsigned char key, int x, int y){
 // Menu for the particle type
 void menuParticleType(int value){	
 	switch(value){
-		case 1:
+		case 1:			
+			Enemy newEnemy(1, true, angleOfUser, enemySpawn);
+			numberOfEnemies++;
+			eList.push_back(newEnemy);
+			enemySpawn.setY(enemySpawn.getY() + 3.5);
 			break;
 	}
 }
@@ -321,9 +346,9 @@ void initMenus(){
 	
 	// Particle type menu
 	glutCreateMenu(menuParticleType);
-	glutAddMenuEntry("Sphere", 1);
-	glutAddMenuEntry("Cube", 2);
-	glutAddMenuEntry("Wire Sphere", 3);
+	glutAddMenuEntry("Spawn Enemy 1", 1);
+	glutAddMenuEntry("Spawn Enemy 2", 2);
+	glutAddMenuEntry("Spawn Enemy 3", 3);
 
 
 	// Particle colour menu
@@ -356,67 +381,83 @@ void initMenus(){
 	glutAttachMenu(GLUT_MIDDLE_BUTTON);
 }
 
+// Loads textures
 void loadTexture(const char *filename, int textID){
+
 	FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename);
-	if (format == FIF_UNKNOWN) {
-        printf("Unknown file type for texture image file %s\n");
-       
+	if(format == FIF_UNKNOWN){
+        printf("Unknown file type for texture image file %s\n");       
     }
 
-	 FIBITMAP* bitmap = FreeImage_Load(format, filename, 0);
+	FIBITMAP* bitmap = FreeImage_Load(format, filename, 0);
 
-	 if (!bitmap) {
+	if(!bitmap){
         printf("Failed to load image concrete.png \n");       
     }
-	  FIBITMAP* bitmap2 = FreeImage_ConvertTo24Bits(bitmap);
+	FIBITMAP* bitmap2 = FreeImage_ConvertTo24Bits(bitmap);
 
-	  FreeImage_Unload(bitmap);
-	  imgPixels = FreeImage_GetBits(bitmap2);  // Get the data we need!
-      imgWidth = FreeImage_GetWidth(bitmap2);
-      imgHeight = FreeImage_GetHeight(bitmap2);
+	FreeImage_Unload(bitmap);
+	imgPixels = FreeImage_GetBits(bitmap2);	// Get the data we need!
+    imgWidth = FreeImage_GetWidth(bitmap2);
+    imgHeight = FreeImage_GetHeight(bitmap2);
 
-	  if (imgPixels) {
-        printf("\n Texture image loaded from file %s, size %dx%d\n", filename,
-                          imgWidth, imgHeight);
-    }
-    else {
+	if (imgPixels) {
+		printf("\n Texture image loaded from file %s, size %dx%d\n", filename, imgWidth, imgHeight);
+    }else {
         printf("Failed to get texture data from %s \n", filename);
     }
 
-	if ( imgPixels ) { // The image data exists      
-		 
-		  glBindTexture(GL_TEXTURE_2D, textures[textID]);		  
-		 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);   // Linear Min Filter
-		 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // Linear Mag Filter
+	if(imgPixels){ // The image data exists      		 
+		glBindTexture(GL_TEXTURE_2D, textures[textID]);		  
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);   // Linear Min Filter
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // Linear Mag Filter
 		// glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		// glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_REPLACE);
-         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, imgPixels);		 
-         glEnable(GL_TEXTURE_2D);
-     
-	} else { // The image data was not loaded, so don't attempt to use the texture.
-          glDisable(GL_TEXTURE_2D);
-	  }
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, imgPixels);		 
+		glEnable(GL_TEXTURE_2D);     
+	}else { // The image data was not loaded, so don't attempt to use the texture.
+        glDisable(GL_TEXTURE_2D);
+	}
 }
 
 // Update the program
 void update(int value){
-
-	// Update bullets, remove bullets that have expired
-	checkBullets();
-	bulletTimer -= 0.03;
-
+	bool collide = false;
 	// Update the camera rotation
 	angle += angleSpeed;
-			
-	// Update the particles
-	//for (int i = 0; i < numberOfParticles; i++){
-	//	pList[i].Update();
-	//}
+	
+	// Used to avoid unlimited bullets
+	if(bulletTimer > 0.05){
+		bulletTimer -= 0.025;
+	}
+	// Update bullets, remove bullets that have expired and collided
+	checkLists();
 
 	// Update the bullets
-	for (int i = 0; i < numberOfBullets; i++){
+	for (int i = 0; i < bList.size(); i++){
 		bList[i].Update();
 	}
+	// Got new positions, now check for collision with enemies
+	// First bullets with enemies
+
+	for(size_t i = 0; i < bList.size(); i++){
+		for(size_t j = 0; j < eList.size(); j++){
+			// Make sure bullets have not expired or collided so far
+			if(bList[i].getAge() != 0 && eList[j].getAge() != 0){
+				if(cd.collide(bList[i].getPosition(), bList[i].getSize(),
+										eList[j].getPosition(), eList[j].getSize())){
+					// Collision
+					bList[i].setAge(0);
+					eList[j].setAge(0);
+				}// if collision
+			}// if bullet/enemy age != 0
+
+		}// for j
+	}// for i
+
+
+	// Update bullets, remove bullets that have expired and collided
+	checkLists();
 	// Redisplay the updates
 	glutPostRedisplay();
 	// Call it again
@@ -428,7 +469,7 @@ void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glClearColor(1, 1, 1, 1);
-	glOrtho(-75, 75, -100, 200, -25, 200);	
+	glOrtho(-85, 85, -100, 200, -25, 200);	
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);

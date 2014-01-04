@@ -1,44 +1,44 @@
 // Eric Gummerson	4585469
-// Bullet.cpp
-// Bullet class used for easier access in vector lists
-// Contains information on the Bullet
+// Enemy.cpp
+// Enemy class used for easier access in vector lists
+// Contains information on the Enemy
 // Including speed, velocity, acceleration, position
-// Colour, Bullet type
+// Colour, Enemy type
 
 #define _USE_MATH_DEFINES	// Pi variable
 
-#include "Bullet.h"
+#include "Enemy.h"
 #include "glut.h"
 #include <cstdio>
 #include <math.h>
 
-Bullet::~Bullet(){
+Enemy::~Enemy(){
 }
 
-// Inital Bullet generation set fields
-Bullet::Bullet(int bType, bool d, float angleStart, Coordinate p){
+// Inital Enemy generation set fields
+Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 	pos = p;
 	angle = angleStart;
 	dir = d;
-	bulletType = bType;
+	enemyType = bType;
 	age = 1;
 	alpha = 1.0;	
-	switch(bulletType){
-		case 1:	// Default bullet
+	switch(enemyType){
+		case 1:	// Default Enemy
 			colour[0] = 0.0;
 			colour[1] = 0.0;
 			colour[2] = 0.0;
 			speed = 1.2;
 			size = 2.0;
 			break;
-		case 2:	// second bullet type
+		case 2:	// second Enemy type
 			colour[0] = 0.3;
 			colour[1] = 0.5;
 			colour[2] = 0.0;
 			speed = 1.4;
 			size = 3.5;
 			break;
-		case 3:	// third bullet type
+		case 3:	// third Enemy type
 			colour[0] = 1.0;
 			colour[1] = 0.0;
 			colour[2] = 1.0;
@@ -51,28 +51,28 @@ Bullet::Bullet(int bType, bool d, float angleStart, Coordinate p){
 
 
 // Returns the age value
-int Bullet::getAge(){
+int Enemy::getAge(){
 	return age;
 }
 
 // Sets the age value
-void Bullet::setAge(int a){
-	age = a;
+void Enemy::setAge(int aStatus){
+	age = aStatus;
 }
 
-// Returns the size of the bullet
-float Bullet::getSize(){
+// Returns the size of the enemy
+float Enemy::getSize(){
 	return size;
 }
 
-// Set Bullet size
-void Bullet::setSize(float newSize){
+// Set Enemy size
+void Enemy::setSize(float newSize){
 	size = newSize;
 }
 
 // ~~~~~~ IS SPEED NEEDED ??? ~~~~~~~~
 // Set the speed, cannot be set past 8
-void Bullet::setSpeed(double sp){
+void Enemy::setSpeed(double sp){
 	if(sp < 8.01)
 		speed = sp;
 	else
@@ -81,47 +81,49 @@ void Bullet::setSpeed(double sp){
 
 
 // Set the colour
-void Bullet::setColour(float r, float g, float b){
+void Enemy::setColour(float r, float g, float b){
 	colour[0] = r;
 	colour[1] = g;
 	colour[2] = b;
 }
 
-// Set the Bullet type
-void Bullet::setBulletType(int a){
-	bulletType = a;
+// Set the Enemy type
+void Enemy::setEnemyType(int a){
+	enemyType = a;
 }
 
-// Set the alpha (visibility) of the Bullet
-void Bullet::setAlpha(double alp){
+// Returns the EnemyType
+int Enemy::getEnemyType(){
+	return enemyType;
+}
+
+// Set the alpha (visibility) of the Enemy
+void Enemy::setAlpha(double alp){
 	alpha = alp;
 }
 
-// Returns the bulletType
-int Bullet::getBulletType(){
-	return bulletType;
-}
 
 // Set the position
-void Bullet::setPosition(Coordinate p){
+void Enemy::setPosition(Coordinate p){
 	pos = p;
 }
 
-// Return the Bullets position
-Coordinate Bullet::getPosition(){
+// Return the Enemys position
+Coordinate Enemy::getPosition(){
 	return pos;
 }
 
 
-// update the Bullet
+// update the Enemy
 // This will calculate the new pos and velocity based on acceleration and speed
-void Bullet::Update(){
+void Enemy::Update(){
 	
-	age += 1;
+	/*age += 1;
 	
-	if(age > 45)
-		age = 0;
-	// Move the bullet in a straight line
+	if(age > 65)
+		age = 0;*/
+
+	// Move the Enemy in a straight line
 	if(dir){
 		// Right
 		angle += 1.4 * speed;
@@ -140,17 +142,13 @@ void Bullet::Update(){
 }
 
 
-// Render the Bullet
-void Bullet::Render(){
+// Render the Enemy
+void Enemy::Render(){
 
 	glPushMatrix();
-	if(age == 0){
-		glColor4f(1.0, 1.0, 1.0, alpha); // Destroyed make it red
-	}else
-		glColor4f(colour[0], colour[1], colour[2], alpha);	// normal colour
-
+	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it
 	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
-	switch (bulletType){					// Draw the specific type of Bullet
+	switch (enemyType){					// Draw the specific type of Enemy
 		case 1:
 			glutSolidSphere(size, 15, 15);
 			break;
