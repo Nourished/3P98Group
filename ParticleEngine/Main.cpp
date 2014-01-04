@@ -55,7 +55,7 @@ void* imgPixels;
 int imgWidth;   // Width of the texture image.
 int imgHeight;  // Height of the texture image.
 
-GLuint textures[2];
+GLuint textures[4];
 
 
 // Light up the screen
@@ -151,20 +151,28 @@ void display(void){
 
 	
 	// Draw ground
+	glBindTexture(GL_TEXTURE_2D, textures[1]);
+    glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
     drawFloor(pos[0]);	
-	glPopMatrix();	 
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
 
 	// Draw tower
+	//glBindTexture(GL_TEXTURE_2D, textures[0]);
+    //glEnable(GL_TEXTURE_2D);
 	glPushMatrix();
-	drawTower(pos[3]);
+	drawTower(pos[3], textures);
 	glPopMatrix();
+	//glDisable(GL_TEXTURE_2D);
 
-		// Draw buidling 1
+	// Draw buidling 1
+	glBindTexture(GL_TEXTURE_2D, textures[2]);
+    glEnable(GL_TEXTURE_2D);
 	glPushMatrix();	
 	drawBuilding(pos[4]);
 	glPopMatrix();
-
+	glDisable(GL_TEXTURE_2D);
 
 	// Particles (Enemies)
 	//for (int i = 0; i < numberOfParticles; i++){
@@ -380,7 +388,9 @@ void loadTexture(const char *filename, int textID){
 		  glBindTexture(GL_TEXTURE_2D, textures[textID]);		  
 		 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);   // Linear Min Filter
 		 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // Linear Mag Filter
-         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_BGR_EXT,      GL_UNSIGNED_BYTE, imgPixels);
+		// glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		// glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_REPLACE);
+         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, imgPixels);		 
          glEnable(GL_TEXTURE_2D);
      
 	} else { // The image data was not loaded, so don't attempt to use the texture.
@@ -424,12 +434,16 @@ void init(void){
 	glShadeModel(GL_SMOOTH);
 	glEnable (GL_BLEND); 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glEnable(GL_COLOR_MATERIAL);
-	//glEnable(GL_LIGHTING);
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 	initMenus();
-	glGenTextures(2, textures); //specify the number of textures
-	loadTexture("brickwall.png",0);
+	glGenTextures(3, textures); //specify the number of textures
+	loadTexture("concrete.png",0);
+	loadTexture("grass.png",1);
+	loadTexture("brickwall.png",2);
+	loadTexture("basketball.png",3);
+	
 }
 
 // Main
