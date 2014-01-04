@@ -34,7 +34,7 @@ int playerBulletType = 1; // Powerups alter the bullet types
 float angleOfUser = 0.0;	// Angle to figure out the location of the player on the circle
 
 // Light values, played with them to get a bright green look
-float ambientLight[4] = {0.3, .4, 1.0, 1.0};
+float ambientLight[4] = {0.0, 0.0, 0.0, 1.0};
 float lightPos[4] = {90, 70, 0, 1};
 
 // Objects in picture	Pos X,Y,Z, Vel X,Y,Z
@@ -118,6 +118,7 @@ void checkLists(){
 	for(size_t i = 0; i < bList.size(); i++){
 		if(bList[i].getAge() == 0){
 			// Remove the bullet from the list
+			glDisable(GL_LIGHT2);
 			bList.erase(bList.begin() + i);
 			numberOfBullets--;
 		}
@@ -468,7 +469,7 @@ void update(int value){
 void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glClearColor(1, 1, 1, 1);
+	glClearColor(0, 0, 0, 1);
 	glOrtho(-85, 85, -100, 200, -25, 200);	
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
