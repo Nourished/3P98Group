@@ -26,10 +26,10 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 	switch(enemyType){
 		case 1:	// Default Enemy
 			colour[0] = 0.0;
-			colour[1] = 0.0;
+			colour[1] = 1.0;
 			colour[2] = 0.0;
 			speed = 1.2;
-			size = 2.0;
+			size = 1.5;
 			break;
 		case 2:	// second Enemy type
 			colour[0] = 0.3;

@@ -69,6 +69,11 @@ void Player::addXZMovement(float xzMove){
 	pos.z = 155 * sinf(radian);
 }
 
+// Get player size
+float Player::getSize(){
+	return size;
+}
+
 // Set Player size
 void Player::setSize(float newSize){
 	size = newSize;

@@ -75,7 +75,8 @@ float lightAmbientV[] = {0.2, 0.2, 0.2, 1.0};
 	 float lightSpecularV[] = {2.0, 15.0, 3.0, 1.0};
 	 glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecularV);    
 	 glEnable(GL_LIGHT0);    
-	 glEnable(GL_LIGHTING); 	 float materialAmbient[] = {0.0114, 0.1234, 0.0333, 1.0};
+	 glEnable(GL_LIGHTING); 
+	 float materialAmbient[] = {0.0114, 0.1234, 0.0333, 1.0};
 	 glMaterialfv(GL_FRONT, GL_AMBIENT, materialAmbient);
      float materialDiffuse[] = {0.0561, 0.6901, 0.1524, 1.0};
 	 glMaterialfv(GL_FRONT, GL_DIFFUSE, materialDiffuse);
@@ -83,7 +84,8 @@ float lightAmbientV[] = {0.2, 0.2, 0.2, 1.0};
 	 glMaterialfv(GL_FRONT, GL_SPECULAR, materialSpecular);
 	 float materialShininess[] = { 100.0 };
 	 glMaterialfv(GL_FRONT, GL_SHININESS, materialShininess);   	 
-	 glEnable ( GL_COLOR_MATERIAL ) ;
+	 glEnable ( GL_COLOR_MATERIAL ) ;
+
 }
 
 // Keys operations that will be used a lot - movement and shooting
@@ -457,7 +459,6 @@ void update(int value){
 	}
 	// Got new positions, now check for collision with enemies
 	// First bullets with enemies
-
 	for(size_t i = 0; i < bList.size(); i++){
 		for(size_t j = 0; j < eList.size(); j++){
 			// Make sure bullets have not expired or collided so far
@@ -473,8 +474,21 @@ void update(int value){
 		}// for j
 	}// for i
 
-
+	// Now check if player has hit an enemy
+	for(size_t i = 0; i < eList.size(); i++){
+		// Check if player has already collided and make sure enemy is not dead
+		if(collide == false && eList[i].getAge() != 0){
+			if(cd.collide(eList[i].getPosition(), eList[i].getSize(),
+				globalPlayer.getPosition(), globalPlayer.getSize())){
+					// Collision
+					eList[i].setAge(0);
+					collide = true;
+				}// if collision
+		}// If collide and age != 0
+	}// For i
 	// Update bullets, remove bullets that have expired and collided
+	if(collide)
+		printf("\nPlayer collided, end game!");
 	checkLists();
 	// Redisplay the updates
 	glutPostRedisplay();
@@ -493,7 +507,8 @@ void init(void){
 	glShadeModel(GL_SMOOTH);
 	glEnable (GL_BLEND); 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_NORMALIZE);
+	glEnable(GL_NORMALIZE);
+
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);

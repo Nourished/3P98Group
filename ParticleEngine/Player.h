@@ -28,7 +28,9 @@ class Player {
 
 	void addYMovement(float yMove);
 	void addXZMovement(float xzMove);
+
 	void setSize(float newSize);
+	float getSize();
 	void setSpeed(double sp);
 	void setColour(float r, float g, float b);
 	void setPlayerType(int a);
