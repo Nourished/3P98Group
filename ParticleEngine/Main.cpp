@@ -12,14 +12,20 @@
 #include "RNG.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Particle.h"
+
+#include <freeimage.h>
 
 RNG randomGen;
 
 /////// Number of bullets ///////
 std::vector<Bullet> bList;
+/////// Number of particles ///////
+std::vector<Particle> pList;
 Player globalPlayer;
 // Global information about the game
 int numberOfBullets = 0;
+int numberOfParticles = 50;
 float bulletTimer = 0.4;
 int playerBulletType = 1;
 float angleOfUser = 0.0;
@@ -44,6 +50,10 @@ int backFaceCulling = 0;	// Backface culling 0 means not true
 int axisRotate = 1; // x - 0, y - 1, z - 2, used to rotate around this axis
 float angle = 10;
 float angleSpeed = 0.0;
+
+void* imgPixels;
+int imgWidth;   // Width of the texture image.
+int imgHeight;  // Height of the texture image.
 
 // Light up the screen
 void light(){
@@ -135,6 +145,9 @@ void display(void){
 			glRotatef(angle, 0, 0, 1);
 			break;
 	}
+	 glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 
+            0, 0, 64, 64, 0);
+	
 	// Draw ground
 	glPushMatrix();
     drawFloor(pos[0]);	
@@ -145,10 +158,19 @@ void display(void){
 	drawTower(pos[3]);
 	glPopMatrix();
 
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 256, 
+                       0, GL_RGB, GL_UNSIGNED_BYTE,  imgPixels);
 	// Draw buidling 1
-	glPushMatrix();
+	glPushMatrix();	
 	drawBuilding(pos[4]);
 	glPopMatrix();
+
+	// Particles (Enemies)
+	//for (int i = 0; i < numberOfParticles; i++){
+	//	glPushMatrix();
+	//	pList[i].Render();
+	//	glPopMatrix();
+	//}
 
 	// Bullets
 	for (int i = 0; i < numberOfBullets; i++){
@@ -325,6 +347,47 @@ void initMenus(){
 	glutAttachMenu(GLUT_MIDDLE_BUTTON);
 }
 
+void loadTexture(){
+	FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename("concrete.png");
+	if (format == FIF_UNKNOWN) {
+        printf("Unknown file type for texture image file %s\n");
+       
+    }
+
+	 FIBITMAP* bitmap = FreeImage_Load(format, "concrete.png", 0);
+
+	 if (!bitmap) {
+        printf("Failed to load image concrete.png \n");       
+    }
+	  FIBITMAP* bitmap2 = FreeImage_ConvertTo24Bits(bitmap);
+	  FreeImage_Unload(bitmap);
+	  imgPixels = FreeImage_GetBits(bitmap2);  // Get the data we need!
+      imgWidth = FreeImage_GetWidth(bitmap2);
+      imgHeight = FreeImage_GetHeight(bitmap2);
+
+	  if (imgPixels) {
+        printf("\n Texture image loaded from file concrete.png, size %dx%d\n", 
+                          imgWidth, imgHeight);
+    }
+    else {
+        printf("Failed to get texture data from concrete.png \n");
+    }
+
+	if ( imgPixels ) { // The image data exists      
+		 int format;
+         format = GL_RGB;    
+         // format = GL_BGR;
+		  glBindTexture(GL_TEXTURE_2D, 0);
+		 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);   // Linear Min Filter
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // Linear Mag Filter
+         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgWidth, imgHeight, 0, GL_RGB,      GL_UNSIGNED_BYTE, imgPixels);
+         glEnable(GL_TEXTURE_2D);
+     
+	} else { // The image data was not loaded, so don't attempt to use the texture.
+          glDisable(GL_TEXTURE_2D);
+	  }
+}
+
 // Update the program
 void update(int value){
 
@@ -336,6 +399,11 @@ void update(int value){
 	angle += angleSpeed;
 			
 	// Update the particles
+	//for (int i = 0; i < numberOfParticles; i++){
+	//	pList[i].Update();
+	//}
+
+	// Update the bullets
 	for (int i = 0; i < numberOfBullets; i++){
 		bList[i].Update();
 	}
@@ -350,22 +418,22 @@ void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glClearColor(1, 1, 1, 1);
-	glOrtho(-200, 200, -200, 200, -200, 325);	
+	glOrtho(-75, 75, -100, 200, -25, 200);	
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);
 	glEnable (GL_BLEND); 
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 	initMenus();
-	
+	loadTexture();
 }
 
 // Main
 int main(int argc, char** argv)
 {
-	
 	globalPlayer.setPosition(playerSpawn);
 	glutInit(&argc, argv);		
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
