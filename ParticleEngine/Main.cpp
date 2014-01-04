@@ -35,7 +35,7 @@ float angleOfUser = 0.0;	// Angle to figure out the location of the player on th
 
 // Light values, played with them to get a bright green look
 float ambientLight[4] = {0.0, 0.0, 0.0, 1.0};
-float lightPos[4] = {90, 70, 0, 1};
+float lightPos[4] = {0.0, 125, 0.0, 1};
 
 // Objects in picture	Pos X,Y,Z, Vel X,Y,Z
 float pos[5][6] =	{{0, -1, 0, 100, 1, 100},	// Ground position
@@ -67,7 +67,23 @@ GLuint textures[4];
 // Light up the screen
 void light(){
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+//	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+float lightAmbientV[] = {0.2, 0.2, 0.2, 1.0};
+	 glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbientV);
+	 float lightDiffuseV[] = {1.8, 1.8, 1.8, 1.0};
+	 glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuseV);
+	 float lightSpecularV[] = {2.0, 15.0, 3.0, 1.0};
+	 glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecularV);    
+	 glEnable(GL_LIGHT0);    
+	 glEnable(GL_LIGHTING); 	 float materialAmbient[] = {0.0114, 0.1234, 0.0333, 1.0};
+	 glMaterialfv(GL_FRONT, GL_AMBIENT, materialAmbient);
+     float materialDiffuse[] = {0.0561, 0.6901, 0.1524, 1.0};
+	 glMaterialfv(GL_FRONT, GL_DIFFUSE, materialDiffuse);
+	 float materialSpecular[] = {1.1, 0.98, 0.99, 1.0};
+	 glMaterialfv(GL_FRONT, GL_SPECULAR, materialSpecular);
+	 float materialShininess[] = { 100.0 };
+	 glMaterialfv(GL_FRONT, GL_SHININESS, materialShininess);   	 
+	 glEnable ( GL_COLOR_MATERIAL ) ;
 }
 
 // Keys operations that will be used a lot - movement and shooting
@@ -424,6 +440,7 @@ void loadTexture(const char *filename, int textID){
 // Update the program
 void update(int value){
 	bool collide = false;
+	
 	// Update the camera rotation
 	angle += angleSpeed;
 	
@@ -476,6 +493,7 @@ void init(void){
 	glShadeModel(GL_SMOOTH);
 	glEnable (GL_BLEND); 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_NORMALIZE);
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
