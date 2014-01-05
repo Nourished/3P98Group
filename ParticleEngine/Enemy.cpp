@@ -28,9 +28,9 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 			size = 1.5;
 			break;
 		case 2:	// second Enemy type
-			colour[0] = 0.3;
-			colour[1] = 0.5;
-			colour[2] = 0.0;
+			colour[0] = 0.0;
+			colour[1] = 0.8;
+			colour[2] = 0.4;
 			speed = 0.7;
 			size = 2.5;
 			break;

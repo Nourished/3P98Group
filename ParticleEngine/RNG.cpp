@@ -21,7 +21,7 @@ double RNG::random(double low, double high){
 
 // Returns a float between low and high
 float RNG::random(float low, float high){
-	return (rand1()*(high - low))+low;
+	return (float) (rand1()*(high - low))+low;
 }
 
 // Returns an int between low and high

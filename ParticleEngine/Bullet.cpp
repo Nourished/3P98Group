@@ -23,17 +23,17 @@ Bullet::Bullet(int bType, bool d, float angleStart, Coordinate p){
 	switch(bulletType){
 		case 1:	// Default bullet
 			colour[0] = 0.0;
-			colour[1] = 0.5;
+			colour[1] = 0.3;
 			colour[2] = 0.0;
 			speed = 1.2;
-			size = 1.5;
+			size = 2.0;
 			break;
 		case 2:	// second bullet type
 			colour[0] = 0.3;
 			colour[1] = 0.5;
 			colour[2] = 0.0;
 			speed = 0.7;
-			size = 2.0;
+			size = 2.5;
 			break;
 		case 3:	// third bullet type
 			colour[0] = 1.0;

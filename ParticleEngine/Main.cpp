@@ -91,6 +91,28 @@ void light(){
 
 }
 
+void resetGame(){
+
+	angle = 10;
+	axisRotate = 1;
+	angleSpeed = 0;			
+	globalPlayer.setPosition(playerSpawn);
+	angleOfUser = 222.0;
+	globalPlayer.addXZMovement(222.0);
+
+	// Remove bullets and enemy lists
+	for(size_t i = 0; i < bList.size(); i++){		
+		bList.erase(bList.begin() + i);			
+	}
+	for(size_t i = 0; i < eList.size(); i++){		
+		eList.erase(eList.begin() + i);			
+	}
+
+
+	glutPostRedisplay();
+
+}
+
 // Keys operations that will be used a lot - movement and shooting
 void keyOperations (void) {  
 	if(keyStates['w'] || keyStates['W']){ // Up
@@ -125,15 +147,15 @@ void keyOperations (void) {
 }  
 
 // Creates a new spawn point for enemies on the circle
-void newEnemySpawn(){
+float newEnemySpawn(){
 	float degree = randomGen.random(0.0, 360.0);
-	if( (angleOfUser - degree) < 5 || (angleOfUser - degree) > 5)
-		degree = angleOfUser + 25.0;
+	//if( (angleOfUser - degree) < 5 || (angleOfUser - degree) > -5)
+	//	degree = angleOfUser + randomGen.random(120.0, 205.0);
 	float radian = degree * (M_PI/180);
 	enemySpawn.setY(randomGen.random(1, 145));
 	enemySpawn.setX(155 * cosf(radian));
 	enemySpawn.setZ(155 * sinf(radian));
-
+	return radian;
 
 }
 
@@ -143,23 +165,65 @@ void spawnEnemies(){
 	int lvl = gameDiff.getLevel(); // Level
 	bool bs = gameDiff.getBoss(); // Boss level
 	int eg = eList.size();		// number of enemies in the game so far
-
-	switch(gd){
-
-	case 1:	// Easy
-		if(eg < 10){
-			for(int i = 0; i < 5; i++){
-				Enemy newEnemy(1, true, angleOfUser, enemySpawn);
-				eList.push_back(newEnemy);
-				enemySpawn.setY(enemySpawn.getY() + 3.5);
-				if(enemySpawn.getY() > 148)
-					enemySpawn.setY(enemySpawn.getY() - 3.5);
+	int numS;					// Number of new enemies to spawn
+	float an;					// angle of enemy being spawned
+	int et = 1;					// Enemy type to spawn
+	// Spawn enemies if less than lvl * 5 enemies on the board
+	if(eg < lvl * 5){
+		numS = (lvl * 5) - eg;
+		// Get a new spawn location in the bounds
+		
+		
+		
+		switch(gd){
+		case 1:		// Easy
+			if(lvl > 6)
+				et = 3;
+			else if(lvl > 3)
+				et = 2;
+			else
+				et = 1;
+			
+			for(int i = 0; i < numS; i++){
+				an = newEnemySpawn();
+				if(enemySpawn.getY() > 150)
+					enemySpawn.setY(enemySpawn.getY() - 5);
 				if(enemySpawn.getY() < 1)
-					enemySpawn.setY(enemySpawn.getY() + 3.5);
+					enemySpawn.setY(enemySpawn.getY() + 5);
+
+				Enemy newEnemy(et, true, an, enemySpawn);
+				eList.push_back(newEnemy);				
 			}
-			newEnemySpawn();
+			break;
+		case 2:		// Medium
+			if(lvl == 7)
+				et = 3;
+			else if(lvl == 6)
+				et = 2;
+			else if(lvl == 5)
+				et = 1;
+			else if(lvl == 4)
+				et = 3;
+			else if(lvl == 3)
+				et = 3;
+			else if(lvl == 2)
+				et = 1;
+			else
+				et = 2;
+			
+			for(int i = 0; i < numS; i++){
+				an = newEnemySpawn();
+				if(enemySpawn.getY() > 150)
+					enemySpawn.setY(enemySpawn.getY() - 5);
+				if(enemySpawn.getY() < 1)
+					enemySpawn.setY(enemySpawn.getY() + 5);
+
+				Enemy newEnemy(et, true, an, enemySpawn);
+				eList.push_back(newEnemy);				
+			}
+			break;
 		}
-		break;
+		
 
 	}
 
@@ -206,13 +270,13 @@ void display(void){
 	glLoadIdentity();
 
 	// Camera
-	//glPushMatrix();
-	//gluLookAt(0, 4, 10, 0, 1, 1, 0, 2, 0);
 	// Look at it bro
-	Coordinate pP(globalPlayer.getPosition());
-	gluLookAt(pP.getX(), pP.getY(), pP.getZ(), 0, pP.getY(), 0, 0, 1, 0);	
+	Coordinate pP1(globalPlayer.getPosition());
+	Coordinate pP2(globalPlayer.getPosition());
 
-	//glPopMatrix();
+	gluLookAt(pP1.getX(), 55, pP1.getZ(), 0, 40, 0, 0, 1, 0);
+	//gluLookAt(pP1.getX(), pP1.getY() + 15, pP1.getZ(), 0, pP2.getY(), 0, 0, 1, 0);	
+	
 	// Rotate based on user selection
 	switch(axisRotate){
 		case 0:
@@ -311,6 +375,7 @@ void keys(unsigned char key, int x, int y){
 			angleSpeed = 0;			
 			globalPlayer.setPosition(playerSpawn);
 			angleOfUser = 222.0;
+			globalPlayer.addXZMovement(222.0);
 			glutPostRedisplay();
 			break;
 		case 'z':	// Change rotation axis to z
@@ -548,12 +613,14 @@ void update(int value){
 		globalPlayer.addLives(-1);
 		if(globalPlayer.numberofLives() != 0)
 			globalPlayer.setPlayerStatus(2); // Reviving
-		else
+		else {
 			globalPlayer.setPlayerStatus(3); // Dead
-
+			
+		}
 		if(globalPlayer.getPlayerStatus() == 3){
 			printf("Player has no remaining lives! Game Ended!\n");
 			globalPlayer.setLives(3);
+			resetGame();
 		}
 
 	}
@@ -570,7 +637,7 @@ void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glClearColor(1, 1, 1, 1);
-	glOrtho(-250, 250, -100, 200, -25, 200);	
+	glOrtho(-200, 200, -75, 125, -100, 350);	
 	//glOrtho(-85, 85, -100, 200, -25, 200);	
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
@@ -600,8 +667,8 @@ int main(int argc, char** argv)
 	globalPlayer.setPosition(playerSpawn);
 	glutInit(&argc, argv);		
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(600, 600);
-	glutCreateWindow("Particle Fountain");
+	glutInitWindowSize(600, 500);
+	glutCreateWindow("LAZER GAME");
 	glutDisplayFunc(display);	
 	glutMouseFunc(mouse);
 	glutKeyboardFunc(keys);
