@@ -84,17 +84,19 @@ void drawTower(float c[6], GLuint textures[4]){
 	glDisable(GL_TEXTURE_2D);
 
 
+	   
+
 	// Circle
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
     glEnable(GL_TEXTURE_2D);
-	glColor4f(1.0, 1.0, 1.0, 1); // red	
+	glColor4f(1.0, 0.0, 0.0, 1); // red	
 	glTranslatef(c[0], c[1]+h, c[2]);
 	glRotatef(90 , 1.0 , 0.0, 0.0);	
 	glBegin(GL_POLYGON);
 	//gluQuadricTexture 
 		
 	GLUquadric *qobj = gluNewQuadric(); 	
-	gluQuadricTexture(qobj, GL_TRUE);
+	gluQuadricTexture(qobj, GL_FALSE);
 	//gluQuadricDrawStyle(qobj, GLU_FILL); 
 	//glPolygonMode(GL_FRONT, GL_FILL);
 	gluQuadricNormals(qobj, GLU_SMOOTH);

@@ -140,7 +140,7 @@ void Player::Update(){
 
 // Render the Player
 void Player::Render(){
-
+	
 	GLfloat light_ambient[] = {0.0, 0.0, 0.0, 0.0};
     GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 0.0};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 0.0};
@@ -149,8 +149,8 @@ void Player::Render(){
     glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT1, GL_POSITION, light_position);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50.0 );
- 	glEnable(GL_LIGHT1);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128.0 );
+ 	glEnable(GL_LIGHT1); 
 
 	glPushMatrix();
 	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it

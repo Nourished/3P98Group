@@ -35,8 +35,17 @@ float angleOfUser = 0.0;	// Angle to figure out the location of the player on th
 
 // Light values, played with them to get a bright green look
 float ambientLight[4] = {0.0, 0.0, 0.0, 1.0};
-float lightPos[4] = {0.0, 125, 0.0, 1};
-
+GLfloat qaBlack[] = {0.0, 0.0, 0.0, 1.0}; //Black Color
+GLfloat qaGreen[] = {0.0, 1.0, 0.0, 1.0}; //Green Color
+GLfloat qaWhite[] = {1.0, 1.0, 1.0, 1.0}; //White Color
+GLfloat qaRed[] = {1.0, 0.0, 0.0, 1.0}; //White Color 
+    // Set lighting intensity and color
+GLfloat qaAmbientLight[]    = {0.1, 0.1, 0.1, 1.0};
+GLfloat qaDiffuseLight[]    = {1, 1, 1, 1.0};
+GLfloat qaSpecularLight[]    = {1.0, 1.0, 1.0, 1.0};
+GLfloat emitLight[] = {0.9, 0.9, 0.9, 0.01};
+GLfloat Noemit[] = {0.0, 0.0, 0.0, 1.0}; 
+GLfloat qaLightPosition[]    = {25, 25, 0, 1};
 // Objects in picture	Pos X,Y,Z, Vel X,Y,Z
 float pos[5][6] =	{{0, -1, 0, 100, 1, 100},	// Ground position
 					{0, 10, 0, 8, 5, 8},		// Spout 
@@ -66,25 +75,24 @@ GLuint textures[4];
 
 // Light up the screen
 void light(){
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-//	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-float lightAmbientV[] = {0.2, 0.2, 0.2, 1.0};
-	 glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbientV);
-	 float lightDiffuseV[] = {1.8, 1.8, 1.8, 1.0};
-	 glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuseV);
-	 float lightSpecularV[] = {2.0, 15.0, 3.0, 1.0};
-	 glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecularV);    
-	// glEnable(GL_LIGHT0);    
-	 glEnable(GL_LIGHTING); 
+	 // Enable lighting
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
 
-	 float materialAmbient[] = {1.0, 1.0, 1.0, 1.0};
-	 glMaterialfv(GL_FRONT, GL_AMBIENT, materialAmbient);
-     float materialDiffuse[] = {1.0, 1.0, 1.0, 1.0};
-	 glMaterialfv(GL_FRONT, GL_DIFFUSE, materialDiffuse);
-	 float materialSpecular[] = {0.9, 0.9, 0.5, 1.0};
-	 glMaterialfv(GL_FRONT, GL_SPECULAR, materialSpecular);
-	 float materialShininess[] = { 128.0 };
-	 glMaterialfv(GL_FRONT, GL_SHININESS, materialShininess);   	 
+     // Set lighting intensity and color
+    glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, qaSpecularLight); 
+
+	// float materialAmbient[] = {1.0, 1.0, 1.0, 1.0};
+	// float materialDiffuse[] = {1.0, 1.0, 1.0, 1.0};
+	//  float materialSpecular[] = {0.9, 0.9, 0.5, 1.0};
+	//  float materialShininess[] = { 128.0 };
+
+	// glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialAmbient);
+    // glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialDiffuse);	
+	// glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);	
+	// glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, materialShininess);   	 
 	 glEnable ( GL_COLOR_MATERIAL ) ;
 
 }
@@ -198,11 +206,23 @@ void display(void){
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 
+	 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, qaGreen);
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, qaGreen);
+
+   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, qaWhite);
+
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125.0); 
+	
+  
+
 	// Draw tower
-	//glBindTexture(GL_TEXTURE_2D, textures[0]);
-    //glEnable(GL_TEXTURE_2D);
+
 	glPushMatrix();
+		glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition); 
+	     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLight); 
 	drawTower(pos[3], textures);
+	  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
 	glPopMatrix();
 	//glDisable(GL_TEXTURE_2D);
 
@@ -501,7 +521,7 @@ void update(int value){
 void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glClearColor(1, 1, 1, 1);
+	glClearColor(0, 0, 0, 1);
 	glOrtho(-85, 85, -100, 200, -25, 200);	
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);

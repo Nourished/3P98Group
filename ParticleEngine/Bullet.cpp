@@ -143,7 +143,7 @@ void Bullet::Update(){
 
 // Render the Bullet
 void Bullet::Render(){
-
+	/**
 	GLfloat light_ambient[] = {1.0, 0.0, 0.0, 1.0};
     GLfloat light_diffuse[] = {0.0, 0.0, 1.0, 1.0};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
@@ -153,7 +153,7 @@ void Bullet::Render(){
     glLightfv(GL_LIGHT2, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT2, GL_POSITION, light_position);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128.0 );
-	glEnable(GL_LIGHT2);
+	/glEnable(GL_LIGHT2); */
 
 	glPushMatrix();
 	if(age == 0){
