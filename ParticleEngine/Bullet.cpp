@@ -144,22 +144,22 @@ void Bullet::Update(){
 // Render the Bullet
 void Bullet::Render(){
 
-	GLfloat light_ambient[] = {0.2, 0.0, 0.0, 1.0};
-    GLfloat light_diffuse[] = {0.2, 0.2, 0.1, 1.0};
-    GLfloat light_specular[] = {0.9, 0.2, 0.1, 1.0};
+	GLfloat light_ambient[] = {1.0, 0.0, 0.0, 1.0};
+    GLfloat light_diffuse[] = {0.0, 0.0, 1.0, 1.0};
+    GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat light_position[] = {pos.x, pos.y, pos.z, 1};
 	glLightfv(GL_LIGHT2, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT2, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT2, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT2, GL_POSITION, light_position);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50.0 );
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128.0 );
 	glEnable(GL_LIGHT2);
 
 	glPushMatrix();
 	if(age == 0){
 		glColor4f(1.0, 1.0, 1.0, alpha); // Destroyed make it red
 	}else
-		glColor4f(1.0, 1.0, 0, alpha);	// normal colour
+		glColor4f(1.0, 0.0, 0, alpha);	// normal colour
 
 	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
 	switch (bulletType){					// Draw the specific type of Bullet

@@ -74,16 +74,16 @@ float lightAmbientV[] = {0.2, 0.2, 0.2, 1.0};
 	 glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuseV);
 	 float lightSpecularV[] = {2.0, 15.0, 3.0, 1.0};
 	 glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecularV);    
-	 glEnable(GL_LIGHT0);    
+	// glEnable(GL_LIGHT0);    
 	 glEnable(GL_LIGHTING); 
 
-	 float materialAmbient[] = {0.5, 1.0, 1.0, 1.0};
+	 float materialAmbient[] = {1.0, 1.0, 1.0, 1.0};
 	 glMaterialfv(GL_FRONT, GL_AMBIENT, materialAmbient);
-     float materialDiffuse[] = {0.1, 0.2, 0.3, 1.0};
+     float materialDiffuse[] = {1.0, 1.0, 1.0, 1.0};
 	 glMaterialfv(GL_FRONT, GL_DIFFUSE, materialDiffuse);
 	 float materialSpecular[] = {0.9, 0.9, 0.5, 1.0};
 	 glMaterialfv(GL_FRONT, GL_SPECULAR, materialSpecular);
-	 float materialShininess[] = { 100.0 };
+	 float materialShininess[] = { 128.0 };
 	 glMaterialfv(GL_FRONT, GL_SHININESS, materialShininess);   	 
 	 glEnable ( GL_COLOR_MATERIAL ) ;
 
@@ -501,7 +501,7 @@ void update(int value){
 void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glClearColor(0, 0, 0, 1);
+	glClearColor(1, 1, 1, 1);
 	glOrtho(-85, 85, -100, 200, -25, 200);	
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
@@ -510,10 +510,11 @@ void init(void){
 	glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
 	glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA_SATURATE);
 	//glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR);
+	glShadeModel(GL_SMOOTH);
 	glEnable(GL_NORMALIZE);
 
-	glEnable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING);
+	//glEnable(GL_COLOR_MATERIAL);
+	//glEnable(GL_LIGHTING);
    // glEnable(GL_LIGHT0);
 	initMenus();
 	glGenTextures(3, textures); //specify the number of textures
