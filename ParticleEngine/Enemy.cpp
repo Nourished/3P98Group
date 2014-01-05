@@ -1,9 +1,5 @@
-// Eric Gummerson	4585469
 // Enemy.cpp
-// Enemy class used for easier access in vector lists
-// Contains information on the Enemy
-// Including speed, velocity, acceleration, position
-// Colour, Enemy type
+
 
 #define _USE_MATH_DEFINES	// Pi variable
 
@@ -28,22 +24,22 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 			colour[0] = 0.0;
 			colour[1] = 1.0;
 			colour[2] = 0.0;
-			speed = 1.2;
+			speed = 0.4;
 			size = 1.5;
 			break;
 		case 2:	// second Enemy type
 			colour[0] = 0.3;
 			colour[1] = 0.5;
 			colour[2] = 0.0;
-			speed = 1.4;
-			size = 3.5;
+			speed = 0.7;
+			size = 2.5;
 			break;
 		case 3:	// third Enemy type
 			colour[0] = 1.0;
 			colour[1] = 0.0;
 			colour[2] = 1.0;
-			speed = 0.7;
-			size = 4.5;
+			speed = 0.9;
+			size = 3.5;
 			break;
 		}	
 }
@@ -118,11 +114,6 @@ Coordinate Enemy::getPosition(){
 // This will calculate the new pos and velocity based on acceleration and speed
 void Enemy::Update(){
 	
-	/*age += 1;
-	
-	if(age > 65)
-		age = 0;*/
-
 	// Move the Enemy in a straight line
 	if(dir){
 		// Right

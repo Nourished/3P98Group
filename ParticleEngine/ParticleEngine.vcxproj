@@ -16,11 +16,13 @@
     <ClInclude Include="Coordinate.h" />
     <ClInclude Include="GlobalObjects.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Levels.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="RNG.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Levels.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Player.cpp" />

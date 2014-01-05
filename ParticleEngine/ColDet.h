@@ -2,6 +2,8 @@
 
 #include <cmath>
 #include "Coordinate.h"
+
+#pragma once
 class ColDet {
 	
 	public:

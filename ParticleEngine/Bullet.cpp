@@ -1,10 +1,6 @@
-// Eric Gummerson	4585469
 // Bullet.cpp
 // Bullet class used for easier access in vector lists
-// Contains information on the Bullet
-// Including speed, velocity, acceleration, position
-// Colour, Bullet type
-// THIS IS THE BULLET CLASS
+
 
 #define _USE_MATH_DEFINES	// Pi variable
 
@@ -27,24 +23,24 @@ Bullet::Bullet(int bType, bool d, float angleStart, Coordinate p){
 	switch(bulletType){
 		case 1:	// Default bullet
 			colour[0] = 0.0;
-			colour[1] = 0.0;
+			colour[1] = 0.5;
 			colour[2] = 0.0;
 			speed = 1.2;
-			size = 2.0;
+			size = 1.5;
 			break;
 		case 2:	// second bullet type
 			colour[0] = 0.3;
 			colour[1] = 0.5;
 			colour[2] = 0.0;
-			speed = 1.4;
-			size = 3.5;
+			speed = 0.7;
+			size = 2.0;
 			break;
 		case 3:	// third bullet type
 			colour[0] = 1.0;
 			colour[1] = 0.0;
 			colour[2] = 1.0;
-			speed = 0.7;
-			size = 4.5;
+			speed = 1.4;
+			size = 0.8;
 			break;
 		}	
 }
@@ -159,7 +155,7 @@ void Bullet::Render(){
 	if(age == 0){
 		glColor4f(1.0, 1.0, 1.0, alpha); // Destroyed make it red
 	}else
-		glColor4f(1.0, 0.0, 0, alpha);	// normal colour
+		glColor4f(colour[0], colour[1], colour[2], alpha);	// normal colour
 
 	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
 	switch (bulletType){					// Draw the specific type of Bullet

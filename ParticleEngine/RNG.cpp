@@ -1,7 +1,5 @@
-// Eric Gummerson	4585469
 // RNG.cpp
 // Random Number Generator
-// Used to randomize the particles
 
 #include <time.h>
 #include <stdlib.h>
@@ -18,6 +16,11 @@ RNG::~RNG(){}
 
 // Returns a double between low and high
 double RNG::random(double low, double high){
+	return (rand1()*(high - low))+low;
+}
+
+// Returns a float between low and high
+float RNG::random(float low, float high){
 	return (rand1()*(high - low))+low;
 }
 

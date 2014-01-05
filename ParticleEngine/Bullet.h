@@ -1,7 +1,8 @@
-// Eric Gummerson	4585469
 // Bullet.h
+
 #include "Coordinate.h"
 
+#pragma once
 class Bullet {	
 	
 	protected: 

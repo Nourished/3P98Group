@@ -1,7 +1,7 @@
-// Eric Gummerson	4585469
 // Enemy.h
-#include "Coordinate.h"
 
+#include "Coordinate.h"
+#pragma once
 class Enemy {	
 	
 	protected: 

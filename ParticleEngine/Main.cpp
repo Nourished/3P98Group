@@ -1,10 +1,5 @@
-// Eric Gummerson	4585469
 // Main.cpp
-// Main file for the particle engine
-// Commands listed when program starts
-// NEW GIT SHEET
-
-//PHILLYCHEESE WAS HERE 6474606842
+#define _USE_MATH_DEFINES	// Pi variable
 
 #include <vector>
 #include "glut.h"
@@ -14,20 +9,19 @@
 #include "Bullet.h"
 #include "Enemy.h"
 #include "ColDet.h"
+#include "Levels.h"
 #include <freeimage.h>
 
 RNG randomGen;
 ColDet cd;
-
+Levels gameDiff;
 
 /////// Number of bullets ///////
 std::vector<Bullet> bList;
 /////// Number of particles ///////
 std::vector<Enemy> eList;
 Player globalPlayer;
-// Global information about the game
-int numberOfBullets = 0;
-int numberOfEnemies = 0;
+
 // Bullet information
 float bulletTimer = 0.05; // Used to maintain 3 of bullets being spawned
 int playerBulletType = 1; // Powerups alter the bullet types
@@ -76,7 +70,7 @@ GLuint textures[4];
 // Light up the screen
 void light(){
 	 // Enable lighting
-    glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
 
      // Set lighting intensity and color
@@ -100,10 +94,10 @@ void light(){
 // Keys operations that will be used a lot - movement and shooting
 void keyOperations (void) {  
 	if(keyStates['w'] || keyStates['W']){ // Up
-		globalPlayer.addYMovement(1.5);
+		globalPlayer.addYMovement(1.3);
 	}
 	if(keyStates['s'] || keyStates['S']){ // Down
-		globalPlayer.addYMovement(-1.5);
+		globalPlayer.addYMovement(-1.3);
 	}
 	if(keyStates['a'] || keyStates['A']){ // Left
 		angleOfUser += 0.8;
@@ -117,23 +111,60 @@ void keyOperations (void) {
 		if(bulletTimer < 0.05){
 			bulletTimer += 0.20;
 			Bullet newBullet(playerBulletType, true, angleOfUser, globalPlayer.getPosition());
-			numberOfBullets++;
-			bList.push_back(newBullet);
-			
+			bList.push_back(newBullet);			
 		}
 	}
 	if(keyStates['.'] || keyStates['>']){ // Shoot left
 		if(bulletTimer < 0.05){
 			bulletTimer += 0.20;
 			Bullet newBullet(playerBulletType, false, angleOfUser, globalPlayer.getPosition());
-			numberOfBullets++;
 			bList.push_back(newBullet);			
 		}
 	}
 
 }  
 
+// Creates a new spawn point for enemies on the circle
+void newEnemySpawn(){
+	float degree = randomGen.random(0.0, 360.0);
+	if( (angleOfUser - degree) < 5 || (angleOfUser - degree) > 5)
+		degree = angleOfUser + 25.0;
+	float radian = degree * (M_PI/180);
+	enemySpawn.setY(randomGen.random(1, 145));
+	enemySpawn.setX(155 * cosf(radian));
+	enemySpawn.setZ(155 * sinf(radian));
 
+
+}
+
+// Function used to spawn enemies depending on the game difficulty
+void spawnEnemies(){
+	int gd = gameDiff.getDiff(); // Easy/Medium/Hard
+	int lvl = gameDiff.getLevel(); // Level
+	bool bs = gameDiff.getBoss(); // Boss level
+	int eg = eList.size();		// number of enemies in the game so far
+
+	switch(gd){
+
+	case 1:	// Easy
+		if(eg < 10){
+			for(int i = 0; i < 5; i++){
+				Enemy newEnemy(1, true, angleOfUser, enemySpawn);
+				eList.push_back(newEnemy);
+				enemySpawn.setY(enemySpawn.getY() + 3.5);
+				if(enemySpawn.getY() > 148)
+					enemySpawn.setY(enemySpawn.getY() - 3.5);
+				if(enemySpawn.getY() < 1)
+					enemySpawn.setY(enemySpawn.getY() + 3.5);
+			}
+			newEnemySpawn();
+		}
+		break;
+
+	}
+
+
+}
 
 
 // Called from update, this will function checks the
@@ -146,8 +177,7 @@ void checkLists(){
 		if(bList[i].getAge() == 0){
 			// Remove the bullet from the list
 			glDisable(GL_LIGHT2);
-			bList.erase(bList.begin() + i);
-			numberOfBullets--;
+			bList.erase(bList.begin() + i);			
 		}
 	}	
 
@@ -156,10 +186,12 @@ void checkLists(){
 	for(size_t i = 0; i < eList.size(); i++){
 		if(eList[i].getAge() == 0){
 			// Remove the enemy from the list
-			eList.erase(eList.begin() + i);
-			numberOfEnemies--;
+			eList.erase(eList.begin() + i);			
+			gameDiff.addKilled(1);
 		}
 	}	
+
+
 
 }
 
@@ -317,7 +349,6 @@ void menuParticleType(int value){
 	switch(value){
 		case 1:			
 			Enemy newEnemy(1, true, angleOfUser, enemySpawn);
-			numberOfEnemies++;
 			eList.push_back(newEnemy);
 			enemySpawn.setY(enemySpawn.getY() + 3.5);
 			break;
@@ -475,9 +506,14 @@ void update(int value){
 	checkLists();
 
 	// Update the bullets
-	for (int i = 0; i < bList.size(); i++){
+	for (size_t i = 0; i < bList.size(); i++){
 		bList[i].Update();
 	}
+	// Update the enemies
+	for (size_t i = 0; i < eList.size(); i++){
+		eList[i].Update();
+	}
+
 	// Got new positions, now check for collision with enemies
 	// First bullets with enemies
 	for(size_t i = 0; i < bList.size(); i++){
@@ -508,9 +544,21 @@ void update(int value){
 		}// If collide and age != 0
 	}// For i
 	// Update bullets, remove bullets that have expired and collided
-	if(collide)
-		printf("\nPlayer collided, end game!");
+	if(collide){
+		globalPlayer.addLives(-1);
+		if(globalPlayer.numberofLives() != 0)
+			globalPlayer.setPlayerStatus(2); // Reviving
+		else
+			globalPlayer.setPlayerStatus(3); // Dead
+
+		if(globalPlayer.getPlayerStatus() == 3){
+			printf("Player has no remaining lives! Game Ended!\n");
+			globalPlayer.setLives(3);
+		}
+
+	}
 	checkLists();
+	spawnEnemies();
 	// Redisplay the updates
 	glutPostRedisplay();
 	// Call it again
@@ -521,8 +569,9 @@ void update(int value){
 void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glClearColor(0, 0, 0, 1);
-	glOrtho(-85, 85, -100, 200, -25, 200);	
+	glClearColor(1, 1, 1, 1);
+	glOrtho(-250, 250, -100, 200, -25, 200);	
+	//glOrtho(-85, 85, -100, 200, -25, 200);	
 	glMatrixMode(GL_MODELVIEW);
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_SMOOTH);

@@ -1,8 +1,7 @@
 // Simple class which will contain x,y,z values
 // Will be used with collision detection (i assume)
-#ifndef _COORDINATE_
-#define _COORDINATE_
 
+#pragma once
 class Coordinate {		
 	
 	public:
@@ -43,5 +42,3 @@ class Coordinate {
 	
 
 };
-
-#endif

@@ -1,8 +1,8 @@
 // Player.h
-// Player class
 
 #include "Coordinate.h"
 
+#pragma once
 class Player {	
 	
 	protected: 
@@ -24,7 +24,8 @@ class Player {
 	bool getShooting();
 
 	int numberofLives();
-	void setLives(int l);
+	void setLives(int a);
+	void addLives(int a);
 
 	void addYMovement(float yMove);
 	void addXZMovement(float xzMove);
@@ -33,7 +34,10 @@ class Player {
 	float getSize();
 	void setSpeed(double sp);
 	void setColour(float r, float g, float b);
-	void setPlayerType(int a);
+
+	void setPlayerStatus(int a);
+	int getPlayerStatus();
+
 	void setAlpha(double alp);
 
 	void setPosition(Coordinate p);

@@ -1,9 +1,4 @@
-// Eric Gummerson	4585469
 // Player.cpp
-// Player class used for easier access in vector lists
-// Contains information on the Player
-// Including speed, velocity, acceleration, position
-// Colour, Player type
 
 #define _USE_MATH_DEFINES	// Pi variable
 
@@ -23,9 +18,9 @@ Player::Player(){
 	speed = 5.0;
 	alpha = 1.0;		
 	// Colour
-	colour[0] = 0.2;
-	colour[1] = 0.2;
-	colour[2] = 0.2;
+	colour[0] = 1.0;
+	colour[1] = 0.0;
+	colour[2] = 0.0;
 }
 
 
@@ -46,15 +41,20 @@ int Player::numberofLives(){
 }
 
 // Sets the age value
-void Player::setLives(int aStatus){
-	lives = aStatus;
+void Player::setLives(int a){
+	lives = a;
+}
+
+// Sets the age value
+void Player::addLives(int a){
+	lives += a;
 }
 
 // Add/Subtract from the up/down movement
 void Player::addYMovement(float yMove){
 	pos.y += yMove;
-	if(pos.y > 125)
-		pos.y = 125;
+	if(pos.y > 150)
+		pos.y = 150;
 	if(pos.y < 1.0)
 		pos.y = 1.0;
 
@@ -97,8 +97,15 @@ void Player::setColour(float r, float g, float b){
 }
 
 // Set the Player type
-void Player::setPlayerType(int a){
+void Player::setPlayerStatus(int a){
 	playerStatus = a;
+	if(a == 2)
+		alpha = 0.01;
+}
+
+// Returns the player status
+int Player::getPlayerStatus(){
+	return playerStatus;
 }
 
 // Set the alpha (visibility) of the Player
@@ -121,7 +128,7 @@ Coordinate Player::getPosition(){
 // used to reset the position to a user defined point and velocity
 void Player::resetPosition(Coordinate p){
 
-	lives = 1;
+	lives = 3;
 	speed = 5.0;
 	
 	// Position
@@ -152,29 +159,21 @@ void Player::Render(){
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128.0 );
  	glEnable(GL_LIGHT1); 
 
+	if(playerStatus == 2){
+		alpha += 0.02;
+		if(alpha == 0.49)
+			alpha = 0.38;
+		if(alpha == 0.78)
+			alpha = 0.59;
+		if(alpha > 0.96){
+			alpha = 1.0;
+			playerStatus = 1;
+		}
+	}
+	
 	glPushMatrix();
 	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it
-	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
-	//glRotated(1.0, 1.0, 1.0, 0.0);			
-	switch (playerStatus){					// Draw the specific type of Player
-		case 1:
-			glutSolidSphere(size, 15, 15);
-			break;
-		case 2:
-			glutSolidCube(size);
-			break;
-		case 3:
-			glutWireSphere(size, 15, 15);
-			break;
-		case 4:
-			glutWireCube(size);
-			break;
-		case 5:
-			glPointSize(size*2);
-			glBegin(GL_POINTS);
-			glVertex3f(0,0,0);
-			glEnd();
-			break;
-	}
+	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position	
+	glutSolidSphere(size, 15, 15);			
 	glPopMatrix();
 }

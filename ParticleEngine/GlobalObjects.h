@@ -1,7 +1,7 @@
-// Eric Gummerson	4585469
 // DrawObjects.h
-#include "Coordinate.h"
 
+#include "Coordinate.h"
+#pragma once
 void drawTower(float c[6], GLuint textures[4]){
 	float w = c[3];
 	float h = c[4];
