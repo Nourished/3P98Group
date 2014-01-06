@@ -1,10 +1,10 @@
-﻿Build started 1/5/2014 11:05:28 PM.
+﻿Build started 1/5/2014 11:27:27 PM.
      1>Project "C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\ParticleEngine.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp
          Main.cpp
-     1>c:\users\phil\documents\github\3p98group\particleengine\main.cpp(285): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\phil\documents\github\3p98group\particleengine\main.cpp(296): warning C4101: 'i' : unreferenced local variable
+     1>c:\users\phil\documents\github\3p98group\particleengine\main.cpp(283): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\phil\documents\github\3p98group\particleengine\main.cpp(295): warning C4101: 'i' : unreferenced local variable
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.exe" /INCREMENTAL /NOLOGO opengl32.lib freeglut.lib FreeImage.lib SOIL.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\PHIL\Documents\GitHub\3P98Group\ParticleEngine\Debug\ParticleEngine.lib" /MACHINE:X86 Debug\Bullet.obj
          Debug\Levels.obj
@@ -17,4 +17,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.79
+Time Elapsed 00:00:01.56

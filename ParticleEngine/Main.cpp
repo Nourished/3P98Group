@@ -266,25 +266,24 @@ void output(char* text)
 	Coordinate pCord(globalPlayer.getPosition());
 	//glClear(GL_DEPTH_BUFFER_BIT);
 	//glDepthMask(GL_FALSE);
+	
 
 	glPushMatrix();
 	
-	glDisable(GL_DEPTH_TEST);
-glDisable(GL_CULL_FACE);
-glDisable(GL_TEXTURE_2D);
-glDisable(GL_LIGHTING);
+	
 		glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluOrtho2D( 0, 200 , 0 , 200);
      glMatrixMode(GL_MODELVIEW);
 	 glLoadIdentity();
 	//gluLookAt(pP1.getX(), 55, pP1.getZ(), 0, 40, 0, 0, 1, 0);
-    glTranslatef(pCord.getX(), pCord.getY()+25 ,0);
+    glTranslatef(140, 150 ,0); //set to this position with respect to the size of TEXT
 	//glRotatef(90, 0.0 , 1.0 , 0.0 );
     glScalef(0.4, 0.4, 0.4);
     for( i =0 ; i < strlen(text); i++) {
         glutStrokeCharacter(GLUT_STROKE_ROMAN, p[i]);
     }	 	
+	
     glPopMatrix();
   //  glMatrixMode(GL_MODELVIEW);
 	 // glLoadIdentity();
@@ -297,7 +296,21 @@ void display(void){
 	char str[15];
 	sprintf(str, "%d", gameDiff.getScore());
 	//itoa (gameDiff.getScore(),str,10);
-
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glClearColor(0, 0, 0, 1);
+	glOrtho(-200, 200, -75, 125, -100, 350);	
+	//glOrtho(-85, 85, -100, 200, -25, 200);	
+	glMatrixMode(GL_MODELVIEW);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glShadeModel(GL_SMOOTH);
+	glEnable (GL_BLEND); 
+	glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
+	glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA_SATURATE);
+	
+	
+	glEnable(GL_NORMALIZE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	//glOrtho(-200, 200, -75, 125, -100, 350);	
@@ -388,9 +401,13 @@ void display(void){
 
 	//display score
 	glColor4f(1.0, 1.0,  1.0, 1); // white
+	glDisable(GL_DEPTH_TEST);
+glDisable(GL_CULL_FACE);
+glDisable(GL_TEXTURE_2D);
+glDisable(GL_LIGHTING);
 	output(str);
 	
-	glFlush();
+	//glFlush();
 	glutSwapBuffers();
 	
 	
@@ -679,26 +696,9 @@ void update(int value){
 	glutTimerFunc(10, update, 0);
 }
 
-// Basic initalizations
+// Basic initalizations - menu setup and loading textures only
 void init(void){
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glClearColor(0, 0, 0, 1);
-	glOrtho(-200, 200, -75, 125, -100, 350);	
-	//glOrtho(-85, 85, -100, 200, -25, 200);	
-	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_DEPTH_TEST);
-	glShadeModel(GL_SMOOTH);
-	glEnable (GL_BLEND); 
-	glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
-	glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA_SATURATE);
-	
-	
-	glEnable(GL_NORMALIZE);
 
-	//glEnable(GL_COLOR_MATERIAL);
-	//glEnable(GL_LIGHTING);
-   // glEnable(GL_LIGHT0);
 	initMenus();
 	glGenTextures(3, textures); //specify the number of textures
 	loadTexture("concrete.png",0);
