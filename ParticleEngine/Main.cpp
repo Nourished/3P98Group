@@ -154,7 +154,7 @@ void keyOperations (void) {
 float newEnemySpawn(){
 	float degree = randomGen.random(0.0, 360.0);
 	// Used to make sure enemies dont spawn on user
-	int playerSpawnClose = ((int) angleOfUser) - (int) degree;
+	int playerSpawnClose =  angleOfUser > degree ? ((int) angleOfUser) - (int) degree: ((int) degree ) - (int) angleOfUser;
 	if(playerSpawnClose < 5 && playerSpawnClose > -5)
 		degree += randomGen.random(15.0, 65.0);
 	float radian = degree * (M_PI/180);
@@ -180,14 +180,15 @@ void spawnEnemies(){
 	if( (eg < newLvl * (5 + gd*5)) && newLvl != lvl){
 		numS = (5 + gd*5) - eg;
 		// Get a new spawn location in the bounds
-		
-		
+			
 		
 		switch(gd){
 		case 1:		// Easy
-			if(lvl > 6)
+			if(lvl > 5)
+				et = 4;
+			else if(lvl == 4)
 				et = 3;
-			else if(lvl > 3)
+			else if(lvl == 3)
 				et = 2;
 			else
 				et = 1;
@@ -204,20 +205,23 @@ void spawnEnemies(){
 					enemySpawn.setY(enemySpawn.getY() - 5);
 				if(enemySpawn.getY() < 1)
 					enemySpawn.setY(enemySpawn.getY() + 5);
-
+				if(et == 4)
+					et = randomGen.random(1,3);
 				Enemy newEnemy(et, direction, an, enemySpawn);
 				eList.push_back(newEnemy);				
 			}
 			break;
 		case 2:		// Medium
-			if(lvl == 7)
+			if(lvl > 7)
+				et = 4;
+			else if(lvl == 7)
 				et = 3;
 			else if(lvl == 6)
-				et = 2;
-			else if(lvl == 5)
 				et = 1;
+			else if(lvl == 5)
+				et = 2;
 			else if(lvl == 4)
-				et = 3;
+				et = 4;
 			else if(lvl == 3)
 				et = 3;
 			else if(lvl == 2)
@@ -237,7 +241,8 @@ void spawnEnemies(){
 					enemySpawn.setY(enemySpawn.getY() - 5);
 				if(enemySpawn.getY() < 1)
 					enemySpawn.setY(enemySpawn.getY() + 5);
-
+				if(et == 4)
+					et = randomGen.random(1,3);
 				Enemy newEnemy(et, direction, an, enemySpawn);
 				eList.push_back(newEnemy);				
 			}

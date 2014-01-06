@@ -139,8 +139,11 @@ void Enemy::Update(Coordinate pp, float pa){
 		break;
 	case 2:	// Second enemy, moves close to player when in range
 		// Move towards player if within a range
-		ar; // Angle between player and enemy
+		// Angle between player and enemy
 		ar = angle > pa ? angle - pa: pa - angle; // Bigger angle - smaller angle
+		// Make sure angle is the smallest angle
+		if(ar > 180)
+			ar = 360 - ar;
 		range = (155*2) * M_PI * ar / 360;	// Distance between player/enemy
 		if(range > 200){
 			// Straight line if too far
@@ -167,9 +170,9 @@ void Enemy::Update(Coordinate pp, float pa){
 			pos.y = pos.getY() > pp.getY() ? pos.y - 0.2 : pos.y + 0.2;
 			// Move towards player angle
 			if(pa > angle)
-				angle += 0.6 * speed;
+				angle += 0.75 * speed;
 			else
-				angle -= 0.6 * speed;
+				angle -= 0.75 * speed;
 			if(angle > 360.0)
 				angle -= 360.0;
 			if(angle < 0.0)
@@ -186,9 +189,9 @@ void Enemy::Update(Coordinate pp, float pa){
 		pos.y = pos.getY() > pp.getY() ? pos.y - 0.2 : pos.y + 0.2;
 		// Move towards player angle
 		if(pa > angle)
-			angle += 0.3 * speed;
+			angle += 0.45 * speed;
 		else
-			angle -= 0.3 * speed;
+			angle -= 0.45 * speed;
 
 		if(angle > 360.0)
 			angle -= 360.0;
