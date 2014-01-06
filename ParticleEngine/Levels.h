@@ -8,6 +8,7 @@ class Levels {
 		int level;				// Levels 1-10
 		bool boss;				// true if boss, false if normal
 		int difficulty;			// 1 easy, 2 normal, 3 hard
+		int score;
 
 	public:
 		// create a Levels with a given type, direction, angle on circle, and position
@@ -18,6 +19,10 @@ class Levels {
 	void removeKilled(int a);
 	void setKilled(int a);
 	int getKilled();
+
+	void addScore(int a);
+	void setScore(int a);
+	int getScore();
 	
 	void increaseLevel(int a);
 	void lowerLevel(int a);

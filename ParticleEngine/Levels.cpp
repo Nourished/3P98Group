@@ -11,6 +11,7 @@ Levels::Levels(){
 	level = 1;
 	boss = false;
 	difficulty = 1;
+	score = 0;
 }
 
 // Add a number of enemies to the kill count
@@ -35,6 +36,22 @@ void Levels::setKilled(int a){
 int Levels::getKilled(){
 	return numEnemiesKilled;
 }
+
+// Add up player score
+void Levels::addScore(int a){
+	score += a;	
+}
+
+// Set player score
+void Levels::setScore(int a){
+	score = a;	
+}
+
+// Return player score
+int Levels::getScore(){
+	return score;
+}
+
 
 // Increase the level by a
 void Levels::increaseLevel(int a){
@@ -92,6 +109,7 @@ void Levels::reset(){
 	level = 1;
 	boss = false;
 	difficulty = 1;
+	score = 0;
 }
 
 // Some form of update

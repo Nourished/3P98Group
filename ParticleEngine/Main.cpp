@@ -259,9 +259,36 @@ void checkLists(){
 
 }
 
+void output(char* text)
+{
+	int i;
+	char* p = text;
+	Coordinate pCord(globalPlayer.getPosition());
+	//glMatrixMode(GL_PROJECTION);
+
+	//gluOrtho2D(0 , 100 , 0 ,100);
+    
+	glPushMatrix();
+	//gluLookAt(pP1.getX(), 55, pP1.getZ(), 0, 40, 0, 0, 1, 0);
+    glTranslatef(pCord.getX(), pCord.getY()-25, pCord.getZ() );
+	glRotatef(90, 0.0 , 1.0 , 0.0 );
+    glScalef(0.4, 0.4, 0.4);
+    for( i =0 ; i < strlen(text); i++) {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, p[i]);
+    }
+	
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}
+
 
 // Display method
 void display(void){
+	int i;
+	char str[15];
+	sprintf(str, "%d", gameDiff.getScore());
+	//itoa (gameDiff.getScore(),str,10);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 	// Light it up everytime
@@ -275,8 +302,10 @@ void display(void){
 	Coordinate pP2(globalPlayer.getPosition());
 
 	gluLookAt(pP1.getX(), 55, pP1.getZ(), 0, 40, 0, 0, 1, 0);
-	//gluLookAt(pP1.getX(), pP1.getY() + 15, pP1.getZ(), 0, pP2.getY(), 0, 0, 1, 0);	
 	
+	
+
+
 	// Rotate based on user selection
 	switch(axisRotate){
 		case 0:
@@ -289,11 +318,7 @@ void display(void){
 			glRotatef(angle, 0, 0, 1);
 			break;
 	}
-	 //(GL_TEXTURE_2D, 0, GL_RGBA, 
-      //      0, 0, 64, 64, 0);
 
-
-	
 	// Draw ground
 	glBindTexture(GL_TEXTURE_2D, textures[1]);
     glEnable(GL_TEXTURE_2D);
@@ -311,7 +336,6 @@ void display(void){
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125.0); 
 	
   
-
 	// Draw tower
 
 	glPushMatrix();
@@ -346,11 +370,19 @@ void display(void){
 	}
 	
 	// Draw player
-	glPushMatrix();	
+	glPushMatrix();
+	
 	globalPlayer.Render();
 	glPopMatrix();
+	
+	//display score
+	glColor4f(1.0, 1.0,  1.0, 1); // white
+	output(str);
 	glFlush();
 	glutSwapBuffers();
+	
+	
+
 }
 
 
@@ -588,6 +620,8 @@ void update(int value){
 				if(cd.collide(bList[i].getPosition(), bList[i].getSize(),
 										eList[j].getPosition(), eList[j].getSize())){
 					// Collision
+											gameDiff.addScore(eList[j].getEnemyType() * 10);
+											printf("Score = %d \n", gameDiff.getScore());
 					bList[i].setAge(0);
 					eList[j].setAge(0);
 				}// if collision
@@ -620,6 +654,7 @@ void update(int value){
 		if(globalPlayer.getPlayerStatus() == 3){
 			printf("Player has no remaining lives! Game Ended!\n");
 			globalPlayer.setLives(3);
+			gameDiff.reset();
 			resetGame();
 		}
 
@@ -636,7 +671,7 @@ void update(int value){
 void init(void){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glClearColor(1, 1, 1, 1);
+	glClearColor(0, 0, 0, 1);
 	glOrtho(-200, 200, -75, 125, -100, 350);	
 	//glOrtho(-85, 85, -100, 200, -25, 200);	
 	glMatrixMode(GL_MODELVIEW);
