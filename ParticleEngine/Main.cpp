@@ -69,24 +69,24 @@ GLuint textures[4];
 
 // Light up the screen
 void light(){
-	 // Enable lighting
-   // glEnable(GL_LIGHTING);
-   // glEnable(GL_LIGHT0);
+	// Enable lighting
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 
-     // Set lighting intensity and color
-    glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, qaSpecularLight); 
+	// Set lighting intensity and color
+	glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, qaSpecularLight); 
 
-	 float materialAmbient[] = {1.0, 1.0, 1.0, 1.0};
-	 float materialDiffuse[] = {1.0, 1.0, 1.0, 1.0};
-	  float materialSpecular[] = {0.9, 0.9, 0.5, 1.0};
-	  float materialShininess[] = { 128.0 };
+	float materialAmbient[] = {1.0, 1.0, 1.0, 1.0};
+	float materialDiffuse[] = {1.0, 1.0, 1.0, 1.0};
+	float materialSpecular[] = {0.9, 0.9, 0.5, 1.0};
+	float materialShininess[] = { 128.0 };
 
-	 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialAmbient);
-     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialDiffuse);	
-	 glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);	
-	 glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, materialShininess);   	 
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialAmbient);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialDiffuse);	
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);	
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, materialShininess);   	 
 	// glEnable ( GL_COLOR_MATERIAL ) ;
 
 }
@@ -122,11 +122,15 @@ void keyOperations (void) {
 		globalPlayer.addYMovement(-1.3);
 	}
 	if(keyStates['a'] || keyStates['A']){ // Left
-		angleOfUser += 0.8;
+		angleOfUser += 1.0;
+		if(angleOfUser > 360.0)
+			angleOfUser = 0.0;
 		globalPlayer.addXZMovement(angleOfUser);
 	}
 	if(keyStates['d'] || keyStates['D']){ // Right
-		angleOfUser -= 0.8;
+		angleOfUser -= 1.0;
+		if(angleOfUser < 0.0)
+			angleOfUser = 360.0;
 		globalPlayer.addXZMovement(angleOfUser);
 	}
 	if(keyStates[','] || keyStates['<']){ // Shoot right
@@ -149,8 +153,10 @@ void keyOperations (void) {
 // Creates a new spawn point for enemies on the circle
 float newEnemySpawn(){
 	float degree = randomGen.random(0.0, 360.0);
-	//if( (angleOfUser - degree) < 5 || (angleOfUser - degree) > -5)
-	//	degree = angleOfUser + randomGen.random(120.0, 205.0);
+	// Used to make sure enemies dont spawn on user
+	int playerSpawnClose = ((int) angleOfUser) - (int) degree;
+	if(playerSpawnClose < 5 && playerSpawnClose > -5)
+		degree += randomGen.random(15.0, 65.0);
 	float radian = degree * (M_PI/180);
 	enemySpawn.setY(randomGen.random(1, 145));
 	enemySpawn.setX(155 * cosf(radian));
@@ -163,14 +169,16 @@ float newEnemySpawn(){
 void spawnEnemies(){
 	int gd = gameDiff.getDiff(); // Easy/Medium/Hard
 	int lvl = gameDiff.getLevel(); // Level
+	int newLvl = gameDiff.Update();
 	bool bs = gameDiff.getBoss(); // Boss level
 	int eg = eList.size();		// number of enemies in the game so far
 	int numS;					// Number of new enemies to spawn
 	float an;					// angle of enemy being spawned
 	int et = 1;					// Enemy type to spawn
+	bool direction;				// Direction to face
 	// Spawn enemies if less than lvl * 5 enemies on the board
-	if(eg < lvl * 5){
-		numS = (lvl * 5) - eg;
+	if( (eg < newLvl * (5 + gd*5)) && newLvl != lvl){
+		numS = (5 + gd*5) - eg;
 		// Get a new spawn location in the bounds
 		
 		
@@ -185,13 +193,19 @@ void spawnEnemies(){
 				et = 1;
 			
 			for(int i = 0; i < numS; i++){
+				// Find a random spawn
 				an = newEnemySpawn();
+				// Random direction
+				if(randomGen.random(0.0, 1.0) > 0.5)
+					direction = true;
+				else
+					direction = false;
 				if(enemySpawn.getY() > 150)
 					enemySpawn.setY(enemySpawn.getY() - 5);
 				if(enemySpawn.getY() < 1)
 					enemySpawn.setY(enemySpawn.getY() + 5);
 
-				Enemy newEnemy(et, true, an, enemySpawn);
+				Enemy newEnemy(et, direction, an, enemySpawn);
 				eList.push_back(newEnemy);				
 			}
 			break;
@@ -207,18 +221,24 @@ void spawnEnemies(){
 			else if(lvl == 3)
 				et = 3;
 			else if(lvl == 2)
-				et = 1;
-			else
 				et = 2;
+			else
+				et = 1;
 			
 			for(int i = 0; i < numS; i++){
+				// Find a random spawn
 				an = newEnemySpawn();
+				// Random direction
+				if(randomGen.random(0.0, 1.0) > 0.5)
+					direction = true;
+				else
+					direction = false;
 				if(enemySpawn.getY() > 150)
 					enemySpawn.setY(enemySpawn.getY() - 5);
 				if(enemySpawn.getY() < 1)
 					enemySpawn.setY(enemySpawn.getY() + 5);
 
-				Enemy newEnemy(et, true, an, enemySpawn);
+				Enemy newEnemy(et, direction, an, enemySpawn);
 				eList.push_back(newEnemy);				
 			}
 			break;
@@ -261,60 +281,42 @@ void checkLists(){
 
 void output(char* text)
 {
-	int i;
 	char* p = text;
 	Coordinate pCord(globalPlayer.getPosition());
 	//glClear(GL_DEPTH_BUFFER_BIT);
 	//glDepthMask(GL_FALSE);
 	
 
-	glPushMatrix();
-	
-	
-		glMatrixMode(GL_PROJECTION);
+	glPushMatrix();	
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluOrtho2D( 0, 200 , 0 , 200);
-     glMatrixMode(GL_MODELVIEW);
-	 glLoadIdentity();
-	//gluLookAt(pP1.getX(), 55, pP1.getZ(), 0, 40, 0, 0, 1, 0);
-    glTranslatef(140, 150 ,0); //set to this position with respect to the size of TEXT
-	//glRotatef(90, 0.0 , 1.0 , 0.0 );
-    glScalef(0.4, 0.4, 0.4);
-    for( i =0 ; i < strlen(text); i++) {
+	gluOrtho2D(0, 200 , 0 , 200);
+    glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+    glTranslatef(160, 160 ,0); //set to this position with respect to the size of TEXT
+    glScalef(0.1, 0.1, 0.1);
+    for(size_t i = 0 ; i < strlen(text); i++) {
         glutStrokeCharacter(GLUT_STROKE_ROMAN, p[i]);
     }	 	
 	
     glPopMatrix();
-  //  glMatrixMode(GL_MODELVIEW);
-	 // glLoadIdentity();
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
 }
 
 
 // Display method
 void display(void){
-	int i;
-	char str[15];
-	sprintf(str, "%d", gameDiff.getScore());
-	//itoa (gameDiff.getScore(),str,10);
+
+	char str[30];
+	//sprintf(str, "%d", gameDiff.getScore());
+	itoa (gameDiff.getScore(), str, 10);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glClearColor(0, 0, 0, 1);
-	glOrtho(-200, 200, -75, 125, -100, 350);	
-	//glOrtho(-85, 85, -100, 200, -25, 200);	
-	glMatrixMode(GL_MODELVIEW);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	glShadeModel(GL_SMOOTH);
-	glEnable (GL_BLEND); 
-	glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
-	glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA_SATURATE);
-	
-	
-	glEnable(GL_NORMALIZE);
+	glOrtho(-200, 200, -75, 125, -100, 350);		
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
-	//glOrtho(-200, 200, -75, 125, -100, 350);	
-	//glMatrixMode(GL_MODELVIEW);
 	// Light it up everytime
 	//light();
 	keyOperations();
@@ -323,12 +325,8 @@ void display(void){
 	// Camera
 	// Look at it bro
 	Coordinate pP1(globalPlayer.getPosition());
-	Coordinate pP2(globalPlayer.getPosition());
 
 	gluLookAt(pP1.getX(), 55, pP1.getZ(), 0, 40, 0, 0, 1, 0);
-	
-	
-
 
 	// Rotate based on user selection
 	switch(axisRotate){
@@ -351,24 +349,19 @@ void display(void){
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
 
-	 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, qaGreen);
-
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, qaGreen);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, qaGreen);
-
-   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, qaWhite);
-
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, qaWhite);
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125.0); 
 	
   
 	// Draw tower
-
 	glPushMatrix();
-		glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition); 
-	     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLight); 
+	glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition); 
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLight); 
 	drawTower(pos[3], textures);
-	  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
 	glPopMatrix();
-	//glDisable(GL_TEXTURE_2D);
 
 	// Draw buidling 1
 	glBindTexture(GL_TEXTURE_2D, textures[2]);
@@ -377,8 +370,7 @@ void display(void){
 	drawBuilding(pos[4]);
 	glPopMatrix();
 	glDisable(GL_TEXTURE_2D);
-
-	
+		
 	// Bullets
 	for (size_t i = 0; i < bList.size(); i++){
 		glPushMatrix();
@@ -394,19 +386,20 @@ void display(void){
 	}
 	
 	// Draw player
-	glPushMatrix();
-	
+	glPushMatrix();	
 	globalPlayer.Render();
 	glPopMatrix();
 
 	//display score
-	glColor4f(1.0, 1.0,  1.0, 1); // white
-	glDisable(GL_DEPTH_TEST);
-glDisable(GL_CULL_FACE);
-glDisable(GL_TEXTURE_2D);
-glDisable(GL_LIGHTING);
+	glColor4f(0.5, 0.5,  1.0, 1); // Blue
+	//glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_CULL_FACE);
+	//glDisable(GL_TEXTURE_2D);
+	//glDisable(GL_LIGHTING);
 	output(str);
-	
+
+
+		
 	//glFlush();
 	glutSwapBuffers();
 	
@@ -637,7 +630,7 @@ void update(int value){
 	}
 	// Update the enemies
 	for (size_t i = 0; i < eList.size(); i++){
-		eList[i].Update();
+		eList[i].Update(globalPlayer.getPosition(), angleOfUser);
 	}
 
 	// Got new positions, now check for collision with enemies
@@ -649,8 +642,8 @@ void update(int value){
 				if(cd.collide(bList[i].getPosition(), bList[i].getSize(),
 										eList[j].getPosition(), eList[j].getSize())){
 					// Collision
-											gameDiff.addScore(eList[j].getEnemyType() * 10);
-											printf("Score = %d \n", gameDiff.getScore());
+					gameDiff.addScore(eList[j].getEnemyType() * 10);
+					//printf("Score = %d \n", gameDiff.getScore());
 					bList[i].setAge(0);
 					eList[j].setAge(0);
 				}// if collision
@@ -698,6 +691,13 @@ void update(int value){
 
 // Basic initalizations - menu setup and loading textures only
 void init(void){
+
+	glEnable(GL_DEPTH_TEST);
+	glShadeModel(GL_SMOOTH);
+	glEnable (GL_BLEND); 
+	glEnable(GL_NORMALIZE);
+	glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
+	glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA_SATURATE);
 
 	initMenus();
 	glGenTextures(3, textures); //specify the number of textures

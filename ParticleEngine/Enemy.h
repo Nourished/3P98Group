@@ -37,7 +37,7 @@ class Enemy {
 	void setPosition(Coordinate p);
 	Coordinate getPosition();
 	
-	void Update();	// Collision
+	void Update(Coordinate pp, float pa);	// Player position and angle on circle
 	void Render();	// Draw
 
 };

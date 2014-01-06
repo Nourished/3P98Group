@@ -111,23 +111,95 @@ Coordinate Enemy::getPosition(){
 
 
 // update the Enemy
-// This will calculate the new pos and velocity based on acceleration and speed
-void Enemy::Update(){
-	
-	// Move the Enemy in a straight line
-	if(dir){
-		// Right
-		angle += 1.4 * speed;
-		float radian = angle * (M_PI/180);
-		pos.x = 155 * cosf(radian);
-		pos.z = 155 * sinf(radian);
-	}else {
-		// Left
-		angle -= 1.4 * speed;
+// This will calculate the new pos for the enemy
+// Depending on the enemy, goes in a straight line or heads towards the player
+void Enemy::Update(Coordinate pp, float pa){
+	float ar, range;
+
+	switch(enemyType){
+	case 1:	// First enemy type
+		// Move the Enemy in a straight line
+		if(dir){
+			// Right
+			angle += 1.4 * speed;
+			if(angle > 360.0)
+				angle -= 360.0;
+			float radian = angle * (M_PI/180);
+			pos.x = 155 * cosf(radian);
+			pos.z = 155 * sinf(radian);
+		}else {
+			// Left
+			angle -= 1.4 * speed;
+			if(angle < 0.0)
+				angle += 360.0;
+			float radian = angle * (M_PI/180);
+			pos.x = 155 * cosf(radian);
+			pos.z = 155 * sinf(radian);
+		}
+		break;
+	case 2:	// Second enemy, moves close to player when in range
+		// Move towards player if within a range
+		ar; // Angle between player and enemy
+		ar = angle > pa ? angle - pa: pa - angle; // Bigger angle - smaller angle
+		range = (155*2) * M_PI * ar / 360;	// Distance between player/enemy
+		if(range > 200){
+			// Straight line if too far
+			if(dir){
+				// Right
+				angle += 0.9 * speed;
+				if(angle > 360.0)
+					angle -= 360.0;
+				float radian = angle * (M_PI/180);
+				pos.x = 155 * cosf(radian);
+				pos.z = 155 * sinf(radian);
+			}else {
+				// Left
+				angle -= 0.9 * speed;
+				if(angle < 0.0)
+					angle += 360.0;
+				float radian = angle * (M_PI/180);
+				pos.x = 155 * cosf(radian);
+				pos.z = 155 * sinf(radian);
+			}
+		}else {
+			// In range start 
+			// Move y direction closer
+			pos.y = pos.getY() > pp.getY() ? pos.y - 0.2 : pos.y + 0.2;
+			// Move towards player angle
+			if(pa > angle)
+				angle += 0.6 * speed;
+			else
+				angle -= 0.6 * speed;
+			if(angle > 360.0)
+				angle -= 360.0;
+			if(angle < 0.0)
+				angle += 360.0;
+			float radian = angle * (M_PI/180);
+			pos.x = 155 * cosf(radian);
+			pos.z = 155 * sinf(radian);
+			
+		}
+		break;
+	case 3: // third enemy
+		// Move towards player always		
+		// Move y direction closer
+		pos.y = pos.getY() > pp.getY() ? pos.y - 0.2 : pos.y + 0.2;
+		// Move towards player angle
+		if(pa > angle)
+			angle += 0.3 * speed;
+		else
+			angle -= 0.3 * speed;
+
+		if(angle > 360.0)
+			angle -= 360.0;
+		if(angle < 0.0)
+			angle += 360.0;
+
 		float radian = angle * (M_PI/180);
 		pos.x = 155 * cosf(radian);
 		pos.z = 155 * sinf(radian);
 
+		break;		
 	}
 	
 }

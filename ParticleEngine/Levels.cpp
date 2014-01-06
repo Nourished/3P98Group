@@ -8,28 +8,26 @@ Levels::~Levels(){
 // Inital Bullet generation set fields
 Levels::Levels(){
 	numEnemiesKilled = 0;
-	level = 1;
+	level = 0;
 	boss = false;
 	difficulty = 1;
 	score = 0;
+	killsToLevel = 10;
 }
 
 // Add a number of enemies to the kill count
 void Levels::addKilled(int a){
 	numEnemiesKilled += a;
-	Update();
-	
 }
+
 // Remove a number of enemies to the kill count
 void Levels::removeKilled(int a){
 	numEnemiesKilled -= a;
-	Update();
 }
 
 // Set a number of enemies to the kill count
 void Levels::setKilled(int a){
 	numEnemiesKilled = a;
-	Update();
 }
 
 // Return the kill count
@@ -99,6 +97,16 @@ void Levels::setDiff(int a){
 }
 
 // Returns the difficulty
+int Levels::getKillsNeededToLevelUp(){
+	return killsToLevel;
+}
+
+// Set the difficulty to a
+void Levels::setKillsNeededToLevelUp(int a){
+	killsToLevel = a;
+}
+
+// Returns the difficulty
 int Levels::getDiff(){
 	return difficulty;
 }
@@ -106,82 +114,47 @@ int Levels::getDiff(){
 // Reset the game difficulty
 void Levels::reset(){
 	numEnemiesKilled = 0;
-	level = 1;
+	level = 0;
 	boss = false;
 	difficulty = 1;
 	score = 0;
+	killsToLevel = 10;
 }
 
 // Some form of update
-void Levels::Update(){
+int Levels::Update(){
 	// Everything will be based on difficulty
+	if(level == 0){
+		level = 1;
+		return level;
+	}
 	switch(difficulty){
 	case 1: // Easy
-		if(numEnemiesKilled == 10)
-			setLevel(2);
-		else if(numEnemiesKilled == 20)
-			setLevel(3);
-		else if(numEnemiesKilled == 30)
-			setLevel(4);
-		else if(numEnemiesKilled == 40)
-			setLevel(5);
-		else if(numEnemiesKilled == 50)
-			setLevel(6);
-		else if(numEnemiesKilled == 75)
-			setLevel(7);
-		else if(numEnemiesKilled == 100)
-			setLevel(8);
-		else if(numEnemiesKilled == 125)
-			setLevel(9);
-		else if(numEnemiesKilled == 150)
-			setLevel(10);
-		else if(numEnemiesKilled > 150)
-			setBoss(true);
+		if(numEnemiesKilled >= killsToLevel){
+			killsToLevel += 10;
+			level += 1;
+			if(level == 10)
+				boss = true;
+		}
 		break;
-	case 2:	// Medium
-		if(numEnemiesKilled == 15)
-			setLevel(2);
-		else if(numEnemiesKilled == 30)
-			setLevel(3);
-		else if(numEnemiesKilled == 45)
-			setLevel(4);
-		else if(numEnemiesKilled == 60)
-			setLevel(5);
-		else if(numEnemiesKilled == 80)
-			setLevel(6);
-		else if(numEnemiesKilled == 100)
-			setLevel(7);
-		else if(numEnemiesKilled == 125)
-			setLevel(8);
-		else if(numEnemiesKilled == 150)
-			setLevel(9);
-		else if(numEnemiesKilled == 200)
-			setLevel(10);
-		else if(numEnemiesKilled > 200)
-			setBoss(true);
+	case 2: // Medium
+		if(numEnemiesKilled >= killsToLevel){
+			killsToLevel += 15;
+			level += 1;
+			if(level == 10)
+				boss = true;
+		}
 		break;
-	case 3:	// Hard
-		if(numEnemiesKilled == 5)
-			setLevel(2);
-		else if(numEnemiesKilled == 10)
-			setLevel(3);
-		else if(numEnemiesKilled == 15)
-			setLevel(4);
-		else if(numEnemiesKilled == 20)
-			setLevel(5);
-		else if(numEnemiesKilled == 25)
-			setLevel(6);
-		else if(numEnemiesKilled == 50)
-			setLevel(7);
-		else if(numEnemiesKilled == 75)
-			setLevel(8);
-		else if(numEnemiesKilled == 100)
-			setLevel(9);
-		else if(numEnemiesKilled == 150)
-			setLevel(10);
-		else if(numEnemiesKilled > 150)
-			setBoss(true);
+	case 3: // Medium
+		if(numEnemiesKilled >= killsToLevel){
+			killsToLevel += 20;
+			level += 1;
+			if(level == 10)
+				boss = true;
+		}
 		break;
+		
 	}
 		
+	return level;
 }

@@ -8,7 +8,8 @@ class Levels {
 		int level;				// Levels 1-10
 		bool boss;				// true if boss, false if normal
 		int difficulty;			// 1 easy, 2 normal, 3 hard
-		int score;
+		int score;				// Score
+		int killsToLevel;		// Kills needed to get to the next level
 
 	public:
 		// create a Levels with a given type, direction, angle on circle, and position
@@ -37,8 +38,11 @@ class Levels {
 	void setDiff(int a);
 	int getDiff();
 	
+	void setKillsNeededToLevelUp(int a);
+	int getKillsNeededToLevelUp();
+
 	void reset();
-	void Update();
+	int Update();
 	
 
 };
