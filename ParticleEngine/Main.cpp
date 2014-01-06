@@ -70,24 +70,24 @@ GLuint textures[4];
 // Light up the screen
 void light(){
 	 // Enable lighting
-    //glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+   // glEnable(GL_LIGHTING);
+   // glEnable(GL_LIGHT0);
 
      // Set lighting intensity and color
     glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
     glLightfv(GL_LIGHT0, GL_SPECULAR, qaSpecularLight); 
 
-	// float materialAmbient[] = {1.0, 1.0, 1.0, 1.0};
-	// float materialDiffuse[] = {1.0, 1.0, 1.0, 1.0};
-	//  float materialSpecular[] = {0.9, 0.9, 0.5, 1.0};
-	//  float materialShininess[] = { 128.0 };
+	 float materialAmbient[] = {1.0, 1.0, 1.0, 1.0};
+	 float materialDiffuse[] = {1.0, 1.0, 1.0, 1.0};
+	  float materialSpecular[] = {0.9, 0.9, 0.5, 1.0};
+	  float materialShininess[] = { 128.0 };
 
-	// glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialAmbient);
-    // glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialDiffuse);	
-	// glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);	
-	// glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, materialShininess);   	 
-	 glEnable ( GL_COLOR_MATERIAL ) ;
+	 glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialAmbient);
+     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialDiffuse);	
+	 glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);	
+	 glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, materialShininess);   	 
+	// glEnable ( GL_COLOR_MATERIAL ) ;
 
 }
 
@@ -264,21 +264,30 @@ void output(char* text)
 	int i;
 	char* p = text;
 	Coordinate pCord(globalPlayer.getPosition());
-	//glMatrixMode(GL_PROJECTION);
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	//glDepthMask(GL_FALSE);
 
-	//gluOrtho2D(0 , 100 , 0 ,100);
-    
 	glPushMatrix();
+	
+	glDisable(GL_DEPTH_TEST);
+glDisable(GL_CULL_FACE);
+glDisable(GL_TEXTURE_2D);
+glDisable(GL_LIGHTING);
+		glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D( 0, 200 , 0 , 200);
+     glMatrixMode(GL_MODELVIEW);
+	 glLoadIdentity();
 	//gluLookAt(pP1.getX(), 55, pP1.getZ(), 0, 40, 0, 0, 1, 0);
-    glTranslatef(pCord.getX(), pCord.getY()-25, pCord.getZ() );
-	glRotatef(90, 0.0 , 1.0 , 0.0 );
+    glTranslatef(pCord.getX(), pCord.getY()+25 ,0);
+	//glRotatef(90, 0.0 , 1.0 , 0.0 );
     glScalef(0.4, 0.4, 0.4);
     for( i =0 ; i < strlen(text); i++) {
         glutStrokeCharacter(GLUT_STROKE_ROMAN, p[i]);
-    }
-	
+    }	 	
     glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
+  //  glMatrixMode(GL_MODELVIEW);
+	 // glLoadIdentity();
 }
 
 
@@ -291,8 +300,10 @@ void display(void){
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
+	//glOrtho(-200, 200, -75, 125, -100, 350);	
+	//glMatrixMode(GL_MODELVIEW);
 	// Light it up everytime
-	light();
+	//light();
 	keyOperations();
 	glLoadIdentity();
 
@@ -374,10 +385,11 @@ void display(void){
 	
 	globalPlayer.Render();
 	glPopMatrix();
-	
+
 	//display score
 	glColor4f(1.0, 1.0,  1.0, 1); // white
 	output(str);
+	
 	glFlush();
 	glutSwapBuffers();
 	
@@ -680,8 +692,8 @@ void init(void){
 	glEnable (GL_BLEND); 
 	glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
 	glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA_SATURATE);
-	//glBlendFunc(GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR);
-	glShadeModel(GL_SMOOTH);
+	
+	
 	glEnable(GL_NORMALIZE);
 
 	//glEnable(GL_COLOR_MATERIAL);
