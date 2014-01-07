@@ -60,11 +60,18 @@ int axisRotate = 1; // x - 0, y - 1, z - 2, used to rotate around this axis
 float angle = 10;
 float angleSpeed = 0.0;
 
+// Game State
+int gameState = 1; // 1 - Menu, 2 - Game, 3 - Something else
+
 // Texture gloabls
 void* imgPixels;
 int imgWidth;   // Width of the texture image.
 int imgHeight;  // Height of the texture image.
 GLuint textures[4];
+
+// Window Size
+int windowX = 600;
+int windowY = 500;
 
 
 // Light up the screen
@@ -284,21 +291,33 @@ void checkLists(){
 
 }
 
-void output(char* text)
+// Text to the screen
+void scoreBoardText(char* score, char* level)
 {
-	char* p = text;
-	glPushMatrix();	
+
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluOrtho2D(0, 200 , 0 , 200);
     glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-    glTranslatef(160, 160 ,0); //set to this position with respect to the size of TEXT
-    glScalef(0.1, 0.1, 0.1);
-    for(size_t i = 0 ; i < strlen(text); i++) {
-        glutStrokeCharacter(GLUT_STROKE_ROMAN, p[i]);
-    }	 	
-	
+
+	// Score
+	glPushMatrix();	
+    glTranslatef(120, 190 ,0); //set to this position with respect to the size of TEXT
+    glScalef(0.05, 0.05, 0.05);
+    for(size_t i = 0 ; i < strlen(score); i++) {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, score[i]);
+    }	
+    glPopMatrix();
+
+	// Level
+	glPushMatrix();	
+    glTranslatef(120, 180 ,0); //set to this position with respect to the size of TEXT
+    glScalef(0.05, 0.05, 0.05);
+    for(size_t i = 0 ; i < strlen(level); i++) {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, level[i]);
+    }	
     glPopMatrix();
 	
 }
@@ -308,94 +327,164 @@ void output(char* text)
 void display(void){
 
 	char str[30];
-	//sprintf(str, "%d", gameDiff.getScore());
-	itoa (gameDiff.getScore(), str, 10);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glClearColor(0, 0, 0, 1);
-	glOrtho(-200, 200, -75, 125, -100, 350);		
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	// Light it up everytime
-	//light();
-	keyOperations();
-	glLoadIdentity();
+	char str2[30];
 
-	// Camera
-	// Look at it bro
-	Coordinate pP1(globalPlayer.getPosition());
+	// Gameplay
+	if(gameState == 2){
 
-	gluLookAt(pP1.getX(), 55, pP1.getZ(), 0, 40, 0, 0, 1, 0);
+		
+		sprintf(str, "Score %d", gameDiff.getScore());
+		sprintf (str2, "Level: %d", gameDiff.getLevel());
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glClearColor(0, 0, 0, 1);
+		glOrtho(-200, 200, -75, 125, -100, 350);		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glMatrixMode(GL_MODELVIEW);
+		// Light it up everytime
+		//light();
+		keyOperations();
+		glLoadIdentity();
 
-	// Rotate based on user selection
-	switch(axisRotate){
-		case 0:
-			glRotatef(angle, 1, 0, 0);
-			break;
-		case 1:
-			glRotatef(angle, 0, 1, 0);
-			break;
-		case 2:
-			glRotatef(angle, 0, 0, 1);
-			break;
-	}
+		// Camera
+		// Look at it bro
+		Coordinate pP1(globalPlayer.getPosition());
 
-	// Draw ground
-	glBindTexture(GL_TEXTURE_2D, textures[1]);
-    glEnable(GL_TEXTURE_2D);
-	glPushMatrix();
-    drawFloor(pos[0]);	
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
+		gluLookAt(pP1.getX(), 55, pP1.getZ(), 0, 40, 0, 0, 1, 0);
 
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, qaGreen);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, qaGreen);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, qaWhite);
-    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125.0); 
+		// Rotate based on user selection
+		switch(axisRotate){
+			case 0:
+				glRotatef(angle, 1, 0, 0);
+				break;
+			case 1:
+				glRotatef(angle, 0, 1, 0);
+				break;
+			case 2:
+				glRotatef(angle, 0, 0, 1);
+				break;
+		}
+
+		// Draw ground
+		glBindTexture(GL_TEXTURE_2D, textures[1]);
+		glEnable(GL_TEXTURE_2D);
+		glPushMatrix();
+		drawFloor(pos[0]);	
+		glPopMatrix();
+		glDisable(GL_TEXTURE_2D);
+
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, qaGreen);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, qaGreen);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, qaWhite);
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125.0); 
 	
   
-	// Draw tower
-	glPushMatrix();
-	glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition); 
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLight); 
-	drawTower(pos[3], textures);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
-	glPopMatrix();
+		// Draw tower
+		glPushMatrix();
+		glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition); 
+		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLight); 
+		drawTower(pos[3], textures);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
+		glPopMatrix();
 
-	// Draw buidling 1
-	glBindTexture(GL_TEXTURE_2D, textures[2]);
-    glEnable(GL_TEXTURE_2D);
-	glPushMatrix();	
-	drawBuilding(pos[4]);
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
+		// Draw buidling 1
+		glBindTexture(GL_TEXTURE_2D, textures[2]);
+		glEnable(GL_TEXTURE_2D);
+		glPushMatrix();	
+		drawBuilding(pos[4]);
+		glPopMatrix();
+		glDisable(GL_TEXTURE_2D);
 		
-	// Bullets
-	for (size_t i = 0; i < bList.size(); i++){
-		glPushMatrix();
-		bList[i].Render();
-		glPopMatrix();
-	}
+		// Bullets
+		for (size_t i = 0; i < bList.size(); i++){
+			glPushMatrix();
+			bList[i].Render();
+			glPopMatrix();
+		}
 
-	// Enemies
-	for (size_t i = 0; i < eList.size(); i++){
-		glPushMatrix();
-		eList[i].Render();
-		glPopMatrix();
-	}
+		// Enemies
+		for (size_t i = 0; i < eList.size(); i++){
+			glPushMatrix();
+			eList[i].Render();
+			glPopMatrix();
+		}
 	
-	// Draw player
-	glPushMatrix();	
-	globalPlayer.Render();
-	glPopMatrix();
+		// Draw player
+		glPushMatrix();	
+		globalPlayer.Render();
+		glPopMatrix();
 
-	//display score
-	glColor4f(0.5, 0.5,  1.0, 1); // Blue
-	//glDisable(GL_DEPTH_TEST);
-	//glDisable(GL_CULL_FACE);
-	//glDisable(GL_TEXTURE_2D);
-	//glDisable(GL_LIGHTING);
-	output(str);
+		//display score
+		glColor4f(0.5, 0.5,  1.0, 1); // Blue	
+		scoreBoardText(str, str2);
+	}else if(gameState == 1){		// Menu State
+		
+		char *start = "New Game";
+		glClearColor(0, 0, 0, 1);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+		//glPushMatrix();	
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		gluOrtho2D(0, 200 , 0 , 200);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+
+		// New Game Box
+		glColor4f(0.0, 1.0, 0.0, 1.0);
+		glBegin(GL_LINES);
+		glVertex2f(70.0, 140.0);
+		glVertex2f(70.0, 160.0);
+
+		glVertex2f(70.0, 160.0);
+		glVertex2f(130.0, 160.0);
+
+		glVertex2f(130.0, 160.0);
+		glVertex2f(130.0, 140.0);
+
+		glVertex2f(130.0, 140.0);
+		glVertex2f(70.0, 140.0);
+		glEnd();
+
+		// Quit Box
+		glColor4f(0.0, 1.0, 1.0, 1.0);
+		glBegin(GL_LINES);
+		glVertex2f(70.0, 110.0);
+		glVertex2f(70.0, 130.0);
+
+		glVertex2f(70.0, 130.0);
+		glVertex2f(130.0, 130.0);
+
+		glVertex2f(130.0, 130.0);
+		glVertex2f(130.0, 110.0);
+
+		glVertex2f(130.0, 110.0);
+		glVertex2f(70.0, 110.0);
+		glEnd();
+		
+
+		// New Game
+		glPushMatrix();	
+		glTranslatef(82, 150 ,0); //set to this position with respect to the size of TEXT
+		glColor3f(1.0, 0.0, 0.0);
+		glScalef(0.05, 0.05, 0.05);
+		for(size_t i = 0 ; i < strlen(start); i++) {
+			glutStrokeCharacter(GLUT_STROKE_ROMAN, start[i]);
+		}	
+		glPopMatrix();
+
+		// Quit
+		start = "Quit";
+		glPushMatrix();	
+		glTranslatef(92, 120 ,0); //set to this position with respect to the size of TEXT
+		glScalef(0.05, 0.05, 0.05);
+		for(size_t i = 0 ; i < strlen(start); i++) {
+			glutStrokeCharacter(GLUT_STROKE_ROMAN, start[i]);
+		}	
+		glPopMatrix();
+
+
+	}
 
 
 		
@@ -443,8 +532,12 @@ void keys(unsigned char key, int x, int y){
 			axisRotate = 1;
 			printf("Rotating around y axis now!\n");
 			break;	
-		case '1':	// Add 1 enemy			
-			break;		
+		case '1':	// Add 1 enemy	
+			gameState = 1;
+			break;
+		case '2':	// Add 1 enemy	
+			gameState = 2;
+			break;	
 		case 'b':	// Back face culling
 			if(backFaceCulling){
 				printf("Back Face Culling Disabled\n");
@@ -464,27 +557,28 @@ void keys(unsigned char key, int x, int y){
 
 // Menu for the particle type
 void menuParticleType(int value){	
-	switch(value){
-		case 1:			
-			Enemy newEnemy(1, true, angleOfUser, enemySpawn);
-			eList.push_back(newEnemy);
-			enemySpawn.setY(enemySpawn.getY() + 3.5);
-			break;
-	}
+	
+	float an = newEnemySpawn();
+	bool direction;
+	// Random direction
+	if(randomGen.random(0.0, 1.0) > 0.5)
+		direction = true;
+	else
+		direction = false;
+	if(enemySpawn.getY() > 150)
+		enemySpawn.setY(enemySpawn.getY() - 5);
+	if(enemySpawn.getY() < 1)
+		enemySpawn.setY(enemySpawn.getY() + 5);
+	Enemy newEnemy(value, direction, an, enemySpawn);
+	eList.push_back(newEnemy);		
+	
+	
 }
 
 // Menu for quitting
 void menuMain(int value){
-	if (value == 5)
+	if (value == 3)
 		exit(0);
-}
-
-// Menu for the colours
-void menuColour(int value){	
-	switch(value){
-		case 1:
-			break;
-	}
 }
 
 // Menu for the enabling/disabling lighting
@@ -499,26 +593,43 @@ void menuLight(int value){
 	}
 }
 
-// Menu for the particle size
-void menuSize(int value){	
-	switch(value){
-		case 1:			
-			break;
-	}
-}
 
 // Function for the mouse button
 // Left click spins counter clockwise
 // Right click spins clockwise
 void mouse(int button, int state, int x, int y){
 
-	if(button == GLUT_LEFT_BUTTON){
-		angleSpeed += 0.1;
-		glutPostRedisplay();
-	}else if(button == GLUT_RIGHT_BUTTON){
-		angleSpeed -= 0.1;
-		glutPostRedisplay();
+	// Gameplay
+	if(gameState == 2){
+		if(button == GLUT_LEFT_BUTTON){
+			angleSpeed += 0.1;
+			glutPostRedisplay();
+		}else if(button == GLUT_RIGHT_BUTTON){
+			angleSpeed -= 0.1;
+			glutPostRedisplay();
+		}
+	}else if(gameState == 1){ // Menus
+		// Check for clicks inside box to start new game
+		double dx = (double) x;	// X is normal
+		double dy = (double) (glutGet(GLUT_WINDOW_HEIGHT) - y); // Height - y, y starts top to bottom
+		// Convert mouse positions into window positions
+		dx =  dx / (double) glutGet(GLUT_WINDOW_WIDTH)  * 200;
+		dy = dy / (double) glutGet(GLUT_WINDOW_HEIGHT) * 200;
+		//printf("%d %d\t", x, y);
+		//printf("%f %f\n",  dx, dy);
+
+		
+		// Check New Game				
+		if(dx > 69.0 && dx < 130.0 && dy > 142.0 && dy < 163.0)
+			gameState = 2;
+		if(dx > 69.0 && dx < 130.0 && dy > 113.0 && dy < 133.0)
+			exit(0);
+			//printf("quit\n");
+		
+
 	}
+
+
 }
 
 // Initalize the menus and print the commands
@@ -540,20 +651,6 @@ void initMenus(){
 	glutAddMenuEntry("Spawn Enemy 3", 3);
 
 
-	// Particle colour menu
-	glutCreateMenu(menuColour);
-	glutAddMenuEntry("Red", 1);
-	glutAddMenuEntry("Green", 2);
-
-
-	// Particle size menu
-	glutCreateMenu(menuSize);
-	glutAddMenuEntry("1", 1);
-	glutAddMenuEntry("2", 2);
-	glutAddMenuEntry("3", 3);
-	glutAddMenuEntry("4", 4);
-	glutAddMenuEntry("5", 5);
-
 	// Lighting menu
 	glutCreateMenu(menuLight);
 	glutAddMenuEntry("On", 1);
@@ -561,14 +658,14 @@ void initMenus(){
 
 	// Particle other options
 	glutCreateMenu(menuMain);
-	glutAddSubMenu("Shape", 1);
-	glutAddSubMenu("Colour", 2);
-	glutAddSubMenu("Size", 3);
-	glutAddSubMenu("Light", 4);
-	glutAddMenuEntry("Quit", 5);
+	glutAddSubMenu("Spawn Enemy", 1);
+	glutAddSubMenu("Light", 2);
+	glutAddMenuEntry("Quit", 3);
 
 	glutAttachMenu(GLUT_MIDDLE_BUTTON);
 }
+
+
 
 // Loads textures
 void loadTexture(const char *filename, int textID){
@@ -611,77 +708,83 @@ void loadTexture(const char *filename, int textID){
 
 // Update the program
 void update(int value){
-	bool collide = false;
+
+	bool collide = false;	
+
+	// Gameplay update
+	if(gameState == 2){
+		// Update the camera rotation
+		angle += angleSpeed;
 	
-	// Update the camera rotation
-	angle += angleSpeed;
-	
-	// Used to avoid unlimited bullets
-	if(bulletTimer > 0.05){
-		bulletTimer -= 0.025;
-	}
-	// Update bullets, remove bullets that have expired and collided
-	checkLists();
+		// Used to avoid unlimited bullets
+		if(bulletTimer > 0.05){
+			bulletTimer -= 0.025;
+		}
+		// Update bullets, remove bullets that have expired and collided
+		checkLists();
 
-	// Update the bullets
-	for (size_t i = 0; i < bList.size(); i++){
-		bList[i].Update();
-	}
-	// Update the enemies
-	for (size_t i = 0; i < eList.size(); i++){
-		eList[i].Update(globalPlayer.getPosition(), angleOfUser);
-	}
+		// Update the bullets
+		for (size_t i = 0; i < bList.size(); i++){
+			bList[i].Update();
+		}
+		// Update the enemies
+		for (size_t i = 0; i < eList.size(); i++){
+			eList[i].Update(globalPlayer.getPosition(), angleOfUser);
+		}
 
-	// Got new positions, now check for collision with enemies
-	// First bullets with enemies
-	for(size_t i = 0; i < bList.size(); i++){
-		for(size_t j = 0; j < eList.size(); j++){
-			// Make sure bullets have not expired or collided so far
-			if(bList[i].getAge() != 0 && eList[j].getAge() != 0){
-				if(cd.collide(bList[i].getPosition(), bList[i].getSize(),
-										eList[j].getPosition(), eList[j].getSize())){
-					// Collision
-					gameDiff.addScore(eList[j].getEnemyType() * 10);
-					//printf("Score = %d \n", gameDiff.getScore());
-					bList[i].setAge(0);
-					eList[j].setAge(0);
-				}// if collision
-			}// if bullet/enemy age != 0
+		// Got new positions, now check for collision with enemies
+		// First bullets with enemies
+		for(size_t i = 0; i < bList.size(); i++){
+			for(size_t j = 0; j < eList.size(); j++){
+				// Make sure bullets have not expired or collided so far
+				if(bList[i].getAge() != 0 && eList[j].getAge() != 0){
+					if(cd.collide(bList[i].getPosition(), bList[i].getSize(),
+											eList[j].getPosition(), eList[j].getSize())){
+						// Collision
+						gameDiff.addScore(eList[j].getEnemyType() * 10);
+						//printf("Score = %d \n", gameDiff.getScore());
+						bList[i].setAge(0);
+						eList[j].setAge(0);
+					}// if collision
+				}// if bullet/enemy age != 0
 
-		}// for j
-	}// for i
+			}// for j
+		}// for i
 
-	// Now check if player has hit an enemy
-	for(size_t i = 0; i < eList.size(); i++){
-		// Check if player has already collided and make sure enemy is not dead
-		if(collide == false && eList[i].getAge() != 0){
-			if(cd.collide(eList[i].getPosition(), eList[i].getSize(),
-				globalPlayer.getPosition(), globalPlayer.getSize())){
-					// Collision
-					eList[i].setAge(0);
-					collide = true;
-				}// if collision
-		}// If collide and age != 0
-	}// For i
-	// Update bullets, remove bullets that have expired and collided
-	if(collide){
-		globalPlayer.addLives(-1);
-		if(globalPlayer.numberofLives() != 0)
-			globalPlayer.setPlayerStatus(2); // Reviving
-		else {
-			globalPlayer.setPlayerStatus(3); // Dead
+		// Now check if player has hit an enemy
+		for(size_t i = 0; i < eList.size(); i++){
+			// Check if player has already collided and make sure enemy is not dead
+			if(collide == false && eList[i].getAge() != 0){
+				if(cd.collide(eList[i].getPosition(), eList[i].getSize(),
+					globalPlayer.getPosition(), globalPlayer.getSize())){
+						// Collision
+						eList[i].setAge(0);
+						collide = true;
+					}// if collision
+			}// If collide and age != 0
+		}// For i
+		// Update bullets, remove bullets that have expired and collided
+		if(collide){
+			globalPlayer.addLives(-1);
+			if(globalPlayer.numberofLives() != 0)
+				globalPlayer.setPlayerStatus(2); // Reviving
+			else {
+				globalPlayer.setPlayerStatus(3); // Dead
 			
+			}
+			if(globalPlayer.getPlayerStatus() == 3){
+				printf("Player has no remaining lives! Game Ended!\n");
+				globalPlayer.setLives(3);
+				gameDiff.reset();
+				resetGame();
+			}
+
 		}
-		if(globalPlayer.getPlayerStatus() == 3){
-			printf("Player has no remaining lives! Game Ended!\n");
-			globalPlayer.setLives(3);
-			gameDiff.reset();
-			resetGame();
-		}
+		checkLists();
+		spawnEnemies();
+	}else if(gameState == 1) {
 
 	}
-	checkLists();
-	spawnEnemies();
 	// Redisplay the updates
 	glutPostRedisplay();
 	// Call it again
@@ -713,7 +816,7 @@ int main(int argc, char** argv)
 	globalPlayer.setPosition(playerSpawn);
 	glutInit(&argc, argv);		
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(600, 500);
+	glutInitWindowSize(windowX, windowY);
 	glutCreateWindow("LAZER GAME");
 	glutDisplayFunc(display);	
 	glutMouseFunc(mouse);

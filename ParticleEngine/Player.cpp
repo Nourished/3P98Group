@@ -13,7 +13,7 @@ Player::~Player(){
 // Inital Player generation set fields
 Player::Player(){
 	playerStatus = 1;
-	size = 3;
+	size = 3.6;
 	lives = 3;
 	speed = 5.0;
 	alpha = 1.0;		
