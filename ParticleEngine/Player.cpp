@@ -170,10 +170,143 @@ void Player::Render(){
 			playerStatus = 1;
 		}
 	}
-	
+	/**
 	glPushMatrix();
 	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it
 	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position	
 	glutSolidSphere(size, 15, 15);			
+	glPopMatrix();
+	*/
+	glPushMatrix();
+	glColor4f(1.0, 0.0, 0.0 , 1.0);
+	glTranslated(pos.x, pos.y, pos.z);
+	glutSolidCube(5);
+	glColor4f(0.0, 0.0, 1.0 , 1.0);
+	glPopMatrix();
+	glPushMatrix();
+	//glTranslatef(-15,2.4,0);
+	glTranslated(pos.x-15, pos.y+2.4, pos.z);
+	glScalef(5,2,2);
+	glutSolidCube(5);
+	glPopMatrix();
+
+	//wing!!! #1
+	glPushMatrix();
+	glColor4f(0.0, 1.0, 0.0 , 1.0);
+	//glTranslatef(-15, 5, 5 );
+	glTranslated(pos.x-15, pos.y+5, pos.z+5);
+	glRotatef(90, 1.0 , 0.0 , 0.0);
+	glScalef(5,10,5); //side
+	glBegin(GL_TRIANGLES);
+	glVertex3f(0,0,0);
+	glVertex3f(1, 0 , 0);
+	glVertex3f(0,1,0);
+	glEnd();
+	glBegin(GL_TRIANGLES); //side
+	glVertex3f(0,0,1);
+	glVertex3f(1, 0 , 1);
+	glVertex3f(0,1,1);
+	glEnd();
+	glColor4f(1.0, 0.0, 0.0 , 1.0);
+	glBegin(GL_POLYGON); // back
+	glVertex3f(0,0,0);
+	glVertex3f(0, 0 , 1);
+	glVertex3f(0,1,1);
+	glVertex3f(0,1,0);
+	glEnd();
+	glColor4f(1.0, 0.5, 0.5 , 1.0);
+	glBegin(GL_POLYGON); //front face
+	glVertex3f(0,1,0);
+	glVertex3f(1, 0 , 0);
+	glVertex3f(1,0,1);
+	glVertex3f(0,1,1);
+	glEnd();
+	glColor4f(1.0, 0.0, 1.0 , 1.0);
+	glBegin(GL_POLYGON); //bottom
+	glVertex3f(0,0,0);
+	glVertex3f(1, 0 , 0);
+	glVertex3f(1,0,1);
+	glVertex3f(0,0,1);
+	glEnd();
+glPopMatrix();
+
+	//wing!!! #2
+	glPushMatrix();
+	glColor4f(0.0, 1.0, 0.0 , 1.0);
+	glTranslated(pos.x-15, pos.y, pos.z-5);
+	//glTranslatef(-15, 0, -5 );
+	glRotatef(-90, 1.0 , 0.0 , 0.0);
+	glScalef(5,10,5); //side
+	glBegin(GL_TRIANGLES);
+	glVertex3f(0,0,0);
+	glVertex3f(1, 0 , 0);
+	glVertex3f(0,1,0);
+	glEnd();
+	glBegin(GL_TRIANGLES); //side
+	glVertex3f(0,0,1);
+	glVertex3f(1, 0 , 1);
+	glVertex3f(0,1,1);
+	glEnd();
+	glColor4f(1.0, 0.0, 0.0 , 1.0);
+	glBegin(GL_POLYGON); // back
+	glVertex3f(0,0,0);
+	glVertex3f(0, 0 , 1);
+	glVertex3f(0,1,1);
+	glVertex3f(0,1,0);
+	glEnd();
+	glColor4f(1.0, 0.5, 0.5 , 1.0);
+	glBegin(GL_POLYGON); //front face
+	glVertex3f(0,1,0);
+	glVertex3f(1, 0 , 0);
+	glVertex3f(1,0,1);
+	glVertex3f(0,1,1);
+	glEnd();
+	glColor4f(1.0, 0.0, 1.0 , 1.0);
+	glBegin(GL_POLYGON); //bottom
+	glVertex3f(0,0,0);
+	glVertex3f(1, 0 , 0);
+	glVertex3f(1,0,1);
+	glVertex3f(0,0,1);
+	glEnd();
+	glPopMatrix();
+	//the hatch!!!
+
+	glPushMatrix();
+	glColor4f(0.0, 1.0, 0.0 , 1.0);
+	//glTranslatef(-15, 7.5, -2.5 );
+	glTranslated(pos.x-15, pos.y+7.5, pos.z-2.5);
+	//glRotatef(-90, 1.0 , 0.0 , 0.0);
+	glScalef(10,10,5); //side
+	glBegin(GL_TRIANGLES);
+	glVertex3f(0,0,0);
+	glVertex3f(1, 0 , 0);
+	glVertex3f(0,1,0);
+	glEnd();
+	glBegin(GL_TRIANGLES); //side
+	glVertex3f(0,0,1);
+	glVertex3f(1, 0 , 1);
+	glVertex3f(0,1,1);
+	glEnd();
+	glColor4f(1.0, 0.0, 0.0 , 1.0);
+	glBegin(GL_POLYGON); // back
+	glVertex3f(0,0,0);
+	glVertex3f(0, 0 , 1);
+	glVertex3f(0,1,1);
+	glVertex3f(0,1,0);
+	glEnd();
+	glColor4f(1.0, 0.5, 0.5 , 1.0);
+	glBegin(GL_POLYGON); //front face
+	glVertex3f(0,1,0);
+	glVertex3f(1, 0 , 0);
+	glVertex3f(1,0,1);
+	glVertex3f(0,1,1);
+	glEnd();
+	glColor4f(1.0, 0.0, 1.0 , 1.0);
+	glBegin(GL_POLYGON); //bottom
+	glVertex3f(0,0,0);
+	glVertex3f(1, 0 , 0);
+	glVertex3f(1,0,1);
+	glVertex3f(0,0,1);
+	glEnd();
 	glPopMatrix();
 }

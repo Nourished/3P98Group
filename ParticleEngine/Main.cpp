@@ -287,11 +287,6 @@ void checkLists(){
 void output(char* text)
 {
 	char* p = text;
-	Coordinate pCord(globalPlayer.getPosition());
-	//glClear(GL_DEPTH_BUFFER_BIT);
-	//glDepthMask(GL_FALSE);
-	
-
 	glPushMatrix();	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -305,8 +300,7 @@ void output(char* text)
     }	 	
 	
     glPopMatrix();
-	//glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
+	
 }
 
 
