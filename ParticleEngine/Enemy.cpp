@@ -213,15 +213,86 @@ void Enemy::Render(){
 
 	glPushMatrix();
 	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it
-	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
+	//glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
 	switch (enemyType){					// Draw the specific type of Enemy
 		case 1:
-			glutSolidSphere(size, 15, 15);
+			glPushMatrix();
+	glColor4f(1.0, 0.0, 0.0 , 1.0);	
+	glTranslatef(pos.x,pos.y,pos.z);
+	glutWireCube(10);	
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor4f(0.0,1.0,0.0 ,1.0);  //top front right
+	glTranslatef(pos.x+5 , pos.y+6.0 , pos.z+5);
+	glRotatef(-45, 1.0, 0.0, 0.0);
+	glScalef(2.0, 2.0 , 2.0);
+	glutWireTetrahedron();
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor4f(0.0,1.0,0.0 ,1.0); //top back right
+	glTranslatef(pos.x+5 , pos.y+6.0 , pos.z-5);
+	glRotatef(-45, 1.0, 0.0, 0.0);
+	glScalef(2.0, 2.0 , 2.0);
+	glutWireTetrahedron();
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor4f(0.0, 1.0, 0.0 ,1.0); //top front left
+	glTranslatef(pos.x-5 , pos.y+6.0 , pos.z+5);
+	glRotatef(45, 1.0, 0.0, 0.0);
+	glScalef(2.0, 2.0 , 2.0);
+	glutWireTetrahedron();
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor4f(0.0, 1.0, 0.0 ,1.0); //top back left
+	glTranslatef( pos.x-5 , pos.y+ 6.0 , pos.z-5);
+	glRotatef(45, 1.0, 0.0, 0.0);
+	glScalef(2.0, 2.0 , 2.0);
+	glutWireTetrahedron();
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor4f(0.0, 1.0, 0.0 ,1.0); //bottom front right
+	glTranslatef(pos.x+5 , pos.y-6.2 , pos.z+5);
+	glRotatef(45, 0.0, 0.0, 1.0);
+	glScalef(2.0, 2.0 , 2.0);
+	glutWireTetrahedron();
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor4f(0.0, 1.0, 0.0 ,1.0); //bottom back right
+	glTranslatef(pos.x+5 , pos.y-6.2 , pos.z-5);
+	glRotatef(-45, 0.0, 0.0, 1.0);
+	glScalef(2.0, 2.0 , 2.0);
+	glutWireTetrahedron();
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor4f(0.0, 1.0, 0.0 ,1.0); //bottom front left
+	glTranslatef(pos.x-5 , pos.y-6.2 , pos.z+5);
+	glRotatef(45, 0.0, 0.0, 1.0);
+	glScalef(2.0, 2.0 , 2.0);
+	glutWireTetrahedron();
+	glPopMatrix();
+
+	glPushMatrix();
+	glColor4f(0.0, 1.0, 0.0 ,1.0); //bottom back left
+	glTranslatef(pos.x-5 , pos.y-6.2 , pos.z-5);
+	glRotatef(-45, 0.0, 0.0, 1.0);
+	glScalef(2.0, 2.0 , 2.0);
+	glutWireTetrahedron();
+	glPopMatrix();
+	
 			break;
 		case 2:
+			glTranslatef(pos.x,pos.y,pos.z);
 			glutSolidCube(size);
 			break;
 		case 3:
+			glTranslatef(pos.x,pos.y,pos.z);
 			glutWireSphere(size, 15, 15);
 			break;
 	}
