@@ -28,6 +28,9 @@ class Enemy {
 	void setSize(float newSize);
 	float getSize();
 
+	void setAngle(float newAngle);
+	float getAngle();
+
 	void setSpeed(double sp);
 	void setColour(float r, float g, float b);
 	void setEnemyType(int a);
