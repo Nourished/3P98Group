@@ -43,6 +43,13 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 			speed = 0.9;
 			size = 3.5;
 			break;
+	/*	case 4:	// boss Enemy type
+			colour[0] = 0.6;
+			colour[1] = 0.2;
+			colour[2] = 0.8;
+			speed = 0.9;
+			size = 5.0;
+			break; */
 		}	
 }
 
@@ -202,7 +209,7 @@ void Enemy::Update(Coordinate pp, float pa){
 		}
 
 		break;
-	case 3: // third enemy
+	case 3: // third enemy and boss
 		// Move towards player always		
 		// Move y direction closer
 		pos.y = pos.getY() > pp.getY() ? pos.y - 0.2 : pos.y + 0.2;
@@ -352,6 +359,15 @@ void Enemy::Render(){
 			glEnd();
 			glPopMatrix();
 			break;
+		/* case 4: //boss
+			glPushMatrix();
+			glTranslatef(pos.x, pos.y, pos.z);			
+			glColor3ub(128 , 128 , 128);
+			glRotatef(90.0, 0.0 , 1.0 , 0.0);
+			glutSolidCube(size);
+			glEnd();
+			glPopMatrix();
+			break; */
 			
 	}
 	glPopMatrix();
