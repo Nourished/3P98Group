@@ -7,10 +7,12 @@ class Explode {
 	
 	protected: 
 		Coordinate pos;		// Position of the Explode
+		Coordinate particles[8];
 		int age;			// Age of Explode, 0 = dead and remove
 		float colour[3];	// Colour
 		int ExplodeType;	// different Explode effects
 		float size;			// Size of the Explode
+		float moveDist;		// Moving distance during update
 		float angle;		// Where the Explode is on the circle
 	
 

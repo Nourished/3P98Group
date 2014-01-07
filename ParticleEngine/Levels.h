@@ -10,6 +10,7 @@ class Levels {
 		int difficulty;			// 1 easy, 2 normal, 3 hard
 		int score;				// Score
 		int killsToLevel;		// Kills needed to get to the next level
+		int lives;
 
 	public:
 		// create a Levels with a given type, direction, angle on circle, and position
@@ -24,6 +25,10 @@ class Levels {
 	void addScore(int a);
 	void setScore(int a);
 	int getScore();
+
+	void addLives(int a);
+	void setLives(int a);
+	int getLives();
 	
 	void increaseLevel(int a);
 	void lowerLevel(int a);

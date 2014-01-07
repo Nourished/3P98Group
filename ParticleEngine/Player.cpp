@@ -14,7 +14,6 @@ Player::~Player(){
 Player::Player(){
 	playerStatus = 1;
 	size = 3.6;
-	lives = 3;
 	speed = 5.0;
 	alpha = 1.0;		
 	// Colour
@@ -35,20 +34,6 @@ bool Player::getShooting(){
 	return shooting;
 }
 
-// Returns the age value
-int Player::numberofLives(){
-	return lives;
-}
-
-// Sets the age value
-void Player::setLives(int a){
-	lives = a;
-}
-
-// Sets the age value
-void Player::addLives(int a){
-	lives += a;
-}
 
 // Add/Subtract from the up/down movement
 void Player::addYMovement(float yMove){
@@ -127,10 +112,7 @@ Coordinate Player::getPosition(){
 
 // used to reset the position to a user defined point and velocity
 void Player::resetPosition(Coordinate p){
-
-	lives = 3;
-	speed = 5.0;
-	
+			
 	// Position
 	pos = p;
 
@@ -147,7 +129,7 @@ void Player::Update(){
 
 // Render the Player
 void Player::Render(){
-	
+	/*
 	GLfloat light_ambient[] = {0.0, 0.0, 0.0, 0.0};
     GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 0.0};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 0.0};
@@ -158,18 +140,8 @@ void Player::Render(){
     glLightfv(GL_LIGHT1, GL_POSITION, light_position);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128.0 );
  	glEnable(GL_LIGHT1); 
+	*/
 
-	if(playerStatus == 2){
-		alpha += 0.02;
-		if(alpha == 0.49)
-			alpha = 0.38;
-		if(alpha == 0.78)
-			alpha = 0.59;
-		if(alpha > 0.96){
-			alpha = 1.0;
-			playerStatus = 1;
-		}
-	}
 	/**
 	glPushMatrix();
 	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it
@@ -177,11 +149,12 @@ void Player::Render(){
 	glutSolidSphere(size, 15, 15);			
 	glPopMatrix();
 	*/
+
 	glPushMatrix();
 	glColor4f(1.0, 0.0, 0.0 , 1.0);
 	glTranslated(pos.x, pos.y, pos.z);
 	glutSolidCube(5);
-	glColor4f(0.0, 0.0, 1.0 , 1.0);
+	glColor4f(0.0, 0.0, 1.0, 1.0);
 	glPopMatrix();
 	glPushMatrix();
 	//glTranslatef(-15,2.4,0);
@@ -198,37 +171,37 @@ void Player::Render(){
 	glRotatef(90, 1.0 , 0.0 , 0.0);
 	glScalef(5,10,5); //side
 	glBegin(GL_TRIANGLES);
-	glVertex3f(0,0,0);
-	glVertex3f(1, 0 , 0);
-	glVertex3f(0,1,0);
+		glVertex3f(0,0,0);
+		glVertex3f(1, 0 , 0);
+		glVertex3f(0,1,0);
 	glEnd();
 	glBegin(GL_TRIANGLES); //side
-	glVertex3f(0,0,1);
-	glVertex3f(1, 0 , 1);
-	glVertex3f(0,1,1);
+		glVertex3f(0,0,1);
+		glVertex3f(1, 0 , 1);
+		glVertex3f(0,1,1);
 	glEnd();
 	glColor4f(1.0, 0.0, 0.0 , 1.0);
 	glBegin(GL_POLYGON); // back
-	glVertex3f(0,0,0);
-	glVertex3f(0, 0 , 1);
-	glVertex3f(0,1,1);
-	glVertex3f(0,1,0);
+		glVertex3f(0,0,0);
+		glVertex3f(0, 0 , 1);
+		glVertex3f(0,1,1);
+		glVertex3f(0,1,0);
 	glEnd();
 	glColor4f(1.0, 0.5, 0.5 , 1.0);
 	glBegin(GL_POLYGON); //front face
-	glVertex3f(0,1,0);
-	glVertex3f(1, 0 , 0);
-	glVertex3f(1,0,1);
-	glVertex3f(0,1,1);
+		glVertex3f(0,1,0);
+		glVertex3f(1, 0 , 0);
+		glVertex3f(1,0,1);
+		glVertex3f(0,1,1);
 	glEnd();
 	glColor4f(1.0, 0.0, 1.0 , 1.0);
 	glBegin(GL_POLYGON); //bottom
-	glVertex3f(0,0,0);
-	glVertex3f(1, 0 , 0);
-	glVertex3f(1,0,1);
-	glVertex3f(0,0,1);
+		glVertex3f(0,0,0);
+		glVertex3f(1, 0 , 0);
+		glVertex3f(1,0,1);
+		glVertex3f(0,0,1);
 	glEnd();
-glPopMatrix();
+	glPopMatrix();
 
 	//wing!!! #2
 	glPushMatrix();
@@ -238,35 +211,35 @@ glPopMatrix();
 	glRotatef(-90, 1.0 , 0.0 , 0.0);
 	glScalef(5,10,5); //side
 	glBegin(GL_TRIANGLES);
-	glVertex3f(0,0,0);
-	glVertex3f(1, 0 , 0);
-	glVertex3f(0,1,0);
+		glVertex3f(0,0,0);
+		glVertex3f(1, 0 , 0);
+		glVertex3f(0,1,0);
 	glEnd();
 	glBegin(GL_TRIANGLES); //side
-	glVertex3f(0,0,1);
-	glVertex3f(1, 0 , 1);
-	glVertex3f(0,1,1);
+		glVertex3f(0,0,1);
+		glVertex3f(1, 0 , 1);
+		glVertex3f(0,1,1);
 	glEnd();
 	glColor4f(1.0, 0.0, 0.0 , 1.0);
 	glBegin(GL_POLYGON); // back
-	glVertex3f(0,0,0);
-	glVertex3f(0, 0 , 1);
-	glVertex3f(0,1,1);
-	glVertex3f(0,1,0);
+		glVertex3f(0,0,0);
+		glVertex3f(0, 0 , 1);
+		glVertex3f(0,1,1);
+		glVertex3f(0,1,0);
 	glEnd();
 	glColor4f(1.0, 0.5, 0.5 , 1.0);
 	glBegin(GL_POLYGON); //front face
-	glVertex3f(0,1,0);
-	glVertex3f(1, 0 , 0);
-	glVertex3f(1,0,1);
-	glVertex3f(0,1,1);
+		glVertex3f(0,1,0);
+		glVertex3f(1, 0 , 0);
+		glVertex3f(1,0,1);
+		glVertex3f(0,1,1);
 	glEnd();
 	glColor4f(1.0, 0.0, 1.0 , 1.0);
 	glBegin(GL_POLYGON); //bottom
-	glVertex3f(0,0,0);
-	glVertex3f(1, 0 , 0);
-	glVertex3f(1,0,1);
-	glVertex3f(0,0,1);
+		glVertex3f(0,0,0);
+		glVertex3f(1, 0 , 0);
+		glVertex3f(1,0,1);
+		glVertex3f(0,0,1);
 	glEnd();
 	glPopMatrix();
 	//the hatch!!!

@@ -10,6 +10,7 @@
 #include "Enemy.h"
 #include "ColDet.h"
 #include "Levels.h"
+#include "Explode.h"
 #include <freeimage.h>
 
 RNG randomGen;
@@ -18,8 +19,10 @@ Levels gameDiff;
 
 /////// Number of bullets ///////
 std::vector<Bullet> bList;
-/////// Number of particles ///////
+/////// Number of enemies ///////
 std::vector<Enemy> eList;
+/////// Number of exploding enemies ///////
+std::vector<Explode> explodeList;
 Player globalPlayer;
 
 // Bullet information
@@ -57,7 +60,7 @@ int backFaceCulling = 0;	// Backface culling 0 means not true
 
 // Camera Related Settings
 int axisRotate = 1; // x - 0, y - 1, z - 2, used to rotate around this axis
-float angle = 10;
+float angle = 0;
 float angleSpeed = 0.0;
 
 // Game State
@@ -96,7 +99,8 @@ void light(){
 
 void resetGame(){
 
-	angle = 10;
+	gameDiff.reset();
+	angle = 0;
 	axisRotate = 1;
 	angleSpeed = 0;			
 	globalPlayer.setPosition(playerSpawn);
@@ -110,7 +114,7 @@ void resetGame(){
 	for(size_t i = 0; i < eList.size(); i++){		
 		eList.erase(eList.begin() + i);			
 	}
-	gameState = 1;
+
 
 	glutPostRedisplay();
 
@@ -158,8 +162,13 @@ float newEnemySpawn(){
 	float degree = randomGen.random(0.0, 360.0);
 	// Used to make sure enemies dont spawn on user
 	int playerSpawnClose =  angleOfUser > degree ? ((int) angleOfUser) - (int) degree: ((int) degree ) - (int) angleOfUser;
+	if(playerSpawnClose > 180)
+		// Sometimes the player can be at 0-10 and enemy 350-360 and is very close
+		playerSpawnClose = 360 - playerSpawnClose;
+
 	if(playerSpawnClose < 5 && playerSpawnClose > -5)
 		degree += randomGen.random(15.0, 65.0);
+	
 	float radian = degree * (M_PI/180);
 	enemySpawn.setY(randomGen.random(1, 145));
 	enemySpawn.setX(155 * cosf(radian));
@@ -268,7 +277,7 @@ void checkLists(){
 	for(size_t i = 0; i < bList.size(); i++){
 		if(bList[i].getAge() == 0){
 			// Remove the bullet from the list
-			glDisable(GL_LIGHT2);
+			//glDisable(GL_LIGHT2);
 			bList.erase(bList.begin() + i);			
 		}
 	}	
@@ -277,18 +286,28 @@ void checkLists(){
 	// This means they have collided
 	for(size_t i = 0; i < eList.size(); i++){
 		if(eList[i].getAge() == 0){
+			// Add exploding particles
+			Explode ep(1, eList[i].getAngle(), eList[i].getPosition());
+			explodeList.push_back(ep);
 			// Remove the enemy from the list
 			eList.erase(eList.begin() + i);			
 			gameDiff.addKilled(1);
 		}
 	}	
 
+	// Remove explosions
+	for(size_t i = 0; i < explodeList.size(); i++){
+		if(explodeList[i].getAge() == 0){
+			// Remove the explosion from the list
+			explodeList.erase(explodeList.begin() + i);			
+		}
+	}	
 
 
 }
 
 // Text to the screen
-void scoreBoardText(char* score, char* level)
+void scoreBoardText(char* score, char* level, char* lives)
 {
 
 
@@ -315,6 +334,15 @@ void scoreBoardText(char* score, char* level)
         glutStrokeCharacter(GLUT_STROKE_ROMAN, level[i]);
     }	
     glPopMatrix();
+
+	// Lives
+	glPushMatrix();	
+    glTranslatef(120, 170 ,0); //set to this position with respect to the size of TEXT
+    glScalef(0.05, 0.05, 0.05);
+    for(size_t i = 0 ; i < strlen(lives); i++) {
+        glutStrokeCharacter(GLUT_STROKE_ROMAN, lives[i]);
+    }	
+    glPopMatrix();
 	
 }
 
@@ -324,6 +352,7 @@ void display(void){
 
 	char str[30];
 	char str2[30];
+	char str3[30];
 
 	// Gameplay
 	if(gameState == 2){
@@ -331,6 +360,7 @@ void display(void){
 		
 		sprintf(str, "Score %d", gameDiff.getScore());
 		sprintf (str2, "Level: %d", gameDiff.getLevel());
+		sprintf (str3, "Lives: %d", gameDiff.getLives());
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glClearColor(0, 0, 0, 1);
@@ -392,16 +422,23 @@ void display(void){
 		glDisable(GL_TEXTURE_2D);
 		
 		// Bullets
-		for (size_t i = 0; i < bList.size(); i++){
+		for(size_t i = 0; i < bList.size(); i++){
 			glPushMatrix();
 			bList[i].Render();
 			glPopMatrix();
 		}
 
 		// Enemies
-		for (size_t i = 0; i < eList.size(); i++){
+		for(size_t i = 0; i < eList.size(); i++){
 			glPushMatrix();
 			eList[i].Render();
+			glPopMatrix();
+		}
+
+		// Explosions
+		for(size_t i = 0; i < explodeList.size(); i++){
+			glPushMatrix();
+			explodeList[i].Render();
 			glPopMatrix();
 		}
 	
@@ -412,7 +449,7 @@ void display(void){
 
 		//display score
 		glColor4f(0.5, 0.5,  1.0, 1); // Blue	
-		scoreBoardText(str, str2);
+		scoreBoardText(str, str2, str3);
 	}else if(gameState == 1){		// Menu State
 		
 		char *start = "New Game";
@@ -547,6 +584,16 @@ void keys(unsigned char key, int x, int y){
 				backFaceCulling = 1;
 			}
 			break;
+		case '-':
+		case '_':
+			angleSpeed += 0.1;
+			glutPostRedisplay();
+			break;
+		case '=':
+		case '+':
+			angleSpeed -= 0.1;
+			glutPostRedisplay();
+			break;
 	}
 }
 
@@ -595,16 +642,8 @@ void menuLight(int value){
 // Right click spins clockwise
 void mouse(int button, int state, int x, int y){
 
-	// Gameplay
-	if(gameState == 2){
-		if(button == GLUT_LEFT_BUTTON){
-			angleSpeed += 0.1;
-			glutPostRedisplay();
-		}else if(button == GLUT_RIGHT_BUTTON){
-			angleSpeed -= 0.1;
-			glutPostRedisplay();
-		}
-	}else if(gameState == 1){ // Menus
+	
+	if(gameState == 1){ // Menus
 		// Check for clicks inside box to start new game
 		double dx = (double) x;	// X is normal
 		double dy = (double) (glutGet(GLUT_WINDOW_HEIGHT) - y); // Height - y, y starts top to bottom
@@ -616,8 +655,10 @@ void mouse(int button, int state, int x, int y){
 
 		
 		// Check New Game				
-		if(dx > 69.0 && dx < 130.0 && dy > 142.0 && dy < 163.0)
+		if(dx > 69.0 && dx < 130.0 && dy > 142.0 && dy < 163.0){
 			gameState = 2;
+			resetGame();
+		}
 		if(dx > 69.0 && dx < 130.0 && dy > 113.0 && dy < 133.0)
 			exit(0);
 			//printf("quit\n");
@@ -727,6 +768,10 @@ void update(int value){
 		for (size_t i = 0; i < eList.size(); i++){
 			eList[i].Update(globalPlayer.getPosition(), angleOfUser);
 		}
+		// Update the explosions
+		for (size_t i = 0; i < explodeList.size(); i++){
+			explodeList[i].Update();
+		}
 
 		// Got new positions, now check for collision with enemies
 		// First bullets with enemies
@@ -761,18 +806,14 @@ void update(int value){
 		}// For i
 		// Update bullets, remove bullets that have expired and collided
 		if(collide){
-			globalPlayer.addLives(-1);
-			if(globalPlayer.numberofLives() != 0)
-				globalPlayer.setPlayerStatus(2); // Reviving
-			else {
-				globalPlayer.setPlayerStatus(3); // Dead
+			gameDiff.addLives(-1);
+			if(gameDiff.getLives() == 0)				
+				globalPlayer.setPlayerStatus(2); // Dead			
 			
-			}
-			if(globalPlayer.getPlayerStatus() == 3){
+			if(globalPlayer.getPlayerStatus() == 2){
 				printf("Player has no remaining lives! Game Ended!\n");
-				globalPlayer.setLives(3);
-				gameDiff.reset();
 				resetGame();
+				gameState = 1;
 			}
 
 		}

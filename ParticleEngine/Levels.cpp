@@ -11,6 +11,7 @@ Levels::Levels(){
 	level = 0;
 	boss = false;
 	difficulty = 1;
+	lives = 3;
 	score = 0;
 	killsToLevel = 10;
 }
@@ -48,6 +49,21 @@ void Levels::setScore(int a){
 // Return player score
 int Levels::getScore(){
 	return score;
+}
+
+// Add up player score
+void Levels::addLives(int a){
+	lives += a;	
+}
+
+// Set player score
+void Levels::setLives(int a){
+	lives = a;	
+}
+
+// Return player score
+int Levels::getLives(){
+	return lives;
 }
 
 
@@ -118,6 +134,7 @@ void Levels::reset(){
 	boss = false;
 	difficulty = 1;
 	score = 0;
+	lives = 3;
 	killsToLevel = 10;
 }
 

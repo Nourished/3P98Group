@@ -7,10 +7,9 @@ class Player {
 	
 	protected: 
 		Coordinate pos;		// Position of the player
-		int lives;			// Number of lives
 		float alpha;		// Visibility
 		float colour[3];	// Colour
-		int playerStatus;	// 1 = alive, 2 = reviving, 3 = dead
+		int playerStatus;	// 1 = alive, 2 = dead
 		float size;			// Size of the player, powerups can affect?
 		double speed;		// For powerups
 		int direction;		// Which direction the player is shooting
@@ -22,10 +21,6 @@ class Player {
 
 	void setShooting(bool shoot);
 	bool getShooting();
-
-	int numberofLives();
-	void setLives(int a);
-	void addLives(int a);
 
 	void addYMovement(float yMove);
 	void addXZMovement(float xzMove);
