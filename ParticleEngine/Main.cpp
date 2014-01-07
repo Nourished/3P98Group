@@ -69,10 +69,6 @@ int imgWidth;   // Width of the texture image.
 int imgHeight;  // Height of the texture image.
 GLuint textures[4];
 
-// Window Size
-int windowX = 600;
-int windowY = 500;
-
 
 // Light up the screen
 void light(){
@@ -114,7 +110,7 @@ void resetGame(){
 	for(size_t i = 0; i < eList.size(); i++){		
 		eList.erase(eList.begin() + i);			
 	}
-
+	gameState = 1;
 
 	glutPostRedisplay();
 
@@ -816,7 +812,7 @@ int main(int argc, char** argv)
 	globalPlayer.setPosition(playerSpawn);
 	glutInit(&argc, argv);		
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(windowX, windowY);
+	glutInitWindowSize(600, 500);
 	glutCreateWindow("LAZER GAME");
 	glutDisplayFunc(display);	
 	glutMouseFunc(mouse);
