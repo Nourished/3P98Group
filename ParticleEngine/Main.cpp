@@ -203,7 +203,7 @@ void spawnEnemies(){
 			else if(lvl == 3)
 				et = 2;
 			else
-				et = 1;
+				et = 2;
 			
 			for(int i = 0; i < numS; i++){
 				// Find a random spawn

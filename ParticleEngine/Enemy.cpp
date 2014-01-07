@@ -18,7 +18,9 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 	dir = d;
 	enemyType = bType;
 	age = 1;
-	alpha = 1.0;	
+	alpha = 1.0;
+	enemy2rotation = 0.0;
+
 	switch(enemyType){
 		case 1:	// Default Enemy
 			colour[0] = 0.0;
@@ -32,7 +34,7 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 			colour[1] = 0.8;
 			colour[2] = 0.4;
 			speed = 0.7;
-			size = 2.5;
+			size = 6.0;
 			break;
 		case 3:	// third Enemy type
 			colour[0] = 1.0;
@@ -192,6 +194,13 @@ void Enemy::Update(Coordinate pp, float pa){
 			pos.z = 155 * sinf(radian);
 			
 		}
+
+		if ( enemy2rotation >=360 ){ //update enemy donut rotation
+			 enemy2rotation = 0;
+		}else{
+			enemy2rotation += 10;
+		}
+
 		break;
 	case 3: // third enemy
 		// Move towards player always		
@@ -294,16 +303,36 @@ void Enemy::Render(){
 			glRotatef(-45, 0.0, 0.0, 1.0);
 			glScalef(2.0, 2.0 , 2.0);
 			glutWireTetrahedron();
-			glPopMatrix();
-	
-			break;
-		case 2:
+			glPopMatrix();	
+			break; 
+
+		case 2: //enemy type 2
+			glPushMatrix();
+			glColor4f(1.0, 0.0, 0.0 , 1.0);	
 			glTranslatef(pos.x, pos.y, pos.z);
-			glutSolidCube(size);
+			glutSolidSphere(size/3, 25, 25);	
+			glPopMatrix();
+
+			glPushMatrix();
+			glColor4f(0.0, 1.0, 0.0 , 1.0);		
+			glTranslatef(pos.x, pos.y, pos.z);
+			glRotated(enemy2rotation , 1.0 , 0.0 , 0.0);
+			glutSolidTorus(size/3, size , 50, 50);	 
+			glPopMatrix();
+
+			glPushMatrix();
+			glColor4f(0.0, 0.0, 1.0 , 1.0);
+			glTranslatef(pos.x, pos.y, pos.z);
+			glRotated(enemy2rotation , 0.0 , 1.0 , 0.0);
+			glutSolidTorus(size/3, size*2.0 , 50, 50);	 
+			glPopMatrix();
+
 			break;
-		case 3:
+		case 3: //enemy type 3
+			glPushMatrix();
 			glTranslatef(pos.x, pos.y, pos.z);
 			glutWireSphere(size, 15, 15);
+			glPopMatrix();
 			break;
 	}
 	glPopMatrix();

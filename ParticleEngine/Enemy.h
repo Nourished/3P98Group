@@ -14,7 +14,7 @@ class Enemy {
 		double speed;		// For powerups
 		bool dir;			// True = right, false = left, used for direction
 		float angle;		// Where the Enemy is on the circle
-		
+		float enemy2rotation; //rotation angle for enemies
 
 	public:
 		// create a Enemy with a given type, direction, angle on circle, and position
