@@ -221,7 +221,7 @@ void Enemy::Update(Coordinate pp, float pa){
 		pos.x = 155 * cosf(radian);
 		pos.z = 155 * sinf(radian);
 
-		break;		
+		break;
 	}
 	
 }
@@ -330,10 +330,29 @@ void Enemy::Render(){
 			break;
 		case 3: //enemy type 3
 			glPushMatrix();
-			glTranslatef(pos.x, pos.y, pos.z);
-			glutWireSphere(size, 15, 15);
+			glTranslatef(pos.x, pos.y, pos.z);			
+			glColor3ub(128 , 128 , 128);
+			glRotatef(90.0, 0.0 , 1.0 , 0.0);
+			glBegin(GL_POLYGON);
+			GLUquadric *qobj = gluNewQuadric(); 	
+			gluQuadricTexture(qobj, GL_TRUE);
+			gluQuadricDrawStyle(qobj, GLU_FILL); 
+			glPolygonMode(GL_FRONT, GL_FILL);
+			gluQuadricNormals(qobj, GLU_SMOOTH);
+			gluCylinder(qobj, 2.0, 2.0, 10, 60, 40);
+			glEnd();
+			glPopMatrix();	
+			glPushMatrix();
+			glTranslatef(pos.x, pos.y, pos.z);		
+			glColor3f(1.0 , 0.0 , 0.0);
+			//glTranslatef(0.0, 20.0, 0.0);
+			glRotatef(-90.0, 0.0 , 1.0 , 0.0);
+			glBegin(GL_POLYGON);	
+			glutSolidCone( 2.0 , 2.0, 60 , 40); 
+			glEnd();
 			glPopMatrix();
 			break;
+			
 	}
 	glPopMatrix();
 }

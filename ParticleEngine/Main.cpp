@@ -31,18 +31,11 @@ int playerBulletType = 1; // Powerups alter the bullet types
 float angleOfUser = 0.0;	// Angle to figure out the location of the player on the circle
 
 // Light values, played with them to get a bright green look
-float ambientLight[4] = {0.0, 0.0, 0.0, 1.0};
-GLfloat qaBlack[] = {0.0, 0.0, 0.0, 1.0}; //Black Color
-GLfloat qaGreen[] = {0.0, 1.0, 0.0, 1.0}; //Green Color
-GLfloat qaWhite[] = {1.0, 1.0, 1.0, 1.0}; //White Color
-GLfloat qaRed[] = {1.0, 0.0, 0.0, 1.0}; //White Color 
-    // Set lighting intensity and color
-GLfloat qaAmbientLight[]    = {0.1, 0.1, 0.1, 1.0};
-GLfloat qaDiffuseLight[]    = {1, 1, 1, 1.0};
-GLfloat qaSpecularLight[]    = {1.0, 1.0, 1.0, 1.0};
+
+ // Set lighting intensity and color
 GLfloat emitLight[] = {0.9, 0.9, 0.9, 0.01};
 GLfloat Noemit[] = {0.0, 0.0, 0.0, 1.0}; 
-GLfloat qaLightPosition[]    = {25, 25, 0, 1};
+
 // Objects in picture	Pos X,Y,Z, Vel X,Y,Z
 float pos[5][6] =	{{0, -1, 0, 100, 1, 100},	// Ground position
 					{0, 10, 0, 8, 5, 8},		// Spout 
@@ -67,7 +60,7 @@ float angleSpeed = 0.0;
 int gameState = 1; // 1 - Menu, 2 - Game, 3 - Something else
 
 // Texture gloabls
-void* imgPixels;
+void* texturePic;
 int imgWidth;   // Width of the texture image.
 int imgHeight;  // Height of the texture image.
 GLuint textures[4];
@@ -75,6 +68,24 @@ GLuint textures[4];
 
 // Light up the screen
 void light(){
+	// lighting attributes
+	GLfloat qaAmbientLight[]    = {0.1, 0.1, 0.1, 1.0};
+	GLfloat qaDiffuseLight[]    = {1, 1, 1, 1.0};
+	GLfloat qaSpecularLight[]    = {1.0, 1.0, 1.0, 1.0};
+	GLfloat qaLightPosition[]    = {25, 25, 0, 1};
+	GLfloat ambientLight[4] = {0.0, 0.0, 0.0, 1.0};
+
+	//material attributes
+	GLfloat qaBlack[] = {0.0, 0.0, 0.0, 1.0}; //Black Color
+	GLfloat qaGreen[] = {0.0, 1.0, 0.0, 1.0}; //Green Color
+	GLfloat qaWhite[] = {1.0, 1.0, 1.0, 1.0}; //White Color
+	GLfloat qaRed[] = {1.0, 0.0, 0.0, 1.0}; //White Color 
+	//
+	GLfloat materialAmbient[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat materialDiffuse[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat materialSpecular[] = {0.9, 0.9, 0.5, 1.0};
+	GLfloat materialShininess[] = { 128.0 };
+
 	// Enable lighting
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
@@ -83,12 +94,15 @@ void light(){
 	glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, qaSpecularLight); 
+	glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition);	
 
-	float materialAmbient[] = {1.0, 1.0, 1.0, 1.0};
-	float materialDiffuse[] = {1.0, 1.0, 1.0, 1.0};
-	float materialSpecular[] = {0.9, 0.9, 0.5, 1.0};
-	float materialShininess[] = { 128.0 };
 
+	//material attributes set
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, qaGreen);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, qaGreen);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, qaWhite);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125.0); 	
+	//
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialAmbient);
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialDiffuse);	
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);	
@@ -203,7 +217,7 @@ void spawnEnemies(){
 			else if(lvl == 3)
 				et = 2;
 			else
-				et = 2;
+				et = 3;
 			
 			for(int i = 0; i < numS; i++){
 				// Find a random spawn
@@ -397,17 +411,10 @@ void display(void){
 		glPushMatrix();
 		drawFloor(pos[0]);	
 		glPopMatrix();
-		glDisable(GL_TEXTURE_2D);
-
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, qaGreen);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, qaGreen);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, qaWhite);
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125.0); 
-	
+		glDisable(GL_TEXTURE_2D);	
   
 		// Draw tower
-		glPushMatrix();
-		glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition); 
+		glPushMatrix();		
 		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLight); 
 		drawTower(pos[3], textures);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
@@ -518,14 +525,8 @@ void display(void){
 
 
 	}
-
-
-		
 	//glFlush();
 	glutSwapBuffers();
-	
-	
-
 }
 
 
@@ -704,44 +705,29 @@ void initMenus(){
 
 
 
-// Loads textures
+// Loads textures - function is given a file name and texture id
 void loadTexture(const char *filename, int textID){
 
 	FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename);
-	if(format == FIF_UNKNOWN){
-        printf("Unknown file type for texture image file %s\n");       
+	if(format == FIF_UNKNOWN){  
     }
 
 	FIBITMAP* bitmap = FreeImage_Load(format, filename, 0);
 
-	if(!bitmap){
-        printf("Failed to load image concrete.png \n");       
-    }
 	FIBITMAP* bitmap2 = FreeImage_ConvertTo24Bits(bitmap);
 
 	FreeImage_Unload(bitmap);
-	imgPixels = FreeImage_GetBits(bitmap2);	// Get the data we need!
-    imgWidth = FreeImage_GetWidth(bitmap2);
-    imgHeight = FreeImage_GetHeight(bitmap2);
-
-	if (imgPixels) {
-		printf("\n Texture image loaded from file %s, size %dx%d\n", filename, imgWidth, imgHeight);
-    }else {
-        printf("Failed to get texture data from %s \n", filename);
-    }
-
-	if(imgPixels){ // The image data exists      		 
+	texturePic = FreeImage_GetBits(bitmap2);	
+	
+	if(texturePic){ // if the picture data exists      		 
 		glBindTexture(GL_TEXTURE_2D, textures[textID]);		  
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);   // Linear Min Filter
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // Linear Mag Filter
-		// glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		// glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_REPLACE);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, imgPixels);		 
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);   // Linear Mag Filter	
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, texturePic);		 
 		glEnable(GL_TEXTURE_2D);     
-	}else { // The image data was not loaded, so don't attempt to use the texture.
-        glDisable(GL_TEXTURE_2D);
 	}
 }
+	
 
 // Update the program
 void update(int value){
