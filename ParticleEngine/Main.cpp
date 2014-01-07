@@ -217,7 +217,7 @@ void spawnEnemies(){
 			else if(lvl == 3)
 				et = 2;
 			else
-				et = 3;
+				et = 4;
 			
 			for(int i = 0; i < numS; i++){
 				// Find a random spawn
@@ -231,7 +231,7 @@ void spawnEnemies(){
 					enemySpawn.setY(enemySpawn.getY() - 5);
 				if(enemySpawn.getY() < 1)
 					enemySpawn.setY(enemySpawn.getY() + 5);
-				if(et == 4)
+				if(et == 5)
 					et = randomGen.random(1,3);
 				Enemy newEnemy(et, direction, an, enemySpawn);
 				eList.push_back(newEnemy);				

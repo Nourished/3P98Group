@@ -43,13 +43,13 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 			speed = 0.9;
 			size = 3.5;
 			break;
-	/*	case 4:	// boss Enemy type
+		case 4:	// boss Enemy type
 			colour[0] = 0.6;
 			colour[1] = 0.2;
 			colour[2] = 0.8;
 			speed = 0.9;
 			size = 5.0;
-			break; */
+			break;
 		}	
 }
 
@@ -210,6 +210,7 @@ void Enemy::Update(Coordinate pp, float pa){
 
 		break;
 	case 3: // third enemy and boss
+	case 4:
 		// Move towards player always		
 		// Move y direction closer
 		pos.y = pos.getY() > pp.getY() ? pos.y - 0.2 : pos.y + 0.2;
@@ -236,6 +237,8 @@ void Enemy::Update(Coordinate pp, float pa){
 
 // Render the Enemy
 void Enemy::Render(){
+
+	GLUquadric *qobj;
 
 	glPushMatrix();
 	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it
@@ -340,8 +343,8 @@ void Enemy::Render(){
 			glTranslatef(pos.x, pos.y, pos.z);			
 			glColor3ub(128 , 128 , 128);
 			glRotatef(90.0, 0.0 , 1.0 , 0.0);
-			glBegin(GL_POLYGON);
-			GLUquadric *qobj = gluNewQuadric(); 	
+			qobj = gluNewQuadric(); 
+			glBegin(GL_POLYGON);				
 			gluQuadricTexture(qobj, GL_TRUE);
 			gluQuadricDrawStyle(qobj, GLU_FILL); 
 			glPolygonMode(GL_FRONT, GL_FILL);
@@ -359,15 +362,14 @@ void Enemy::Render(){
 			glEnd();
 			glPopMatrix();
 			break;
-		/* case 4: //boss
+		case 4: //boss
 			glPushMatrix();
 			glTranslatef(pos.x, pos.y, pos.z);			
 			glColor3ub(128 , 128 , 128);
 			glRotatef(90.0, 0.0 , 1.0 , 0.0);
-			glutSolidCube(size);
-			glEnd();
+			glutSolidCube(size);			
 			glPopMatrix();
-			break; */
+			break;
 			
 	}
 	glPopMatrix();
