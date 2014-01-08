@@ -792,7 +792,7 @@ void loadTexture(const char *filename, int textID){
 
 	FIBITMAP* textureConverted = FreeImage_ConvertTo24Bits(textureUnmodified);
 
-	FreeImage_Unload(textureConverted);
+	FreeImage_Unload(textureUnmodified);
 	texturePic = FreeImage_GetBits(textureConverted);	
 	
 	if(texturePic){ // if the picture data exists      		 
@@ -943,10 +943,10 @@ void init(void){
 
 	initMenus();
 	glGenTextures(3, textures); //specify the number of textures
-	//loadTexture("concrete.png",0);
-	//loadTexture("grass.png",1);
-	//loadTexture("brickwall.png",2);
-	//loadTexture("brickwallb.png",3);
+	loadTexture("concrete.png",0);
+	loadTexture("grass.png",1);
+	loadTexture("brickwall.png",2);
+	loadTexture("brickwallb.png",3);
 	
 }
 
