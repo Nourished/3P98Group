@@ -76,7 +76,7 @@ Explode::Explode(int bType, float angleStart, Coordinate p){
 			colour[0] = 1.0;
 			colour[1] = 0.0;
 			colour[2] = 1.0;
-			size = 0.8;
+			size = 8;
 			break;
 		}	
 }

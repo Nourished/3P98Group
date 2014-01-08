@@ -5,6 +5,7 @@
 
 #include "Enemy.h"
 #include "glut.h"
+#include <cstdlib>
 #include <cstdio>
 #include <math.h>
 
@@ -20,6 +21,7 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 	age = 1;
 	alpha = 1.0;
 	enemy2rotation = 0.0;
+	boss = false;
 
 	switch(enemyType){
 		case 1:	// Default Enemy
@@ -34,7 +36,7 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 			colour[1] = 0.8;
 			colour[2] = 0.4;
 			speed = 0.7;
-			size = 6.0;
+			size = 4.0;
 			break;
 		case 3:	// third Enemy type
 			colour[0] = 1.0;
@@ -44,11 +46,11 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 			size = 3.5;
 			break;
 		case 4:	// boss Enemy type
-			colour[0] = 0.6;
-			colour[1] = 0.2;
-			colour[2] = 0.8;
-			speed = 0.9;
-			size = 5.0;
+			colour[0] = 1.0;
+			colour[1] = 0.5;
+			colour[2] = 0.0;
+			speed = 1.5;
+			size = 10.0;
 			break;
 		}	
 }
@@ -63,6 +65,49 @@ int Enemy::getAge(){
 // Sets the age value
 void Enemy::setAge(int aStatus){
 	age = aStatus;
+}
+
+// Returns the boss value
+bool Enemy::getBoss(){
+	return boss;
+}
+
+// Sets the boss boolean
+void Enemy::setBoss(bool b){
+	boss = b;
+}
+
+// Returns the boss health
+int Enemy::getBossHealth(){
+	return bossHealth;
+}
+
+// Sets the boss health
+void Enemy::setBossHealth(int b){
+	bossHealth = b;
+}
+
+// Add b to the bosses health
+void Enemy::addBossHealth(int b){
+	bossHealth += b;
+	if(bossHealth % 5 == 0){
+		addColour(0.0, 0.10, 0.0);
+		relocateBoss();
+	}
+}
+
+// Relocate the boss after taking damage
+void Enemy::relocateBoss(){
+
+	angle += 180 ;
+	if(angle > 360.0)
+		angle -= 360.0;
+
+	float radian = angle * (M_PI/180);
+	pos.x = 155 * cosf(radian);
+	pos.z = 155 * sinf(radian);
+	pos.y = rand() % 140 + 5;
+
 }
 
 // Returns the size of the enemy
@@ -85,14 +130,11 @@ void Enemy::setAngle(float newAngle){
 	angle = newAngle;
 }
 
-// ~~~~~~ IS SPEED NEEDED ??? ~~~~~~~~
-// Set the speed, cannot be set past 8
-void Enemy::setSpeed(double sp){
-	if(sp < 8.01)
-		speed = sp;
-	else
-		speed = 8;	// Max speed
-}//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// Set the speed
+void Enemy::setSpeed(double sp){	
+		speed = sp;	
+}
 
 
 // Set the colour
@@ -100,6 +142,30 @@ void Enemy::setColour(float r, float g, float b){
 	colour[0] = r;
 	colour[1] = g;
 	colour[2] = b;
+}
+
+// Add the colour
+void Enemy::addColour(float r, float g, float b){
+	colour[0] += r;
+	colour[1] += g;
+	colour[2] += b;
+
+	// Max/min colours
+	if(colour[0] > 1.0)
+		colour[0] = 1.0;
+	else if(colour[0] < 0.0)
+		colour[0] = 0.0;
+
+	if(colour[1] > 1.0)
+		colour[1] = 1.0;
+	else if(colour[1] < 0.0)
+		colour[1] = 0.0;
+
+	if(colour[2] > 1.0)
+		colour[2] = 1.0;
+	else if(colour[2] < 0.0)
+		colour[2] = 0.0;
+
 }
 
 // Set the Enemy type
@@ -209,8 +275,27 @@ void Enemy::Update(Coordinate pp, float pa){
 		}
 
 		break;
-	case 3: // third enemy and boss
-	case 4:
+	case 3: // third enemy
+		// Move towards player always		
+		// Move y direction closer
+		pos.y = pos.getY() > pp.getY() ? pos.y - 0.2 : pos.y + 0.2;
+		// Move towards player angle
+		if(pa > angle)
+			angle += 0.45 * speed;
+		else
+			angle -= 0.45 * speed;
+
+		if(angle > 360.0)
+			angle -= 360.0;
+		if(angle < 0.0)
+			angle += 360.0;
+
+		float radian = angle * (M_PI/180);
+		pos.x = 155 * cosf(radian);
+		pos.z = 155 * sinf(radian);
+
+		break;
+	case 4:		// boss
 		// Move towards player always		
 		// Move y direction closer
 		pos.y = pos.getY() > pp.getY() ? pos.y - 0.2 : pos.y + 0.2;
@@ -365,7 +450,7 @@ void Enemy::Render(){
 		case 4: //boss
 			glPushMatrix();
 			glTranslatef(pos.x, pos.y, pos.z);			
-			glColor3ub(128 , 128 , 128);
+			glColor3f(colour[0], colour[1], colour[2]);
 			glRotatef(90.0, 0.0 , 1.0 , 0.0);
 			glutSolidCube(size);			
 			glPopMatrix();

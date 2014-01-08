@@ -150,24 +150,30 @@ int Levels::Update(){
 		if(numEnemiesKilled >= killsToLevel){
 			killsToLevel += 10;
 			level += 1;
-			if(level == 10)
+			if(level > 10){
 				boss = true;
+				level = 10;
+			}
 		}
 		break;
 	case 2: // Medium
 		if(numEnemiesKilled >= killsToLevel){
 			killsToLevel += 15;
 			level += 1;
-			if(level == 10)
+			if(level > 10){
 				boss = true;
+				level = 10;
+			}
 		}
 		break;
 	case 3: // Medium
 		if(numEnemiesKilled >= killsToLevel){
 			killsToLevel += 20;
 			level += 1;
-			if(level == 10)
+			if(level > 10){
 				boss = true;
+				level = 10;
+			}
 		}
 		break;
 		

@@ -116,7 +116,7 @@ void Bullet::Update(){
 	
 	age += 1;
 	
-	if(age > 45)
+	if(age > 55)
 		age = 0;
 	// Move the bullet in a straight line
 	if(dir){

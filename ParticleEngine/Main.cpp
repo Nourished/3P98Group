@@ -193,32 +193,40 @@ float newEnemySpawn(){
 
 // Function used to spawn enemies depending on the game difficulty
 void spawnEnemies(){
-	int gd = gameDiff.getDiff(); // Easy/Medium/Hard
-	int lvl = gameDiff.getLevel(); // Level
-	int newLvl = gameDiff.Update();
-	bool bs = gameDiff.getBoss(); // Boss level
-	int eg = eList.size();		// number of enemies in the game so far
-	int numS;					// Number of new enemies to spawn
-	float an;					// angle of enemy being spawned
-	int et = 1;					// Enemy type to spawn
-	bool direction;				// Direction to face
+	int gd = gameDiff.getDiff();	// Easy/Medium/Hard
+	int lvl = gameDiff.getLevel();	// Level
+	int newLvl = gameDiff.Update(); // Updates the level based on how many enemies have been killed
+	bool bs = gameDiff.getBoss();	// Boss level
+	int eg = eList.size();			// number of enemies in the game so far
+	int numS;						// Number of new enemies to spawn
+	float an;						// angle of enemy being spawned
+	int et = 1;						// Enemy type to spawn
+	bool direction;					// Direction to face
+	int maxNumEnemies;				// Max Number of enemies to be on the board, based on difficulty, and current level
+
 	// Spawn enemies if less than lvl * 5 enemies on the board
-	if( (eg < newLvl * (5 + gd*5)) && newLvl != lvl){
-		numS = (5 + gd*5) - eg;
-		// Get a new spawn location in the bounds
-			
+	//if( (eg < newLvl * (5 + gd*5)) && newLvl != lvl){
+
+	// Constantly spawn enemies as long as there is:
+	// Not a Boss Level
+	// Number of enemies in the game is less than max number of enemies
+	maxNumEnemies = 5 + newLvl * gd;	// GD = 1/2/3, levels go 1-10
+	if(!bs && eg < maxNumEnemies ){		// NOT A BOSS LEVEL, enemies on screen less than MAX AMOUNT
+		numS = maxNumEnemies - eg;
+		// Get a new spawn location in the bounds			
 		
 		switch(gd){
 		case 1:		// Easy
 			if(lvl > 5)
-				et = 4;
+				et = 5;	// Random enemies
 			else if(lvl == 4)
-				et = 3;
+				et = 2;
 			else if(lvl == 3)
+				et = 3;
+			else if(lvl == 2)
 				et = 2;
 			else
-				et = 4;
-			
+				et = 1;
 			for(int i = 0; i < numS; i++){
 				// Find a random spawn
 				an = newEnemySpawn();
@@ -232,14 +240,17 @@ void spawnEnemies(){
 				if(enemySpawn.getY() < 1)
 					enemySpawn.setY(enemySpawn.getY() + 5);
 				if(et == 5)
-					et = randomGen.random(1,3);
+					et = randomGen.random(1,4); // between 1-3
+
+				// Add enemy
 				Enemy newEnemy(et, direction, an, enemySpawn);
 				eList.push_back(newEnemy);				
 			}
 			break;
 		case 2:		// Medium
+		case 3:		// Hard
 			if(lvl > 7)
-				et = 4;
+				et = 5;
 			else if(lvl == 7)
 				et = 3;
 			else if(lvl == 6)
@@ -247,7 +258,7 @@ void spawnEnemies(){
 			else if(lvl == 5)
 				et = 2;
 			else if(lvl == 4)
-				et = 4;
+				et = 5;
 			else if(lvl == 3)
 				et = 3;
 			else if(lvl == 2)
@@ -267,14 +278,41 @@ void spawnEnemies(){
 					enemySpawn.setY(enemySpawn.getY() - 5);
 				if(enemySpawn.getY() < 1)
 					enemySpawn.setY(enemySpawn.getY() + 5);
-				if(et == 4)
-					et = randomGen.random(1,3);
+				if(et == 5)
+					et = randomGen.random(1,4);
 				Enemy newEnemy(et, direction, an, enemySpawn);
 				eList.push_back(newEnemy);				
 			}
 			break;
 		}
 		
+
+	}else if (bs && eg == 0){	// Spawn boss once all enemies are dead and on level 10
+
+		an = newEnemySpawn();
+		// Random direction
+		if(randomGen.random(0.0, 1.0) > 0.5)
+			direction = true;
+		else
+			direction = false;
+		if(enemySpawn.getY() > 150)
+			enemySpawn.setY(enemySpawn.getY() - 5);
+		if(enemySpawn.getY() < 1)
+			enemySpawn.setY(enemySpawn.getY() + 5);
+		
+		Enemy newEnemy(4, direction, an, enemySpawn); // Boss spawn
+		newEnemy.setBoss(true);
+		newEnemy.setBossHealth(10 + (10*gd));	// 20-40 hits depending on difficulty
+		newEnemy.setSpeed(1.0 + (0.4*gd));		// Set boss speed
+		eList.push_back(newEnemy);		
+
+	}else if (bs && eg == 1){	// Boss spawned, move after taking damage
+		if(eList[0].getBossHealth() == 0){
+			printf("game over! you win!");
+			resetGame();
+			gameState = 1;
+		}
+
 
 	}
 
@@ -373,7 +411,10 @@ void display(void){
 
 		
 		sprintf(str, "Score %d", gameDiff.getScore());
-		sprintf (str2, "Level: %d", gameDiff.getLevel());
+		if(gameDiff.getLevel() != 10)
+			sprintf (str2, "Level: %d", gameDiff.getLevel());
+		else
+			sprintf (str2, "Level: BOSS");
 		sprintf (str3, "Lives: %d", gameDiff.getLives());
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
@@ -572,6 +613,10 @@ void keys(unsigned char key, int x, int y){
 		case '2':	// Add 1 enemy	
 			gameState = 2;
 			break;	
+		case '3':
+			gameDiff.setBoss(true);
+			gameDiff.setLevel(10);
+			break;
 		case 'b':	// Back face culling
 			if(backFaceCulling){
 				printf("Back Face Culling Disabled\n");
@@ -763,8 +808,20 @@ void update(int value){
 		// First bullets with enemies
 		for(size_t i = 0; i < bList.size(); i++){
 			for(size_t j = 0; j < eList.size(); j++){
-				// Make sure bullets have not expired or collided so far
-				if(bList[i].getAge() != 0 && eList[j].getAge() != 0){
+				
+				// Boss collisions
+				if(eList[j].getBoss()){
+					if(bList[i].getAge() != 0 && eList[j].getAge() != 0){
+						// Make sure bullets have not expired or collided so far
+						if(cd.collide(bList[i].getPosition(), bList[i].getSize(),
+												eList[j].getPosition(), eList[j].getSize())){
+							// Remove boss health
+							bList[i].setAge(0);
+							eList[j].addBossHealth(-1);
+						}
+					}
+				}else if(bList[i].getAge() != 0 && eList[j].getAge() != 0){
+					// Make sure bullets have not expired or collided so far
 					if(cd.collide(bList[i].getPosition(), bList[i].getSize(),
 											eList[j].getPosition(), eList[j].getSize())){
 						// Collision

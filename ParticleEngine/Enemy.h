@@ -15,6 +15,8 @@ class Enemy {
 		bool dir;			// True = right, false = left, used for direction
 		float angle;		// Where the Enemy is on the circle
 		float enemy2rotation; //rotation angle for enemies
+		bool boss;			// Is he a boss
+		int bossHealth;		// Boss health
 
 	public:
 		// create a Enemy with a given type, direction, angle on circle, and position
@@ -25,6 +27,14 @@ class Enemy {
 	int getAge();
 	void setAge(int l);
 
+	bool getBoss();
+	void setBoss(bool b);
+
+	int getBossHealth();
+	void setBossHealth(int b);
+	void addBossHealth(int b);
+	void relocateBoss();
+
 	void setSize(float newSize);
 	float getSize();
 
@@ -32,7 +42,10 @@ class Enemy {
 	float getAngle();
 
 	void setSpeed(double sp);
+
 	void setColour(float r, float g, float b);
+	void addColour(float r, float g, float b);
+
 	void setEnemyType(int a);
 	int getEnemyType();
 	void setAlpha(double alp);
