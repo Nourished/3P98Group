@@ -286,8 +286,9 @@ void spawnEnemies(){
 		
 		Enemy newEnemy(4, direction, an, enemySpawn); // Boss spawn
 		newEnemy.setBoss(true);
-		newEnemy.setBossHealth(10 + (10*gd));	// 20-40 hits depending on difficulty
-		newEnemy.setSpeed(1.0 + (0.4*gd));		// Set boss speed
+		newEnemy.setBossHealth(50 + (50*gd));	// 100-200 hits depending on difficulty
+		newEnemy.setSpeed(1.0 + (0.6*gd));		// Set boss speed
+		newEnemy.setSize(14 + (2.0*gd));
 		eList.push_back(newEnemy);		
 
 	}else if (bs && eg == 1){	// Boss spawned, move after taking damage
@@ -322,12 +323,18 @@ void checkLists(){
 	// This means they have collided
 	for(size_t i = 0; i < eList.size(); i++){
 		if(eList[i].getAge() == 0){
-			// Add exploding particles
-			Explode ep(1, eList[i].getAngle(), eList[i].getPosition());
-			explodeList.push_back(ep);
-			// Remove the enemy from the list
-			eList.erase(eList.begin() + i);			
-			gameDiff.addKilled(1);
+			if(!eList[i].getBoss()){	// Non bosses
+				// Add exploding particles
+				Explode ep(1, eList[i].getAngle(), eList[i].getPosition());
+				explodeList.push_back(ep);
+				// Remove the enemy from the list
+				eList.erase(eList.begin() + i);			
+				gameDiff.addKilled(1);
+			}else if(eList[i].getBoss()){		// Boss
+				Explode ep(4, eList[i].getAngle(), eList[i].getPosition());
+				eList[i].relocateBoss();
+				eList[i].setAge(1);
+			}
 		}
 	}	
 
@@ -492,8 +499,7 @@ void display(void){
 		scoreBoardText(str, str2, str3);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
 	}else if(gameState == 1){		// Menu State
-		
-		char *start = "New Game";
+				
 		glClearColor(0, 0, 0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -504,58 +510,10 @@ void display(void){
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 
-		// New Game Box
-		glColor4f(0.0, 1.0, 0.0, 1.0);
-		glBegin(GL_LINES);
-		glVertex2f(70.0, 140.0);
-		glVertex2f(70.0, 160.0);
+		// Menu Boxes
+		drawMainMenuBoxes();		
 
-		glVertex2f(70.0, 160.0);
-		glVertex2f(130.0, 160.0);
-
-		glVertex2f(130.0, 160.0);
-		glVertex2f(130.0, 140.0);
-
-		glVertex2f(130.0, 140.0);
-		glVertex2f(70.0, 140.0);
-		glEnd();
-
-		// Quit Box
-		glColor4f(0.0, 1.0, 1.0, 1.0);
-		glBegin(GL_LINES);
-		glVertex2f(70.0, 110.0);
-		glVertex2f(70.0, 130.0);
-
-		glVertex2f(70.0, 130.0);
-		glVertex2f(130.0, 130.0);
-
-		glVertex2f(130.0, 130.0);
-		glVertex2f(130.0, 110.0);
-
-		glVertex2f(130.0, 110.0);
-		glVertex2f(70.0, 110.0);
-		glEnd();
-		
-
-		// New Game
-		glPushMatrix();	
-		glTranslatef(82, 150 ,0); //set to this position with respect to the size of TEXT
-		glColor3f(1.0, 0.0, 0.0);
-		glScalef(0.05, 0.05, 0.05);
-		for(size_t i = 0 ; i < strlen(start); i++) {
-			glutStrokeCharacter(GLUT_STROKE_ROMAN, start[i]);
-		}	
-		glPopMatrix();
-
-		// Quit
-		start = "Quit";
-		glPushMatrix();	
-		glTranslatef(92, 120 ,0); //set to this position with respect to the size of TEXT
-		glScalef(0.05, 0.05, 0.05);
-		for(size_t i = 0 ; i < strlen(start); i++) {
-			glutStrokeCharacter(GLUT_STROKE_ROMAN, start[i]);
-		}	
-		glPopMatrix();
+		drawMainMenuText(gameDiff.getDiff());
 
 
 	}
@@ -689,8 +647,7 @@ void mouse(int button, int state, int x, int y){
 		// Convert mouse positions into window positions
 		dx =  dx / (double) glutGet(GLUT_WINDOW_WIDTH)  * 200;
 		dy = dy / (double) glutGet(GLUT_WINDOW_HEIGHT) * 200;
-		//printf("%d %d\t", x, y);
-		//printf("%f %f\n",  dx, dy);
+		//printf("%.1f %.1f\n",  dx, dy);
 
 		
 		// Check New Game				
@@ -700,8 +657,17 @@ void mouse(int button, int state, int x, int y){
 		}
 		if(dx > 69.0 && dx < 130.0 && dy > 113.0 && dy < 133.0)
 			exit(0);
-			//printf("quit\n");
-		
+			
+		// Difficulties
+		// Easy (40,80) - (70,100)
+		if(dx > 39.9 && dx < 69.9 && dy > 83.7 && dy < 103.7)
+			gameDiff.setDiff(1);
+		// Medium (95,80) - (125,100)
+		if(dx > 84.5 && dx < 114.5 && dy > 83.7 && dy < 103.7)
+			gameDiff.setDiff(2);
+		// Hard (130,80) - (160,100)
+		if(dx > 129.7 && dx < 159.7 && dy > 83.7 && dy < 103.7)
+			gameDiff.setDiff(3);
 
 	}
 
@@ -811,6 +777,8 @@ void update(int value){
 							// Remove boss health
 							bList[i].setAge(0);
 							eList[j].addBossHealth(-1);
+							Explode ep(4, eList[j].getAngle(), eList[j].getPosition());
+							explodeList.push_back(ep);
 						}
 					}
 				}else if(bList[i].getAge() != 0 && eList[j].getAge() != 0){

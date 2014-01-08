@@ -132,7 +132,6 @@ void Levels::reset(){
 	numEnemiesKilled = 0;
 	level = 0;
 	boss = false;
-	difficulty = 1;
 	score = 0;
 	lives = 3;
 	killsToLevel = 10;

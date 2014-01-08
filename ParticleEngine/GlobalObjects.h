@@ -2,6 +2,7 @@
 
 #include "Coordinate.h"
 #pragma once
+
 void drawTower(float c[6], GLuint textures[4]){
 	float w = c[3];
 	float h = c[4];
@@ -219,6 +220,160 @@ void drawFloor(float c[6]){
     glEnd();
 }
 
+// Draws boxes around the menu options
+void drawMainMenuBoxes(){
+
+	// New Game Box  
+	glColor4f(0.0, 1.0, 0.0, 1.0);
+	glBegin(GL_LINES);
+	glVertex2f(70.0, 140.0);
+	glVertex2f(70.0, 160.0);
+
+	glVertex2f(70.0, 160.0);
+	glVertex2f(130.0, 160.0);
+
+	glVertex2f(130.0, 160.0);
+	glVertex2f(130.0, 140.0);
+
+	glVertex2f(130.0, 140.0);
+	glVertex2f(70.0, 140.0);
+	glEnd();
+
+	// Quit Box  
+	glColor4f(0.0, 1.0, 1.0, 1.0);
+	glBegin(GL_LINES);
+	glVertex2f(70.0, 110.0);
+	glVertex2f(70.0, 130.0);
+
+	glVertex2f(70.0, 130.0);
+	glVertex2f(130.0, 130.0);
+
+	glVertex2f(130.0, 130.0);
+	glVertex2f(130.0, 110.0);
+
+	glVertex2f(130.0, 110.0);
+	glVertex2f(70.0, 110.0);
+	glEnd();
+
+	// Easy Box (40,80) - (70,100)
+	glColor4f(0.0, 0.5, 0.5, 1.0);
+	glBegin(GL_LINES);
+	glVertex2f(40.0, 80.0);
+	glVertex2f(40.0, 100.0);
+
+	glVertex2f(40.0, 100.0);
+	glVertex2f(70.0, 100.0);
+
+	glVertex2f(70.0, 100.0);
+	glVertex2f(70.0, 80.0);
+
+	glVertex2f(70.0, 80.0);
+	glVertex2f(40.0, 80.0);
+	glEnd();
+
+	// Medium Box (85,80) - (115,100)
+	glColor4f(1.0, 0.5, 0.0, 1.0);
+	glBegin(GL_LINES);
+	glVertex2f(85.0, 80.0);
+	glVertex2f(85.0, 100.0);
+
+	glVertex2f(85.0, 100.0);
+	glVertex2f(115.0, 100.0);
+
+	glVertex2f(115.0, 100.0);
+	glVertex2f(115.0, 80.0);
+
+	glVertex2f(115.0, 80.0);
+	glVertex2f(85.0, 80.0);
+	glEnd();
+
+	// Hard Box
+	glColor4f(1.0, 0.0, 0.0, 1.0);
+	glBegin(GL_LINES);
+	glVertex2f(130.0, 80.0);
+	glVertex2f(130.0, 100.0);
+
+	glVertex2f(130.0, 100.0);
+	glVertex2f(160.0, 100.0);
+
+	glVertex2f(160.0, 100.0);
+	glVertex2f(160.0, 80.0);
+
+	glVertex2f(160.0, 80.0);
+	glVertex2f(130.0, 80.0);
+	glEnd();
+	
+}
 
 
+void drawMainMenuText(int gd){
+
+	char *text = "New Game";
+	// New Game  (70,140) - (130,160)
+	glPushMatrix();	
+	glTranslatef(82, 150 ,0); //set to this position with respect to the size of TEXT
+	glColor3f(1.0, 0.0, 0.0);
+	glScalef(0.05, 0.05, 0.05);
+	for(size_t i = 0 ; i < strlen(text); i++) {
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, text[i]);
+	}	
+	glPopMatrix();
+
+	// Quit (70,110) - (130,130)
+	text = "Quit";
+	glPushMatrix();	
+	glTranslatef(92, 120 ,0); //set to this position with respect to the size of TEXT
+	glScalef(0.05, 0.05, 0.05);
+	for(size_t i = 0 ; i < strlen(text); i++) {
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, text[i]);
+	}	
+	glPopMatrix();
+
+	// Easy (40,80) - (70,100)
+	
+	
+	if(gd == 1)
+		text = "Easy !";
+	else
+		text = "Easy";
+		
+	glPushMatrix();	
+	glColor3f(0.0, 0.5, 0.5);
+	glTranslatef(44, 90 ,0); //set to this position with respect to the size of TEXT
+	glScalef(0.05, 0.05, 0.05);
+	for(size_t i = 0 ; i < strlen(text); i++) {
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, text[i]);
+	}	
+	glPopMatrix();
+
+	// Medium (95,80) - (125,100)
+	if(gd == 2)
+		text = "Medium !";
+	else
+		text = "Medium";
+	glPushMatrix();
+	glColor3f(1.0, 0.5, 0.0);
+	glTranslatef(85, 90 ,0); //set to this position with respect to the size of TEXT
+	glScalef(0.05, 0.05, 0.05);
+	for(size_t i = 0 ; i < strlen(text); i++) {
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, text[i]);
+	}	
+	glPopMatrix();
+
+	// Hard (130,80) - (160,100)
+	if(gd == 3)
+		text = "Hard !";
+	else
+		text = "Hard";
+	glPushMatrix();	
+	glColor3f(1.0, 0.0, 0.0);
+	glTranslatef(134, 90 ,0); //set to this position with respect to the size of TEXT
+	glScalef(0.05, 0.05, 0.05);
+	for(size_t i = 0 ; i < strlen(text); i++) {
+		glutStrokeCharacter(GLUT_STROKE_ROMAN, text[i]);
+	}	
+	glPopMatrix();
+
+
+}
 

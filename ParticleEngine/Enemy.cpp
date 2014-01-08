@@ -97,9 +97,10 @@ void Enemy::setBossHealth(int b){
 // Add b to the bosses health
 void Enemy::addBossHealth(int b){
 	bossHealth += b;
-	if(bossHealth % 5 == 0){
-		addColour(0.0, 0.10, 0.0);
+	if(bossHealth % 10 == 0){
+		addColour(0.0, -0.05, 0.0);
 		relocateBoss();
+		size--;
 	}
 }
 
@@ -344,11 +345,8 @@ void Enemy::Update(Coordinate pp, float pa){
 // Render the Enemy
 void Enemy::Render(){
 
-	GLUquadric *qobj;
 
-	glPushMatrix();
-	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it
-	//glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
+
 	switch (enemyType){					// Draw the specific type of Enemy
 		case 1:
 			glPushMatrix();
@@ -477,7 +475,6 @@ void Enemy::Render(){
 			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, NoEmission);
 			glPopMatrix();
 
-			glPopMatrix();
 			break;
 		case 4: //boss
 			glPushMatrix();
@@ -490,5 +487,5 @@ void Enemy::Render(){
 			break;
 			
 	}
-	glPopMatrix();
+	
 }

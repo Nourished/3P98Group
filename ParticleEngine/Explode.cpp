@@ -75,8 +75,42 @@ Explode::Explode(int bType, float angleStart, Coordinate p){
 		case 4:	// Boss Explode type
 			colour[0] = 1.0;
 			colour[1] = 0.0;
-			colour[2] = 1.0;
-			size = 8;
+			colour[2] = 0.0;
+			moveDist = 0.3;
+			size = 2;
+			// Front Right
+			particles[0].setX(pos.x + size);
+			particles[0].setY(pos.y + size);
+			particles[0].setZ(pos.z + size);
+			// Top back right
+			particles[1].setX(pos.x + size);
+			particles[1].setY(pos.y + size);
+			particles[1].setZ(pos.z - size);
+			// top front left
+			particles[2].setX(pos.x - size);
+			particles[2].setY(pos.y + size);
+			particles[2].setZ(pos.z + size);
+			// top back left
+			particles[3].setX(pos.x - size);
+			particles[3].setY(pos.y + size);
+			particles[3].setZ(pos.z - size);
+			// bottom front right
+			particles[4].setX(pos.x + size);
+			particles[4].setY(pos.y - size);
+			particles[4].setZ(pos.z + size);
+			// bottom back right
+			particles[5].setX(pos.x + size);
+			particles[5].setY(pos.y - size);
+			particles[5].setZ(pos.z - size);
+			// bottom front left
+			particles[6].setX(pos.x - size);
+			particles[6].setY(pos.y - size);
+			particles[6].setZ(pos.z + size);
+			// bottom back left
+			particles[7].setX(pos.x - size);
+			particles[7].setY(pos.y - size);
+			particles[7].setZ(pos.z - size);
+			
 			break;
 		}	
 }
@@ -189,15 +223,15 @@ void Explode::Render(){
 	glColor4f(colour[0], colour[1], colour[2], 1.0);	// normal colour
 
 	switch (ExplodeType){					// Draw the specific type of Explode
-	case 1:
-		for(int i = 0; i < 8; i++){
-			glPushMatrix();
-			glTranslated(particles[i].x, particles[i].y, particles[i].z);
-			//glRotatef(-45, 0.0, 0.0, 1.0);
-			glScalef(2.0, 2.0 , 2.0);
-			glutWireTetrahedron();
-			glPopMatrix();
-		}
+		case 1:
+			for(int i = 0; i < 8; i++){
+				glPushMatrix();
+				glTranslated(particles[i].x, particles[i].y, particles[i].z);
+				//glRotatef(-45, 0.0, 0.0, 1.0);
+				glScalef(2.0, 2.0 , 2.0);
+				glutWireTetrahedron();
+				glPopMatrix();
+			}
 			break;
 		case 2:
 			glPushMatrix();
@@ -211,5 +245,17 @@ void Explode::Render(){
 			glutWireSphere(size, 15, 15);
 			glPopMatrix();
 			break;
+		case 4:
+			glColor3f(colour[0], colour[1], colour[2]);
+			for(int i = 0; i < 4; i++){
+				glPushMatrix();
+				glTranslated(particles[i].x, particles[i].y, particles[i].z);
+				glScalef(2.0, 2.0 , 2.0);
+				glutWireTetrahedron();
+				//glutSolidCube(size);
+				glPopMatrix();
+			}
+			break;
+
 	}
 }
