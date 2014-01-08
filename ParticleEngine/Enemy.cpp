@@ -62,8 +62,6 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 		}	
 }
 
-
-
 // Returns the age value
 int Enemy::getAge(){
 	return age;
@@ -138,12 +136,10 @@ void Enemy::setAngle(float newAngle){
 	angle = newAngle;
 }
 
-
 // Set the speed
 void Enemy::setSpeed(double sp){	
 		speed = sp;	
 }
-
 
 // Set the colour
 void Enemy::setColour(float r, float g, float b){
@@ -191,7 +187,6 @@ void Enemy::setAlpha(double alp){
 	alpha = alp;
 }
 
-
 // Set the position
 void Enemy::setPosition(Coordinate p){
 	pos = p;
@@ -202,8 +197,7 @@ Coordinate Enemy::getPosition(){
 	return pos;
 }
 
-
-// update the Enemy
+// Update the enemy
 // This will calculate the new pos for the enemy
 // Depending on the enemy, goes in a straight line or heads towards the player
 void Enemy::Update(Coordinate pp, float pa){
@@ -214,7 +208,7 @@ void Enemy::Update(Coordinate pp, float pa){
 	case 1:	// First enemy type
 		// Move the Enemy in a straight line
 		if(dir){
-			// Right
+			// Left
 			angle += 1.4 * speed;
 			if(angle > 360.0)
 				angle -= 360.0;
@@ -222,7 +216,7 @@ void Enemy::Update(Coordinate pp, float pa){
 			pos.x = 155 * cosf(radian);
 			pos.z = 155 * sinf(radian);
 		}else {
-			// Left
+			// Right
 			angle -= 1.4 * speed;
 			if(angle < 0.0)
 				angle += 360.0;
@@ -273,8 +267,7 @@ void Enemy::Update(Coordinate pp, float pa){
 				angle += 360.0;
 			 radian = angle * (M_PI/180);
 			pos.x = 155 * cosf(radian);
-			pos.z = 155 * sinf(radian);
-			
+			pos.z = 155 * sinf(radian);			
 		}
 
 		if ( enemy2Rotation >=360 ){ //update enemy donut rotation
@@ -282,7 +275,6 @@ void Enemy::Update(Coordinate pp, float pa){
 		}else{
 			enemy2Rotation += 10;
 		}
-		
 
 		break;
 	case 3: // third enemy
@@ -337,15 +329,11 @@ void Enemy::Update(Coordinate pp, float pa){
 		}
 
 		break;
-	}
-	
+	}	
 }
-
 
 // Render the Enemy
 void Enemy::Render(){
-
-
 
 	switch (enemyType){					// Draw the specific type of Enemy
 		case 1:
@@ -422,8 +410,8 @@ void Enemy::Render(){
 			glutWireTetrahedron();
 			glPopMatrix();	
 			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, NoEmission);
-			break; 
 
+			break; 
 		case 2: //enemy type 2
 			glPushMatrix();
 			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLightRed); 
@@ -453,9 +441,6 @@ void Enemy::Render(){
 
 			break;
 		case 3: //enemy type 3
-			
-			
-
 			glPushMatrix();
 			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLightRed); 
 			glColor4f(1.0, 0.0, 1.0 , 1.0);	
@@ -484,8 +469,7 @@ void Enemy::Render(){
 			glRotatef(90.0, 0.0 , 1.0 , 0.0);
 			glutSolidCube(size);			
 			glPopMatrix();
-			break;
-			
-	}
-	
+
+			break;			
+	}	
 }

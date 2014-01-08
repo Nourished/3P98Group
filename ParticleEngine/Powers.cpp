@@ -1,7 +1,6 @@
 // Powers.cpp
 // Powers class used for easier access in vector lists
 
-
 #define _USE_MATH_DEFINES	// Pi variable
 
 #include "Powers.h"
@@ -80,48 +79,47 @@ void Powers::Update(){
 
 }
 
-
 // Render the Powers
-void Powers::Render(){
+void Powers::Render(){	
 	
-	
-	
-	switch (powerType){					// Draw the specific type of Powers
+	switch (powerType){				 // Draw the specific type of Powers
 		case 1: //Power type 1
 			glPushMatrix();
-			glTranslated(pos.x, pos.y, pos.z);	
-			glutSolidTeapot(size*2);
+			glTranslated(pos.x, pos.y, pos.z);	 // Translate to its position
+			glutSolidTeapot(size*2); //Draws teapot inside donut
 			glPopMatrix();
 			glPushMatrix();		
-			glTranslated(pos.x, pos.y, pos.z);	
-			glColor4f(1.0, 1.0, 0.0 , 1.0);			
+			glTranslated(pos.x, pos.y, pos.z);	// Translate to its position
+			glColor4f(1.0, 1.0, 0.0 , 1.0);		// Set Color	
 			glRotated(powerRotate , 0.0 , 1.0 , 0.0);
-			glutSolidTorus(size, size*3 , 50, 50);	  //change 4.0 to size in project			
-			glPopMatrix();				
+			glutSolidTorus(size, size*3 , 50, 50);	  			
+			glPopMatrix();	
+
 			break;
 		case 2: //Power type 2
 			glPushMatrix();
-			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
-			glutSolidTeapot(size*2);
+			glTranslated(pos.x, pos.y, pos.z);	// Translate to its position
+			glutSolidTeapot(size*2);   //Draws teapot inside donut
 			glPopMatrix();
 			glPushMatrix();		
-			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
-			glColor4f(1.0, 1.0, 0.0 , 1.0);			
-			glRotated(powerRotate , 0.0 , 1.0 , 0.0);
-			glutSolidTorus(size, size*3 , 50, 50);	  			
+			glTranslated(pos.x, pos.y, pos.z);	// Translate to its position
+			glColor4f(1.0, 1.0, 0.0 , 1.0);		// Set Color	
+			glRotated(powerRotate , 0.0 , 1.0 , 0.0); // Draw at new rotation
+			glutSolidTorus(size, size*3 , 50, 50);	  // Draws a donut		
 			glPopMatrix();				
 			break;
 		case 3: //Power type 3
 			glPushMatrix();
 			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
-			glutSolidTeapot(size*2);
+			glutSolidTeapot(size*2);	//Draws teapot inside donut
 			glPopMatrix();
 			glPushMatrix();	
 			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
-			glColor4f(1.0, 1.0, 0.0 , 1.0);			
-			glRotated(powerRotate , 0.0 , 1.0 , 0.0);
-			glutSolidTorus(size, size*3 , 50, 50);	  		
-			glPopMatrix();	
+			glColor4f(1.0, 1.0, 0.0 , 1.0);				// Set Color
+			glRotated(powerRotate , 0.0 , 1.0 , 0.0);	// Draw at new rotation
+			glutSolidTorus(size, size*3 , 50, 50);	  	// Draws a donut	
+			glPopMatrix();
+
 			break;
 	}	
 

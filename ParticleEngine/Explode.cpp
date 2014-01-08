@@ -115,8 +115,6 @@ Explode::Explode(int bType, float angleStart, Coordinate p){
 		}	
 }
 
-
-
 // Returns the age value
 int Explode::getAge(){
 	return age;
@@ -163,7 +161,6 @@ void Explode::setPosition(Coordinate p){
 Coordinate Explode::getPosition(){
 	return pos;
 }
-
 
 // update the Explode
 // This will calculate the new pos and velocity based on acceleration and speed
@@ -215,10 +212,8 @@ void Explode::Update(){
 	
 }
 
-
 // Render the Explode
 void Explode::Render(){
-
 		
 	glColor4f(colour[0], colour[1], colour[2], 1.0);	// normal colour
 
@@ -227,23 +222,25 @@ void Explode::Render(){
 			for(int i = 0; i < 8; i++){
 				glPushMatrix();
 				glTranslated(particles[i].x, particles[i].y, particles[i].z);
-				//glRotatef(-45, 0.0, 0.0, 1.0);
 				glScalef(2.0, 2.0 , 2.0);
 				glutWireTetrahedron();
 				glPopMatrix();
 			}
+
 			break;
 		case 2:
 			glPushMatrix();
 			glTranslated(pos.x, pos.y, pos.z);
 			glutSolidCube(size);
 			glPopMatrix();
+
 			break;
 		case 3:
 			glPushMatrix();
 			glTranslated(pos.x, pos.y, pos.z);
 			glutWireSphere(size, 15, 15);
 			glPopMatrix();
+
 			break;
 		case 4:
 			glColor3f(colour[0], colour[1], colour[2]);
@@ -252,9 +249,9 @@ void Explode::Render(){
 				glTranslated(particles[i].x, particles[i].y, particles[i].z);
 				glScalef(2.0, 2.0 , 2.0);
 				glutWireTetrahedron();
-				//glutSolidCube(size);
 				glPopMatrix();
 			}
+
 			break;
 
 	}

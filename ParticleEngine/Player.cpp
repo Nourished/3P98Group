@@ -28,6 +28,7 @@ void Player::setShooting(bool shoot){
 	shooting = shoot;
 }
 
+// If the player weapon status
 bool Player::getShooting(){
 	return shooting;
 }
@@ -39,7 +40,6 @@ void Player::addYMovement(float yMove){
 		pos.y = 150;
 	if(pos.y < 1.0)
 		pos.y = 1.0;
-
 }
 
 // Add/Subtract from the left/right movement

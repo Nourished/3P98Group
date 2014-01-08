@@ -66,7 +66,6 @@ void Bullet::setSize(float newSize){
 	size = newSize;
 }
 
-
 // Set the speed
 void Bullet::setSpeed(double sp){	
 	speed = sp;
@@ -137,7 +136,6 @@ void Bullet::Update(){
 		}
 	
 }
-
 
 // Render the Bullet
 void Bullet::Render(){
@@ -217,8 +215,5 @@ void Bullet::Render(){
 				glutSolidTetrahedron();
 			glPopMatrix();
 			break;
-	}
-	
-
-	
+	}	
 }

@@ -62,7 +62,6 @@ void Levels::addPowerScore(int a){
 	nextPowerScore += a;	
 }
 
-
 // Get next powerup spawn score
 int Levels::getPowerScore(){
 	return nextPowerScore;
@@ -82,7 +81,6 @@ void Levels::setLives(int a){
 int Levels::getLives(){
 	return lives;
 }
-
 
 // Increase the level by a
 void Levels::increaseLevel(int a){
@@ -183,7 +181,7 @@ int Levels::Update(){
 			}
 		}
 		break;
-	case 3: // Medium
+	case 3: // Hard
 		if(numEnemiesKilled >= killsToLevel){
 			killsToLevel += 20;
 			level += 1;

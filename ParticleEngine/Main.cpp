@@ -36,7 +36,7 @@ float angleOfUser = 0.0;	// Angle to figure out the location of the player on th
 
 // Light values, played with them to get a bright green look
 
- // Set lighting intensity and color
+ // Set emission material colours
 GLfloat emitColorRed[] = {1.0, 0.0, 0.0, 1.0};
 GLfloat emitColorBlue[] = {0.0, 0.0, 1.0, 1.0};
 GLfloat Noemit[] = {0.0, 0.0, 0.0, 1.0}; 
@@ -225,16 +225,14 @@ void spawnPowers(){
 		powerSpawn.setY(randomGen.random(2, 148));
 		powerSpawn.setX(155 * cosf(radian));
 		powerSpawn.setZ(155 * sinf(radian));
-
 		Powers powerUp(randomGen.random(1, 4), radian, powerSpawn);
 		pList.push_back(powerUp);
-	}
-
-	
+	}	
 }
 
 // Function used to spawn enemies depending on the game difficulty
 void spawnEnemies(){
+
 	int gd = gameDiff.getDiff();	// Easy/Medium/Hard
 	int lvl = gameDiff.getLevel();	// Level
 	int newLvl = gameDiff.Update(); // Updates the level based on how many enemies have been killed
@@ -352,11 +350,7 @@ void spawnEnemies(){
 			resetGame();
 			gameState = 1;
 		}
-
-
 	}
-
-
 }
 
 
@@ -408,14 +402,10 @@ void checkLists(){
 			pList.erase(pList.begin() + i);			
 		}
 	}	
-
-
 }
 
 // Text to the screen
-void scoreBoardText(char* score, char* level, char* lives)
-{
-
+void scoreBoardText(char* score, char* level, char* lives){
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -449,10 +439,8 @@ void scoreBoardText(char* score, char* level, char* lives)
     for(size_t i = 0 ; i < strlen(lives); i++) {
         glutStrokeCharacter(GLUT_STROKE_ROMAN, lives[i]);
     }	
-    glPopMatrix();
-	
+    glPopMatrix();	
 }
-
 
 // Display method
 void display(void){
@@ -596,7 +584,6 @@ void display(void){
 		glPopMatrix();
 
 		//display score
-
 		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitColorBlue);	
 		scoreBoardText(str, str2, str3);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
@@ -613,17 +600,12 @@ void display(void){
 		glLoadIdentity();
 
 		// Menu Boxes
-		drawMainMenuBoxes();		
-
+		drawMainMenuBoxes();
 		drawMainMenuText(gameDiff.getDiff());
-
-
 	}
 	//glFlush();
 	glutSwapBuffers();
 }
-
-
 
 void keyUp (unsigned char key, int x, int y) {  
 	keyStates[key] = false; // Set the state of the current key to not pressed  
@@ -639,7 +621,7 @@ void keys(unsigned char key, int x, int y){
 			return;
 			break;
 		case 'r':	// Reset keep same amount of particles
-							// Reset camera angles, speed, spawn settings
+					// Reset camera angles, speed, spawn settings
 			angle = 10;
 			axisRotate = 1;
 			angleSpeed = 0;			
@@ -696,7 +678,6 @@ void keys(unsigned char key, int x, int y){
 	}
 }
 
-
 // Menu for the particle type
 void menuParticleType(int value){	
 	
@@ -712,9 +693,7 @@ void menuParticleType(int value){
 	if(enemySpawn.getY() < 1)
 		enemySpawn.setY(enemySpawn.getY() + 5);
 	Enemy newEnemy(value, direction, an, enemySpawn);
-	eList.push_back(newEnemy);		
-	
-	
+	eList.push_back(newEnemy);	
 }
 
 // Menu for quitting
@@ -749,8 +728,6 @@ void mouse(int button, int state, int x, int y){
 		// Convert mouse positions into window positions
 		dx =  dx / (double) glutGet(GLUT_WINDOW_WIDTH)  * 200;
 		dy = dy / (double) glutGet(GLUT_WINDOW_HEIGHT) * 200;
-		//printf("%.1f %.1f\n",  dx, dy);
-
 		
 		// Check New Game				
 		if(dx > 69.0 && dx < 130.0 && dy > 142.0 && dy < 163.0){
@@ -770,10 +747,7 @@ void mouse(int button, int state, int x, int y){
 		// Hard (130,80) - (160,100)
 		if(dx > 129.7 && dx < 159.7 && dy > 83.7 && dy < 103.7)
 			gameDiff.setDiff(3);
-
-	}
-
-
+	}	
 }
 
 // Initalize the menus and print the commands
@@ -794,7 +768,6 @@ void initMenus(){
 	glutAddMenuEntry("Spawn Enemy 2", 2);
 	glutAddMenuEntry("Spawn Enemy 3", 3);
 
-
 	// Lighting menu
 	glutCreateMenu(menuLight);
 	glutAddMenuEntry("On", 1);
@@ -809,21 +782,17 @@ void initMenus(){
 	glutAttachMenu(GLUT_MIDDLE_BUTTON);
 }
 
-
-
 // Loads textures - function is given a file name and texture id
 void loadTexture(const char *filename, int textID){
 
-	FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename);
-	if(format == FIF_UNKNOWN){  
-    }
+	FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename);	
 
-	FIBITMAP* bitmap = FreeImage_Load(format, filename, 0);
+	FIBITMAP* textureUnmodified = FreeImage_Load(format, filename, 0);
 
-	FIBITMAP* bitmap2 = FreeImage_ConvertTo24Bits(bitmap);
+	FIBITMAP* textureConverted = FreeImage_ConvertTo24Bits(textureUnmodified);
 
-	FreeImage_Unload(bitmap);
-	texturePic = FreeImage_GetBits(bitmap2);	
+	FreeImage_Unload(textureConverted);
+	texturePic = FreeImage_GetBits(textureConverted);	
 	
 	if(texturePic){ // if the picture data exists      		 
 		glBindTexture(GL_TEXTURE_2D, textures[textID]);		  
@@ -832,8 +801,7 @@ void loadTexture(const char *filename, int textID){
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 256, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, texturePic);		 
 		glEnable(GL_TEXTURE_2D);     
 	}
-}
-	
+}	
 
 // Update the program
 void update(int value){
@@ -969,7 +937,7 @@ void update(int value){
 	glutTimerFunc(10, update, 0);
 }
 
-// Basic initalizations - menu setup and loading textures only
+// Basic initalizations - menu setup and loading textures 
 void init(void){	
 
 	initMenus();
@@ -982,8 +950,8 @@ void init(void){
 }
 
 // Main
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv){
+
 	globalPlayer.setPosition(playerSpawn);
 	glutInit(&argc, argv);		
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);

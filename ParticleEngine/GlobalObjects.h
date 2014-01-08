@@ -93,22 +93,11 @@ void drawTower(float c[6], GLuint textures[4]){
 	glColor4f(1.0, 0.0, 0.0, 1); // red	
 	glTranslatef(c[0], c[1]+h, c[2]);
 	glRotatef(90 , 1.0 , 0.0, 0.0);	
-	glBegin(GL_POLYGON);
-	//gluQuadricTexture 
-		
+	glBegin(GL_POLYGON);		
 	GLUquadric *qobj = gluNewQuadric(); 	
-	gluQuadricTexture(qobj, GL_FALSE);
-	//gluQuadricDrawStyle(qobj, GLU_FILL); 
-	//glPolygonMode(GL_FRONT, GL_FILL);
-	gluQuadricNormals(qobj, GLU_SMOOTH);
-	//glScaled(0.1, 0.1, 0.1);
-    //gluCylinder(qobj, 150, 150, 10, 60, 40);
+	gluQuadricTexture(qobj, GL_FALSE);	
+	gluQuadricNormals(qobj, GLU_SMOOTH);	
 	gluSphere(qobj, 25,15,15);
-
-	//glColor4f(1.0, 0.0, 0.0, 1);
-	//glTranslatef(c[0], c[1]+h, c[2]);
-	//glutSolidSphere(25, 15, 15);
-	//glDisable(GL_TEXTURE_2D);
 	glDisable(GL_TEXTURE_2D);
 
 	// triangle
@@ -117,9 +106,7 @@ void drawTower(float c[6], GLuint textures[4]){
 	glTranslatef(0, 35, 0);
 	glScalef(2.0, 25.0, 2.0);
 	
-	glutSolidCube(1.0);
-
-	
+	glutSolidCube(1.0);	
 
 }
 
@@ -208,15 +195,12 @@ void drawFloor(float c[6]){
 	glColor4f(1.0, 1.0, 0, 1); // green	
 	glRotatef(90 , 1.0 , 0.0, 0.0);	
 	glBegin(GL_POLYGON);
-	//gluQuadricTexture 
-		
 	GLUquadric *qobj = gluNewQuadric(); 	
 	gluQuadricTexture(qobj, GL_TRUE);
 	gluQuadricDrawStyle(qobj, GLU_FILL); 
 	glPolygonMode(GL_FRONT, GL_FILL);
 	gluQuadricNormals(qobj, GLU_SMOOTH);
-	//glScaled(0.1, 0.1, 0.1);
-    gluCylinder(qobj, 150, 150, 10, 60, 40);
+	gluCylinder(qobj, 150, 150, 10, 60, 40);
     glEnd();
 }
 
@@ -329,8 +313,7 @@ void drawMainMenuText(int gd){
 	}	
 	glPopMatrix();
 
-	// Easy (40,80) - (70,100)
-	
+	// Easy (40,80) - (70,100)	
 	
 	if(gd == 1)
 		text = "Easy !";
@@ -373,7 +356,5 @@ void drawMainMenuText(int gd){
 		glutStrokeCharacter(GLUT_STROKE_ROMAN, text[i]);
 	}	
 	glPopMatrix();
-
-
 }
 
