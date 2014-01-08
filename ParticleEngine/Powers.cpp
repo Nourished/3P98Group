@@ -17,27 +17,27 @@ Powers::Powers(int pt, float angleStart, Coordinate p){
 	pos = p;
 	angle = angleStart;
 	powerType = pt;
-	
+	powerRotate = 0.0;
 	switch(powerType){
 		case 1:	// First power
 			colour[0] = 1.0;
 			colour[1] = 0.0;
 			colour[2] = 0.0;
-			age = 100;
+			age = 500;
 			size = 2.0;
 			break;
 		case 2:	// Second power
 			colour[0] = 0.3;
 			colour[1] = 0.5;
 			colour[2] = 0.0;
-			age = 75;
+			age = 500;
 			size = 2.0;
 			break;
 		case 3:	// third Power
 			colour[0] = 1.0;
 			colour[1] = 0.0;
 			colour[2] = 1.0;
-			age = 150;
+			age = 500;
 			size = 3.0;
 			break;
 		}	
@@ -102,6 +102,12 @@ float Powers::getAngle(){
 void Powers::Update(){
 	
 	age -= 1;
+
+	if ( powerRotate >=360 ){ //update enemy donut rotation
+			 powerRotate = 0;
+		}else{
+			powerRotate += 10;
+		}
 	// Doesnt move
 }
 
@@ -116,20 +122,38 @@ void Powers::Render(){
 	switch (powerType){					// Draw the specific type of Powers
 		case 1: //Power type 1
 			glPushMatrix();
-			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
-			// draw here
+			glTranslated(pos.x, pos.y, pos.z);	
+			glutSolidTeapot(size*2);
+			glPopMatrix();
+			glPushMatrix();		
+			glTranslated(pos.x, pos.y, pos.z);	
+			glColor4f(1.0, 1.0, 0.0 , 1.0);			
+			glRotated(powerRotate , 0.0 , 1.0 , 0.0);
+			glutSolidTorus(size, size*3 , 50, 50);	  //change 4.0 to size in project			
 			glPopMatrix();				
 			break;
 		case 2: //Power type 2
 			glPushMatrix();
-			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position			
+			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
+			glutSolidTeapot(size*2);
 			glPopMatrix();
-						
-			break;
+			glPushMatrix();		
+			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
+			glColor4f(1.0, 1.0, 0.0 , 1.0);			
+			glRotated(powerRotate , 0.0 , 1.0 , 0.0);
+			glutSolidTorus(size, size*3 , 50, 50);	  			
+			glPopMatrix();				break;
 		case 3: //Power type 3
 			glPushMatrix();
-			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position			
+			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
+			glutSolidTeapot(size*2);
 			glPopMatrix();
+			glPushMatrix();	
+			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
+			glColor4f(1.0, 1.0, 0.0 , 1.0);			
+			glRotated(powerRotate , 0.0 , 1.0 , 0.0);
+			glutSolidTorus(size, size*3 , 50, 50);	  		
+			glPopMatrix();	
 			break;
 	}	
 

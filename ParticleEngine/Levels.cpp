@@ -14,7 +14,7 @@ Levels::Levels(){
 	lives = 3;
 	score = 0;
 	killsToLevel = 10;
-	nextPowerScore = 250;
+	nextPowerScore = 50;
 }
 
 // Add a number of enemies to the kill count

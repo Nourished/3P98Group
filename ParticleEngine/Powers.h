@@ -12,6 +12,7 @@ class Powers {
 		int powerType;		// different Powers effects
 		float size;			// Size of the Powers
 		float angle;		// Where the Powers is on the circle
+		float powerRotate;  //Rotating donut
 
 	public:
 		// create a Powers with a given type, direction, angle on circle, and position

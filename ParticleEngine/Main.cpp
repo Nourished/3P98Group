@@ -43,11 +43,15 @@ GLfloat emitColorBlue[] = {0.0, 0.0, 1.0, 1.0};
 GLfloat Noemit[] = {0.0, 0.0, 0.0, 1.0}; 
 
 // Objects in picture	Pos X,Y,Z, Vel X,Y,Z
-float pos[5][6] =	{{0, -1, 0, 100, 1, 100},	// Ground position
+float pos[10][6] =	{{0, -1, 0, 100, 1, 100},	// Ground position
 					{0, 10, 0, 8, 5, 8},		// Spout 
-					{-15, 0, 15, 8, 1, 8},		
-					{0, 50, 0, 10, 50, 10}, // tower
-					{-25, 25, 50, 10, 25, 10}};	//buidling 1
+					{-15, 0, 15, 8, 1, 8},		//gound
+					{0, 50, 0, 10, 50, 10}, // Tower
+					{-25, 25, 50, 10, 25, 10},   // Buidling 1
+					{25, 25, 50, 10 ,25, 10},    // Buidling 2
+					{25, 25, -50, 10, 25, 10},   // Buidling 3 
+					{80, 20, 90, 20, 20 , 20},   // Building 4
+					{-50, 35, -90, 10, 35 ,10} };// Buidling 5
 
 // Coordinates
 Coordinate playerSpawn(155.0, 15.0, 0);	// Players spawn position
@@ -76,24 +80,35 @@ GLuint textures[4];
 void light(){
 	// lighting attributes
 	GLfloat lightAmbient[]    = {0.1, 0.1, 0.1, 1.0};
-	GLfloat lightDiffuse[]    = {1, 1, 1, 1.0};
+	GLfloat lightDiffuse[]    = {1.0, 1.0, 1.0, 1.0};
 	GLfloat lightSpecular[]    = {1.0, 1.0, 1.0, 1.0};
-	GLfloat lightPosition[]    = {25, 25, 25, 1};	
+	GLfloat lightPosition1[]    = { -155 , 160, 0, 1};
+	GLfloat lightPosition2[]    = { 155 , 160, 155, 1};
+	
 	//material attributes	
 	GLfloat materialGreen[] = {0.0, 1.0, 0.0, 1.0}; //Green Color
 	GLfloat materialWhite[] = {1.0, 1.0, 1.0, 1.0}; //White Color
+	GLfloat materialRed[] = {1.0 , 0.0, 0.0, 1.0};
+	
 	// Enable lighting
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+	
+	//glEnable(GL_LIGHT0);
 	// Set lighting intensity and color
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular); 
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);	
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
+	glLightfv(GL_LIGHT1, GL_AMBIENT, lightAmbient);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, lightDiffuse);
+	glLightfv(GL_LIGHT1, GL_SPECULAR, lightSpecular); 
+	glLightfv(GL_LIGHT1, GL_POSITION, lightPosition2);	
+	glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
 
 	//material attributes set
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialGreen);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialGreen);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialRed);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialWhite);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125.0);	 	 
 	glEnable ( GL_COLOR_MATERIAL ) ;
@@ -184,7 +199,7 @@ float newEnemySpawn(){
 void spawnPowers(){
 	
 	if(gameDiff.getScore() > gameDiff.getPowerScore()){
-		gameDiff.addPowerScore(250 + 20*gameDiff.getLevel());
+		gameDiff.addPowerScore(100 + 20*gameDiff.getLevel());
 		Coordinate powerSpawn;
 		float degree = randomGen.random(0.0, 360.0);
 		float radian = degree * (M_PI/180);
@@ -493,6 +508,38 @@ void display(void){
 		drawBuilding(pos[4]);
 		glPopMatrix();
 		glDisable(GL_TEXTURE_2D);
+
+		// Draw buidling 2
+		glBindTexture(GL_TEXTURE_2D, textures[2]);
+		glEnable(GL_TEXTURE_2D);
+		glPushMatrix();	
+		drawBuilding(pos[5]);
+		glPopMatrix();
+		glDisable(GL_TEXTURE_2D);
+
+		// Draw buidling 3
+		glBindTexture(GL_TEXTURE_2D, textures[2]);
+		glEnable(GL_TEXTURE_2D);
+		glPushMatrix();	
+		drawBuilding(pos[6]);
+		glPopMatrix();
+		glDisable(GL_TEXTURE_2D);
+
+		// Draw buidling 4
+		glBindTexture(GL_TEXTURE_2D, textures[2]);
+		glEnable(GL_TEXTURE_2D);
+		glPushMatrix();	
+		drawBuilding(pos[7]);
+		glPopMatrix();
+		glDisable(GL_TEXTURE_2D);
+
+		// Draw buidling 4
+		glBindTexture(GL_TEXTURE_2D, textures[2]);
+		glEnable(GL_TEXTURE_2D);
+		glPushMatrix();	
+		drawBuilding(pos[8]);
+		glPopMatrix();
+		glDisable(GL_TEXTURE_2D);
 		
 		// Bullets
 		for(size_t i = 0; i < bList.size(); i++){
@@ -514,6 +561,13 @@ void display(void){
 		for(size_t i = 0; i < explodeList.size(); i++){
 			glPushMatrix();
 			explodeList[i].Render();
+			glPopMatrix();
+		}
+
+		// Explosions
+		for(size_t i = 0; i < pList.size(); i++){
+			glPushMatrix();
+			pList[i].Render();
 			glPopMatrix();
 		}
 	
