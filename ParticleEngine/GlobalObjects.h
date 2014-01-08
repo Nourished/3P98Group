@@ -84,9 +84,6 @@ void drawTower(float c[6], GLuint textures[4]){
 	glEnd();		
 	glDisable(GL_TEXTURE_2D);
 
-
-	   
-
 	// Circle
 	glBindTexture(GL_TEXTURE_2D, textures[3]);
     glEnable(GL_TEXTURE_2D);
@@ -120,8 +117,6 @@ void drawBuilding(float c[6]){
 	float verticies[8][3] = {{c[0]-w,c[1]-h,c[2]-d}, {c[0]-w,c[1]-h,c[2]+d}, {c[0]-w,c[1]+h,c[2]-d}, {c[0]-w,c[1]+h,c[2]+d},
 							{c[0]+w,c[1]-h,c[2]-d},  {c[0]+w,c[1]-h,c[2]+d}, {c[0]+w,c[1]+h,c[2]-d}, {c[0]+w,c[1]+h,c[2]+d}};	
 						//	bottom front right			bottom back right		top front right					top back right	
-
-
 	
 	glColor4f(1.0, 1.0,  1.0, 1); // white
 	// Right Side

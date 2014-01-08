@@ -1,5 +1,5 @@
 // Main.cpp
-#define _USE_MATH_DEFINES	// Pi variable
+	#define _USE_MATH_DEFINES	// Pi variable
 
 #include <vector>
 #include "glut.h"
@@ -91,7 +91,6 @@ void light(){
 	
 	// Enable lighting
 	
-	//glEnable(GL_LIGHT0);
 	// Set lighting intensity and color
 	glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
@@ -363,7 +362,7 @@ void checkLists(){
 	for(size_t i = 0; i < bList.size(); i++){
 		if(bList[i].getAge() == 0){
 			// Remove the bullet from the list
-			//glDisable(GL_LIGHT2);
+			
 			bList.erase(bList.begin() + i);			
 		}
 	}	
@@ -692,8 +691,10 @@ void menuParticleType(int value){
 		enemySpawn.setY(enemySpawn.getY() - 5);
 	if(enemySpawn.getY() < 1)
 		enemySpawn.setY(enemySpawn.getY() + 5);
+
 	Enemy newEnemy(value, direction, an, enemySpawn);
 	eList.push_back(newEnemy);	
+
 }
 
 // Menu for quitting
@@ -942,10 +943,10 @@ void init(void){
 
 	initMenus();
 	glGenTextures(3, textures); //specify the number of textures
-	loadTexture("concrete.png",0);
-	loadTexture("grass.png",1);
-	loadTexture("brickwall.png",2);
-	loadTexture("brickwallb.png",3);
+	//loadTexture("concrete.png",0);
+	//loadTexture("grass.png",1);
+	//loadTexture("brickwall.png",2);
+	//loadTexture("brickwallb.png",3);
 	
 }
 

@@ -38,7 +38,4 @@ class Coordinate {
 		void Coordinate::setZ(float z1){
 			z = z1;
 		}
-
-	
-
 };
