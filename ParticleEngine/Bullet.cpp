@@ -19,7 +19,8 @@ Bullet::Bullet(int bType, bool d, float angleStart, Coordinate p){
 	dir = d;
 	bulletType = bType;
 	age = 1;
-	alpha = 1.0;	
+	alpha = 1.0;
+	bulletRotation = 0.0;
 	switch(bulletType){
 		case 1:	// Default bullet
 			colour[0] = 1.0;
@@ -32,20 +33,18 @@ Bullet::Bullet(int bType, bool d, float angleStart, Coordinate p){
 			colour[0] = 0.3;
 			colour[1] = 0.5;
 			colour[2] = 0.0;
-			speed = 0.7;
-			size = 2.5;
+			speed = 1.2;
+			size = 2.0;
 			break;
 		case 3:	// third bullet type
 			colour[0] = 1.0;
 			colour[1] = 0.0;
 			colour[2] = 1.0;
 			speed = 1.4;
-			size = 0.8;
+			size = 3.0;
 			break;
 		}	
 }
-
-
 
 // Returns the age value
 int Bullet::getAge(){
@@ -120,54 +119,113 @@ void Bullet::Update(){
 		age = 0;
 	// Move the bullet in a straight line
 	if(dir){
-		// Right
+		// Left
 		angle += 1.4 * speed;
 		float radian = angle * (M_PI/180);
 		pos.x = 155 * cosf(radian);
 		pos.z = 155 * sinf(radian);
 	}else {
-		// Left
+		// Right
 		angle -= 1.4 * speed;
 		float radian = angle * (M_PI/180);
 		pos.x = 155 * cosf(radian);
 		pos.z = 155 * sinf(radian);
 
 	}
+
+	if ( bulletRotation >=360 ){ //update enemy donut rotation
+			 bulletRotation = 0;
+		}else{
+			bulletRotation += 10;
+		}
 	
 }
 
 
 // Render the Bullet
 void Bullet::Render(){
-	/**
-	GLfloat light_ambient[] = {1.0, 0.0, 0.0, 1.0};
-    GLfloat light_diffuse[] = {0.0, 0.0, 1.0, 1.0};
-    GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat light_position[] = {pos.x, pos.y, pos.z, 1};
-	glLightfv(GL_LIGHT2, GL_AMBIENT, light_ambient);
-    glLightfv(GL_LIGHT2, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT2, GL_SPECULAR, light_specular);
-    glLightfv(GL_LIGHT2, GL_POSITION, light_position);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128.0 );
-	/glEnable(GL_LIGHT2); */
-
-	glPushMatrix();
+	
+	
 	if(age == 0){
 		glColor4f(1.0, 1.0, 1.0, alpha); // Destroyed make it red
 	}else
 		glColor4f(colour[0], colour[1], colour[2], alpha);	// normal colour
 
-	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
+	
 	switch (bulletType){					// Draw the specific type of Bullet
-		case 1:
+		case 1: //bullet type 2
+			/* glPushMatrix();
+			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
 			glutSolidSphere(size, 15, 15);
+			glPopMatrix();
+			*/
+			
+			
+				
 			break;
-		case 2:
-			glutSolidCube(size);
+		case 2: //bullet type 2
+			glPushMatrix();
+			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
+			glutSolidSphere(size, 15, 15);
+			glPopMatrix();
+			glPushMatrix();
+			glTranslated(pos.x, pos.y+5, pos.z);			// Translate to its position
+			glutSolidSphere(size, 15, 15);
+			glPopMatrix();
+
+			if(dir){
+				// Left
+				glPushMatrix();
+				glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
+				glRotatef(-90, 0.0 , 1.0 , 0.0 );
+				glutSolidCone(size, 15, 25,25);
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslated(pos.x, pos.y+5, pos.z);			// Translate to its position
+				glRotatef(-90, 0.0 , 1.0 , 0.0 );
+				glutSolidCone(size, 15, 25,25);
+				glPopMatrix();
+
+				}else{
+				// Right
+				glPushMatrix();
+				glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
+				glRotatef(90, 0.0 , 1.0 , 0.0 );
+				glutSolidCone(size, 15, 25,25);
+				glPopMatrix();
+
+				glPushMatrix();
+				glTranslated(pos.x, pos.y+5, pos.z);			// Translate to its position
+				glRotatef(90, 0.0 , 1.0 , 0.0 );
+				glutSolidCone(size, 15, 25,25);
+				glPopMatrix();
+				}			
 			break;
-		case 3:
-			glutWireSphere(size, 15, 15);
+		case 3: //bullet type 3
+			glPushMatrix();
+				glTranslated(pos.x-4, pos.y, pos.z);			// Translate to its position
+				glRotatef(bulletRotation, 0.7 , 1.0 , 0.4 );
+				glScalef(size, size, size);
+				glutSolidTetrahedron();
+			glPopMatrix();
+
+			glPushMatrix();
+				glTranslated(pos.x-4, pos.y+5, pos.z);			// Translate to its position
+				glRotatef(bulletRotation, 0.7 , 1.0 , 0.4 );
+				glScalef(size, size, size);
+				glutSolidTetrahedron();
+			glPopMatrix();
+
+			glPushMatrix();
+				glTranslated(pos.x+1, pos.y+2.5, pos.z);			// Translate to its position
+				glRotatef(bulletRotation, 0.7 , 1.0 , 0.4 );
+				glScalef(size, size, size);
+				glutSolidTetrahedron();
+			glPopMatrix();
 			break;
 	}
-	glPopMatrix();
+	
+
+	
 }

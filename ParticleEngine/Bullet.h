@@ -15,7 +15,7 @@ class Bullet {
 		double speed;		// For powerups
 		bool dir;			// True = right, false = left, used for direction
 		float angle;		// Where the bullet is on the circle
-	
+	    float bulletRotation; // Bullet Type 3 Rotation
 
 	public:
 		// create a bullet with a given type, direction, angle on circle, and position
