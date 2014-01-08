@@ -17,30 +17,9 @@ Powers::Powers(int pt, float angleStart, Coordinate p){
 	pos = p;
 	angle = angleStart;
 	powerType = pt;
-	powerRotate = 0.0;
-	switch(powerType){
-		case 1:	// First power
-			colour[0] = 1.0;
-			colour[1] = 0.0;
-			colour[2] = 0.0;
-			age = 500;
-			size = 2.0;
-			break;
-		case 2:	// Second power
-			colour[0] = 0.3;
-			colour[1] = 0.5;
-			colour[2] = 0.0;
-			age = 500;
-			size = 2.0;
-			break;
-		case 3:	// third Power
-			colour[0] = 1.0;
-			colour[1] = 0.0;
-			colour[2] = 1.0;
-			age = 500;
-			size = 3.0;
-			break;
-		}	
+	powerRotate = 0.0;	
+	age = 350;
+	size = 2.0;			
 }
 
 // Returns the age value
@@ -51,14 +30,6 @@ int Powers::getAge(){
 // Sets the age value
 void Powers::setAge(int a){
 	age = a;
-}
-
-
-// Set the colour
-void Powers::setColour(float r, float g, float b){
-	colour[0] = r;
-	colour[1] = g;
-	colour[2] = b;
 }
 
 // Set the Powers type
@@ -97,18 +68,16 @@ float Powers::getAngle(){
 }
 
 
-// update the Powers
-// This will calculate the new pos and velocity based on acceleration and speed
+// Update the Powers
 void Powers::Update(){
 	
 	age -= 1;
 
-	if ( powerRotate >=360 ){ //update enemy donut rotation
-			 powerRotate = 0;
-		}else{
-			powerRotate += 10;
-		}
-	// Doesnt move
+	if(powerRotate >= 360){ //update enemy donut rotation
+		powerRotate = 0;
+	}else
+		powerRotate += 10;	
+
 }
 
 
@@ -116,8 +85,6 @@ void Powers::Update(){
 void Powers::Render(){
 	
 	
-	
-	glColor4f(colour[0], colour[1], colour[2], 1.0);	// normal colour
 	
 	switch (powerType){					// Draw the specific type of Powers
 		case 1: //Power type 1
@@ -142,7 +109,8 @@ void Powers::Render(){
 			glColor4f(1.0, 1.0, 0.0 , 1.0);			
 			glRotated(powerRotate , 0.0 , 1.0 , 0.0);
 			glutSolidTorus(size, size*3 , 50, 50);	  			
-			glPopMatrix();				break;
+			glPopMatrix();				
+			break;
 		case 3: //Power type 3
 			glPushMatrix();
 			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position

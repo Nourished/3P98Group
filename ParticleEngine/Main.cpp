@@ -32,7 +32,6 @@ Player globalPlayer;
 
 // Bullet information
 float bulletTimer = 0.05; // Used to maintain 3 of bullets being spawned
-int playerBulletType = 1; // Powerups alter the bullet types
 float angleOfUser = 0.0;	// Angle to figure out the location of the player on the circle
 
 // Light values, played with them to get a bright green look
@@ -160,15 +159,35 @@ void keyOperations (void) {
 	}
 	if(keyStates[','] || keyStates['<']){ // Shoot right
 		if(bulletTimer < 0.05){
-			bulletTimer += 0.20;
-			Bullet newBullet(playerBulletType, true, angleOfUser, globalPlayer.getPosition());
+			bulletTimer += 0.25;
+			if(globalPlayer.getBullet() == 2){
+				// Spawn one in the other direction if 2
+				Bullet newBullet2(globalPlayer.getBullet(), false, angleOfUser, globalPlayer.getPosition());
+				bList.push_back(newBullet2);	
+			}else if(globalPlayer.getBullet() == 3){
+				Coordinate bp(globalPlayer.getPosition());
+				bp.setY(bp.getY() + 3.0);
+				Bullet newBullet2(globalPlayer.getBullet(), true, angleOfUser, bp);
+				bList.push_back(newBullet2);	
+			}
+			Bullet newBullet(globalPlayer.getBullet(), true, angleOfUser, globalPlayer.getPosition());
 			bList.push_back(newBullet);			
 		}
 	}
 	if(keyStates['.'] || keyStates['>']){ // Shoot left
 		if(bulletTimer < 0.05){
-			bulletTimer += 0.20;
-			Bullet newBullet(playerBulletType, false, angleOfUser, globalPlayer.getPosition());
+			bulletTimer += 0.25;
+			if(globalPlayer.getBullet() == 2){
+				// Spawn one in the other direction if 2
+				Bullet newBullet2(globalPlayer.getBullet(), true, angleOfUser, globalPlayer.getPosition());
+				bList.push_back(newBullet2);	
+			}else if(globalPlayer.getBullet() == 3){
+				Coordinate bp(globalPlayer.getPosition());
+				bp.setY(bp.getY() + 3.0);
+				Bullet newBullet2(globalPlayer.getBullet(), false, angleOfUser, bp);
+				bList.push_back(newBullet2);	
+			}
+			Bullet newBullet(globalPlayer.getBullet(), false, angleOfUser, globalPlayer.getPosition());
 			bList.push_back(newBullet);			
 		}
 	}
@@ -199,7 +218,7 @@ float newEnemySpawn(){
 void spawnPowers(){
 	
 	if(gameDiff.getScore() > gameDiff.getPowerScore()){
-		gameDiff.addPowerScore(100 + 20*gameDiff.getLevel());
+		gameDiff.addPowerScore(350 + 80*gameDiff.getLevel());
 		Coordinate powerSpawn;
 		float degree = randomGen.random(0.0, 360.0);
 		float radian = degree * (M_PI/180);
@@ -833,6 +852,8 @@ void update(int value){
 		// Update bullets, remove bullets that have expired and collided
 		checkLists();
 
+		globalPlayer.Update();
+
 		// Update the bullets
 		for (size_t i = 0; i < bList.size(); i++){
 			bList[i].Update();
@@ -855,22 +876,22 @@ void update(int value){
 		for(size_t i = 0; i < pList.size(); i++){
 			// Check if player has already collided and make sure enemy is not dead
 			if(collide == false && pList[i].getAge() != 0){
-				if(cd.collide(pList[i].getPosition(), pList[i].getSize(),
+				if(cd.collide(pList[i].getPosition(), pList[i].getSize()+2,
 					globalPlayer.getPosition(), globalPlayer.getSize())){
 						// Collision
 						pList[i].setAge(0);	
 						switch(pList[i].getPowerType()){
 							case 1:
 								// DO FIRST POWERUP
-								
+								gameDiff.addLives(1);
 								break;
 							case 2:
 								// DO FIRST POWERUP
-								
+								globalPlayer.setBullet(2);
 								break;
 							case 3:
 								// DO FIRST POWERUP
-								
+								globalPlayer.setBullet(3);
 								break;
 						}
 
@@ -879,7 +900,7 @@ void update(int value){
 		}// For i
 
 		// Got new positions, now check for collision with enemies
-		// First bullets with enemies
+		// bullets with enemies
 		for(size_t i = 0; i < bList.size(); i++){
 			for(size_t j = 0; j < eList.size(); j++){
 				

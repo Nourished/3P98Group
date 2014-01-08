@@ -66,15 +66,12 @@ void Bullet::setSize(float newSize){
 	size = newSize;
 }
 
-// ~~~~~~ IS SPEED NEEDED ??? ~~~~~~~~
-// Set the speed, cannot be set past 8
-void Bullet::setSpeed(double sp){
-	if(sp < 8.01)
-		speed = sp;
-	else
-		speed = 8;	// Max speed
-}//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+// Set the speed
+void Bullet::setSpeed(double sp){	
+	speed = sp;
+
+}
 
 // Set the colour
 void Bullet::setColour(float r, float g, float b){
@@ -115,7 +112,7 @@ void Bullet::Update(){
 	
 	age += 1;
 	
-	if(age > 55)
+	if(age > 60)
 		age = 0;
 	// Move the bullet in a straight line
 	if(dir){

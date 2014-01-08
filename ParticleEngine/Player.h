@@ -7,13 +7,14 @@ class Player {
 	
 	protected: 
 		Coordinate pos;		// Position of the player
+		int bullet;			// Bullet type
 		float alpha;		// Visibility
 		float colour[3];	// Colour
 		int playerStatus;	// 1 = alive, 2 = dead
 		float size;			// Size of the player, powerups can affect?
-		double speed;		// For powerups
 		int direction;		// Which direction the player is shooting
 		bool shooting;		// Is the player shooting
+		int powerUpTimer;	// Timer for powerups
 
 	public:
 		Player();
@@ -27,11 +28,14 @@ class Player {
 
 	void setSize(float newSize);
 	float getSize();
-	void setSpeed(double sp);
+
 	void setColour(float r, float g, float b);
 
 	void setPlayerStatus(int a);
 	int getPlayerStatus();
+
+	void setBullet(int a);
+	int getBullet();
 
 	void setAlpha(double alp);
 

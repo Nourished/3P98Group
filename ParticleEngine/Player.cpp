@@ -14,8 +14,8 @@ Player::~Player(){
 Player::Player(){
 	playerStatus = 1;
 	size = 3.6;
-	speed = 5.0;
 	alpha = 1.0;		
+	bullet = 1;
 	// Colour
 	colour[0] = 1.0;
 	colour[1] = 0.0;
@@ -61,15 +61,6 @@ void Player::setSize(float newSize){
 	size = newSize;
 }
 
-// ~~~~~~ IS SPEED NEEDED ??? ~~~~~~~~
-// Set the speed, cannot be set past 8
-void Player::setSpeed(double sp){
-	if(sp < 8.01)
-		speed = sp;
-	else
-		speed = 8;	// Max speed
-}//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 // Set the colour
 void Player::setColour(float r, float g, float b){
 	colour[0] = r;
@@ -79,14 +70,23 @@ void Player::setColour(float r, float g, float b){
 
 // Set the Player type
 void Player::setPlayerStatus(int a){
-	playerStatus = a;
-	if(a == 2)
-		alpha = 0.01;
+	playerStatus = a;	
 }
 
 // Returns the player status
 int Player::getPlayerStatus(){
 	return playerStatus;
+}
+
+// Set the bullet type
+void Player::setBullet(int a){
+	bullet = a;	
+	powerUpTimer = 500;
+}
+
+// Returns the player status
+int Player::getBullet(){
+	return bullet;
 }
 
 // Set the alpha (visibility) of the Player
@@ -106,8 +106,7 @@ Coordinate Player::getPosition(){
 }
 
 // used to reset the position to a user defined point and velocity
-void Player::resetPosition(Coordinate p){
-			
+void Player::resetPosition(Coordinate p){			
 	// Position
 	pos = p;
 
@@ -118,7 +117,10 @@ void Player::resetPosition(Coordinate p){
 void Player::Update(){
 	
 	// Collision detection	
-	
+	if(powerUpTimer > 0)
+		powerUpTimer--;
+	else
+		bullet = 1;
 }
 
 // Render the Player
