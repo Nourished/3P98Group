@@ -154,14 +154,10 @@ void Bullet::Render(){
 	
 	switch (bulletType){					// Draw the specific type of Bullet
 		case 1: //bullet type 2
-			/* glPushMatrix();
+			glPushMatrix();
 			glTranslated(pos.x, pos.y, pos.z);			// Translate to its position
 			glutSolidSphere(size, 15, 15);
-			glPopMatrix();
-			*/
-			
-			
-				
+			glPopMatrix();				
 			break;
 		case 2: //bullet type 2
 			glPushMatrix();
