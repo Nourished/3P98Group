@@ -11,18 +11,23 @@
 #include "ColDet.h"
 #include "Levels.h"
 #include "Explode.h"
+#include "Powers.h"
 #include <freeimage.h>
+
 
 RNG randomGen;
 ColDet cd;
 Levels gameDiff;
 
-/////// Number of bullets ///////
+/////// List of bullets ///////
 std::vector<Bullet> bList;
-/////// Number of enemies ///////
+/////// List of enemies ///////
 std::vector<Enemy> eList;
-/////// Number of exploding enemies ///////
+/////// List of exploding enemies ///////
 std::vector<Explode> explodeList;
+/////// List of powerups ///////
+std::vector<Powers> pList;
+// Player information class
 Player globalPlayer;
 
 // Bullet information
@@ -175,6 +180,25 @@ float newEnemySpawn(){
 
 }
 
+// Spawn power ups based on score
+void spawnPowers(){
+	
+	if(gameDiff.getScore() > gameDiff.getPowerScore()){
+		gameDiff.addPowerScore(250 + 20*gameDiff.getLevel());
+		Coordinate powerSpawn;
+		float degree = randomGen.random(0.0, 360.0);
+		float radian = degree * (M_PI/180);
+		powerSpawn.setY(randomGen.random(2, 148));
+		powerSpawn.setX(155 * cosf(radian));
+		powerSpawn.setZ(155 * sinf(radian));
+
+		Powers powerUp(randomGen.random(1, 4), radian, powerSpawn);
+		pList.push_back(powerUp);
+	}
+
+	
+}
+
 // Function used to spawn enemies depending on the game difficulty
 void spawnEnemies(){
 	int gd = gameDiff.getDiff();	// Easy/Medium/Hard
@@ -187,9 +211,6 @@ void spawnEnemies(){
 	int et = 1;						// Enemy type to spawn
 	bool direction;					// Direction to face
 	int maxNumEnemies;				// Max Number of enemies to be on the board, based on difficulty, and current level
-
-	// Spawn enemies if less than lvl * 5 enemies on the board
-	//if( (eg < newLvl * (5 + gd*5)) && newLvl != lvl){
 
 	// Constantly spawn enemies as long as there is:
 	// Not a Boss Level
@@ -343,6 +364,14 @@ void checkLists(){
 		if(explodeList[i].getAge() == 0){
 			// Remove the explosion from the list
 			explodeList.erase(explodeList.begin() + i);			
+		}
+	}	
+
+	// Remove explosions
+	for(size_t i = 0; i < pList.size(); i++){
+		if(pList[i].getAge() == 0){
+			// Remove the explosion from the list
+			pList.erase(pList.begin() + i);			
 		}
 	}	
 
@@ -762,6 +791,38 @@ void update(int value){
 		for (size_t i = 0; i < explodeList.size(); i++){
 			explodeList[i].Update();
 		}
+		// Update the powerups
+		for (size_t i = 0; i < pList.size(); i++){
+			pList[i].Update();
+		}
+
+		// Check powerup collisions first
+		// Now check if player has hit an enemy
+		for(size_t i = 0; i < pList.size(); i++){
+			// Check if player has already collided and make sure enemy is not dead
+			if(collide == false && pList[i].getAge() != 0){
+				if(cd.collide(pList[i].getPosition(), pList[i].getSize(),
+					globalPlayer.getPosition(), globalPlayer.getSize())){
+						// Collision
+						pList[i].setAge(0);	
+						switch(pList[i].getPowerType()){
+							case 1:
+								// DO FIRST POWERUP
+								
+								break;
+							case 2:
+								// DO FIRST POWERUP
+								
+								break;
+							case 3:
+								// DO FIRST POWERUP
+								
+								break;
+						}
+
+					}// if collision
+			}// If collide
+		}// For i
 
 		// Got new positions, now check for collision with enemies
 		// First bullets with enemies
@@ -786,7 +847,7 @@ void update(int value){
 					if(cd.collide(bList[i].getPosition(), bList[i].getSize(),
 											eList[j].getPosition(), eList[j].getSize())){
 						// Collision
-						gameDiff.addScore(eList[j].getEnemyType() * 10);
+						gameDiff.addScore(eList[j].getEnemyType() * (10*gameDiff.getDiff()));
 						//printf("Score = %d \n", gameDiff.getScore());
 						bList[i].setAge(0);
 						eList[j].setAge(0);
@@ -823,6 +884,7 @@ void update(int value){
 		}
 		checkLists();
 		spawnEnemies();
+		spawnPowers();
 	}else if(gameState == 1) {
 
 	}

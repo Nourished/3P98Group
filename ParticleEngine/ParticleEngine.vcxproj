@@ -19,6 +19,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Levels.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Powers.h" />
     <ClInclude Include="RNG.h" />
   </ItemGroup>
   <ItemGroup>
@@ -28,6 +29,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Powers.cpp" />
     <ClCompile Include="RNG.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

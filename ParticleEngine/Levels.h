@@ -10,7 +10,8 @@ class Levels {
 		int difficulty;			// 1 easy, 2 normal, 3 hard
 		int score;				// Score
 		int killsToLevel;		// Kills needed to get to the next level
-		int lives;
+		int lives;				// Lives for the game
+		int nextPowerScore;		// Score needed to spawn the next powerup
 
 	public:
 		// create a Levels with a given type, direction, angle on circle, and position
@@ -25,6 +26,10 @@ class Levels {
 	void addScore(int a);
 	void setScore(int a);
 	int getScore();
+
+	void setPowerScore(int a);
+	void addPowerScore(int a);
+	int getPowerScore();
 
 	void addLives(int a);
 	void setLives(int a);

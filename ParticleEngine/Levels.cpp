@@ -14,6 +14,7 @@ Levels::Levels(){
 	lives = 3;
 	score = 0;
 	killsToLevel = 10;
+	nextPowerScore = 250;
 }
 
 // Add a number of enemies to the kill count
@@ -49,6 +50,22 @@ void Levels::setScore(int a){
 // Return player score
 int Levels::getScore(){
 	return score;
+}
+
+// Set next powerup spawn score
+void Levels::setPowerScore(int a){
+	nextPowerScore = a;	
+}
+
+// Add to the next powerup spawn score
+void Levels::addPowerScore(int a){
+	nextPowerScore += a;	
+}
+
+
+// Get next powerup spawn score
+int Levels::getPowerScore(){
+	return nextPowerScore;
 }
 
 // Add up player score
@@ -135,6 +152,7 @@ void Levels::reset(){
 	score = 0;
 	lives = 3;
 	killsToLevel = 10;
+	nextPowerScore = 250;
 }
 
 // Some form of update
