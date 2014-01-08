@@ -9,6 +9,11 @@
 #include <cstdio>
 #include <math.h>
 
+GLfloat emitLightRed[] = {1.0, 0.0, 0.0, 1.0};
+GLfloat emitLightGreen[] = {0.0, 1.0, 0.0, 1.0};
+GLfloat emitLightBlue[] = {0.0, 0.0, 1.0, 1.0};
+GLfloat NoEmission[] = {0.0, 0.0, 0.0, 1.0}; 
+
 Enemy::~Enemy(){
 }
 
@@ -20,7 +25,9 @@ Enemy::Enemy(int bType, bool d, float angleStart, Coordinate p){
 	enemyType = bType;
 	age = 1;
 	alpha = 1.0;
-	enemy2rotation = 0.0;
+	enemy2Rotation = 0.0;
+	enemy3Rotation = 0.0;
+	bossRotation = 0.0;
 	boss = false;
 
 	switch(enemyType){
@@ -200,6 +207,7 @@ Coordinate Enemy::getPosition(){
 // Depending on the enemy, goes in a straight line or heads towards the player
 void Enemy::Update(Coordinate pp, float pa){
 	float ar, range;
+	float radian = angle * (M_PI/180);
 
 	switch(enemyType){
 	case 1:	// First enemy type
@@ -209,7 +217,7 @@ void Enemy::Update(Coordinate pp, float pa){
 			angle += 1.4 * speed;
 			if(angle > 360.0)
 				angle -= 360.0;
-			float radian = angle * (M_PI/180);
+			 radian = angle * (M_PI/180);
 			pos.x = 155 * cosf(radian);
 			pos.z = 155 * sinf(radian);
 		}else {
@@ -217,7 +225,7 @@ void Enemy::Update(Coordinate pp, float pa){
 			angle -= 1.4 * speed;
 			if(angle < 0.0)
 				angle += 360.0;
-			float radian = angle * (M_PI/180);
+			 radian = angle * (M_PI/180);
 			pos.x = 155 * cosf(radian);
 			pos.z = 155 * sinf(radian);
 		}
@@ -237,7 +245,7 @@ void Enemy::Update(Coordinate pp, float pa){
 				angle += 0.9 * speed;
 				if(angle > 360.0)
 					angle -= 360.0;
-				float radian = angle * (M_PI/180);
+				 radian = angle * (M_PI/180);
 				pos.x = 155 * cosf(radian);
 				pos.z = 155 * sinf(radian);
 			}else {
@@ -245,7 +253,7 @@ void Enemy::Update(Coordinate pp, float pa){
 				angle -= 0.9 * speed;
 				if(angle < 0.0)
 					angle += 360.0;
-				float radian = angle * (M_PI/180);
+				 radian = angle * (M_PI/180);
 				pos.x = 155 * cosf(radian);
 				pos.z = 155 * sinf(radian);
 			}
@@ -262,17 +270,18 @@ void Enemy::Update(Coordinate pp, float pa){
 				angle -= 360.0;
 			if(angle < 0.0)
 				angle += 360.0;
-			float radian = angle * (M_PI/180);
+			 radian = angle * (M_PI/180);
 			pos.x = 155 * cosf(radian);
 			pos.z = 155 * sinf(radian);
 			
 		}
 
-		if ( enemy2rotation >=360 ){ //update enemy donut rotation
-			 enemy2rotation = 0;
+		if ( enemy2Rotation >=360 ){ //update enemy donut rotation
+			 enemy2Rotation = 0;
 		}else{
-			enemy2rotation += 10;
+			enemy2Rotation += 10;
 		}
+		
 
 		break;
 	case 3: // third enemy
@@ -290,9 +299,15 @@ void Enemy::Update(Coordinate pp, float pa){
 		if(angle < 0.0)
 			angle += 360.0;
 
-		float radian = angle * (M_PI/180);
+		radian = angle * (M_PI/180);
 		pos.x = 155 * cosf(radian);
 		pos.z = 155 * sinf(radian);
+
+		if ( enemy3Rotation >=360 ){ //update enemy donut rotation
+			 enemy3Rotation = 0;
+		}else{
+			enemy3Rotation += 10;
+		}
 
 		break;
 	case 4:		// boss
@@ -310,9 +325,15 @@ void Enemy::Update(Coordinate pp, float pa){
 		if(angle < 0.0)
 			angle += 360.0;
 
-		float radian = angle * (M_PI/180);
+	    radian = angle * (M_PI/180);
 		pos.x = 155 * cosf(radian);
 		pos.z = 155 * sinf(radian);
+
+		if ( bossRotation >=360 ){ //update enemy donut rotation
+			 bossRotation = 0;
+		}else{
+			bossRotation += 10;
+		}
 
 		break;
 	}
@@ -331,11 +352,14 @@ void Enemy::Render(){
 	switch (enemyType){					// Draw the specific type of Enemy
 		case 1:
 			glPushMatrix();
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLightRed);
 			glColor4f(1.0, 0.0, 0.0, 1.0);	
 			glTranslatef(pos.x, pos.y, pos.z);
-			glutWireCube(size);	
+			glutWireCube(size);
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, NoEmission);
 			glPopMatrix();
 
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLightGreen); 
 			glPushMatrix();
 			glColor4f(0.0, 1.0, 0.0, 1.0);  //top front right
 			glTranslatef(pos.x + (size/2), pos.y + 1 +(size/2), pos.z + (size/2));
@@ -399,57 +423,66 @@ void Enemy::Render(){
 			glScalef(2.0, 2.0 , 2.0);
 			glutWireTetrahedron();
 			glPopMatrix();	
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, NoEmission);
 			break; 
 
 		case 2: //enemy type 2
 			glPushMatrix();
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLightRed); 
 			glColor4f(1.0, 0.0, 0.0 , 1.0);	
 			glTranslatef(pos.x, pos.y, pos.z);
-			glutSolidSphere(size/3, 25, 25);	
+			glutSolidSphere(size/3, 25, 25);
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, NoEmission);
 			glPopMatrix();
 
 			glPushMatrix();
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLightGreen); 
 			glColor4f(0.0, 1.0, 0.0 , 1.0);		
 			glTranslatef(pos.x, pos.y, pos.z);
-			glRotated(enemy2rotation , 1.0 , 0.0 , 0.0);
+			glRotated(enemy2Rotation , 1.0 , 0.0 , 0.0);
 			glutSolidTorus(size/3, size , 50, 50);	 
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, NoEmission);
 			glPopMatrix();
 
 			glPushMatrix();
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLightBlue); 
 			glColor4f(0.0, 0.0, 1.0 , 1.0);
 			glTranslatef(pos.x, pos.y, pos.z);
-			glRotated(enemy2rotation , 0.0 , 1.0 , 0.0);
-			glutSolidTorus(size/3, size*2.0 , 50, 50);	 
+			glRotated(enemy2Rotation , 0.0 , 1.0 , 0.0);
+			glutSolidTorus(size/3, size*2.0 , 50, 50);	
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, NoEmission);
 			glPopMatrix();
 
 			break;
 		case 3: //enemy type 3
+			
+			
+
 			glPushMatrix();
-			glTranslatef(pos.x, pos.y, pos.z);			
-			glColor3ub(128 , 128 , 128);
-			glRotatef(90.0, 0.0 , 1.0 , 0.0);
-			qobj = gluNewQuadric(); 
-			glBegin(GL_POLYGON);				
-			gluQuadricTexture(qobj, GL_TRUE);
-			gluQuadricDrawStyle(qobj, GLU_FILL); 
-			glPolygonMode(GL_FRONT, GL_FILL);
-			gluQuadricNormals(qobj, GLU_SMOOTH);
-			gluCylinder(qobj, 2.0, 2.0, 10, 60, 40);
-			glEnd();
-			glPopMatrix();	
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLightRed); 
+			glColor4f(1.0, 0.0, 1.0 , 1.0);	
+			glTranslatef(pos.x, pos.y, pos.z);
+			glRotatef(enemy3Rotation, 0.0 , 0.0 , 1.0);
+			glScalef(size,size,size);
+			glutSolidTetrahedron();
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, NoEmission);
+			glPopMatrix();			
+
 			glPushMatrix();
-			glTranslatef(pos.x, pos.y, pos.z);		
-			glColor3f(1.0 , 0.0 , 0.0);
-			//glTranslatef(0.0, 20.0, 0.0);
-			glRotatef(-90.0, 0.0 , 1.0 , 0.0);
-			glBegin(GL_POLYGON);	
-			glutSolidCone( 2.0 , 2.0, 60 , 40); 
-			glEnd();
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLightBlue); 
+			glColor4f(0.4, 0.3, 1.0 , 1.0);
+			glTranslatef(pos.x, pos.y, pos.z);
+			glRotated(enemy3Rotation , 0.0 , 1.0 , 0.0);
+			glutSolidTorus(size/3, size*3.0 , 50, 50);	
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, NoEmission);
+			glPopMatrix();
+
 			glPopMatrix();
 			break;
 		case 4: //boss
 			glPushMatrix();
-			glTranslatef(pos.x, pos.y, pos.z);			
+			glTranslatef(pos.x, pos.y, pos.z);		
+			glRotated(bossRotation , 1.0 , 0.0 , 1.0);
 			glColor3f(colour[0], colour[1], colour[2]);
 			glRotatef(90.0, 0.0 , 1.0 , 0.0);
 			glutSolidCube(size);			

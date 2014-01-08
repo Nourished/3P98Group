@@ -14,7 +14,9 @@ class Enemy {
 		double speed;		// For powerups
 		bool dir;			// True = right, false = left, used for direction
 		float angle;		// Where the Enemy is on the circle
-		float enemy2rotation; //rotation angle for enemies
+		float enemy2Rotation; //rotation angle for enemies
+		float enemy3Rotation; //third enemy rotation
+		float bossRotation;   //bos rotation
 		bool boss;			// Is he a boss
 		int bossHealth;		// Boss health
 

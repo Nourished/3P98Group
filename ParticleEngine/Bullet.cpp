@@ -22,8 +22,8 @@ Bullet::Bullet(int bType, bool d, float angleStart, Coordinate p){
 	alpha = 1.0;	
 	switch(bulletType){
 		case 1:	// Default bullet
-			colour[0] = 0.0;
-			colour[1] = 0.3;
+			colour[0] = 1.0;
+			colour[1] = 0.0;
 			colour[2] = 0.0;
 			speed = 1.2;
 			size = 2.0;

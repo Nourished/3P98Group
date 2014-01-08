@@ -22,8 +22,6 @@ Player::Player(){
 	colour[2] = 0.0;
 }
 
-
-
 // Set the status of the player (shooting / not shooting)
 // True == shooting, false = not shooting
 void Player::setShooting(bool shoot){
@@ -33,7 +31,6 @@ void Player::setShooting(bool shoot){
 bool Player::getShooting(){
 	return shooting;
 }
-
 
 // Add/Subtract from the up/down movement
 void Player::addYMovement(float yMove){
@@ -73,7 +70,6 @@ void Player::setSpeed(double sp){
 		speed = 8;	// Max speed
 }//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
 // Set the colour
 void Player::setColour(float r, float g, float b){
 	colour[0] = r;
@@ -109,7 +105,6 @@ Coordinate Player::getPosition(){
 	return pos;
 }
 
-
 // used to reset the position to a user defined point and velocity
 void Player::resetPosition(Coordinate p){
 			
@@ -126,10 +121,9 @@ void Player::Update(){
 	
 }
 
-
 // Render the Player
 void Player::Render(){
-	/*
+	
 	GLfloat light_ambient[] = {0.0, 0.0, 0.0, 0.0};
     GLfloat light_diffuse[] = {1.0, 1.0, 1.0, 0.0};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 0.0};
@@ -140,15 +134,7 @@ void Player::Render(){
     glLightfv(GL_LIGHT1, GL_POSITION, light_position);
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 128.0 );
  	glEnable(GL_LIGHT1); 
-	*/
 
-	/**
-	glPushMatrix();
-	glColor4f(colour[0], colour[1], colour[2], alpha);	// Colour it
-	glTranslated(pos.x, pos.y, pos.z);			// Translate to its position	
-	glutSolidSphere(size, 15, 15);			
-	glPopMatrix();
-	*/
 
 	glPushMatrix();
 	glColor4f(1.0, 0.0, 0.0 , 1.0);
@@ -157,7 +143,6 @@ void Player::Render(){
 	glColor4f(0.0, 0.0, 1.0, 1.0);
 	glPopMatrix();
 	glPushMatrix();
-	//glTranslatef(-15,2.4,0);
 	glTranslated(pos.x-15, pos.y+2.4, pos.z);
 	glScalef(5,2,2);
 	glutSolidCube(5);
@@ -165,8 +150,7 @@ void Player::Render(){
 
 	//wing!!! #1
 	glPushMatrix();
-	glColor4f(0.0, 1.0, 0.0 , 1.0);
-	//glTranslatef(-15, 5, 5 );
+	glColor4f(0.0, 1.0, 0.0 , 1.0);	
 	glTranslated(pos.x-15, pos.y+5, pos.z+5);
 	glRotatef(90, 1.0 , 0.0 , 0.0);
 	glScalef(5,10,5); //side
@@ -207,7 +191,6 @@ void Player::Render(){
 	glPushMatrix();
 	glColor4f(0.0, 1.0, 0.0 , 1.0);
 	glTranslated(pos.x-15, pos.y, pos.z-5);
-	//glTranslatef(-15, 0, -5 );
 	glRotatef(-90, 1.0 , 0.0 , 0.0);
 	glScalef(5,10,5); //side
 	glBegin(GL_TRIANGLES);
@@ -246,9 +229,7 @@ void Player::Render(){
 
 	glPushMatrix();
 	glColor4f(0.0, 1.0, 0.0 , 1.0);
-	//glTranslatef(-15, 7.5, -2.5 );
 	glTranslated(pos.x-15, pos.y+7.5, pos.z-2.5);
-	//glRotatef(-90, 1.0 , 0.0 , 0.0);
 	glScalef(10,10,5); //side
 	glBegin(GL_TRIANGLES);
 	glVertex3f(0,0,0);

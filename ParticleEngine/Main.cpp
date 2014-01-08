@@ -33,7 +33,8 @@ float angleOfUser = 0.0;	// Angle to figure out the location of the player on th
 // Light values, played with them to get a bright green look
 
  // Set lighting intensity and color
-GLfloat emitLight[] = {0.9, 0.9, 0.9, 0.01};
+GLfloat emitColorRed[] = {1.0, 0.0, 0.0, 1.0};
+GLfloat emitColorBlue[] = {0.0, 0.0, 1.0, 1.0};
 GLfloat Noemit[] = {0.0, 0.0, 0.0, 1.0}; 
 
 // Objects in picture	Pos X,Y,Z, Vel X,Y,Z
@@ -69,45 +70,28 @@ GLuint textures[4];
 // Light up the screen
 void light(){
 	// lighting attributes
-	GLfloat qaAmbientLight[]    = {0.1, 0.1, 0.1, 1.0};
-	GLfloat qaDiffuseLight[]    = {1, 1, 1, 1.0};
-	GLfloat qaSpecularLight[]    = {1.0, 1.0, 1.0, 1.0};
-	GLfloat qaLightPosition[]    = {25, 25, 0, 1};
-	GLfloat ambientLight[4] = {0.0, 0.0, 0.0, 1.0};
-
-	//material attributes
-	GLfloat qaBlack[] = {0.0, 0.0, 0.0, 1.0}; //Black Color
-	GLfloat qaGreen[] = {0.0, 1.0, 0.0, 1.0}; //Green Color
-	GLfloat qaWhite[] = {1.0, 1.0, 1.0, 1.0}; //White Color
-	GLfloat qaRed[] = {1.0, 0.0, 0.0, 1.0}; //White Color 
-	//
-	GLfloat materialAmbient[] = {1.0, 1.0, 1.0, 1.0};
-	GLfloat materialDiffuse[] = {1.0, 1.0, 1.0, 1.0};
-	GLfloat materialSpecular[] = {0.9, 0.9, 0.5, 1.0};
-	GLfloat materialShininess[] = { 128.0 };
-
+	GLfloat lightAmbient[]    = {0.1, 0.1, 0.1, 1.0};
+	GLfloat lightDiffuse[]    = {1, 1, 1, 1.0};
+	GLfloat lightSpecular[]    = {1.0, 1.0, 1.0, 1.0};
+	GLfloat lightPosition[]    = {25, 25, 25, 1};	
+	//material attributes	
+	GLfloat materialGreen[] = {0.0, 1.0, 0.0, 1.0}; //Green Color
+	GLfloat materialWhite[] = {1.0, 1.0, 1.0, 1.0}; //White Color
 	// Enable lighting
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-
 	// Set lighting intensity and color
-	glLightfv(GL_LIGHT0, GL_AMBIENT, qaAmbientLight);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, qaDiffuseLight);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, qaSpecularLight); 
-	glLightfv(GL_LIGHT0, GL_POSITION, qaLightPosition);	
-
+	glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular); 
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);	
 
 	//material attributes set
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, qaGreen);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, qaGreen);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, qaWhite);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125.0); 	
-	//
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialAmbient);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialDiffuse);	
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialSpecular);	
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, materialShininess);   	 
-	// glEnable ( GL_COLOR_MATERIAL ) ;
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, materialGreen);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, materialGreen);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, materialWhite);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 125.0);	 	 
+	glEnable ( GL_COLOR_MATERIAL ) ;
 
 }
 
@@ -226,7 +210,7 @@ void spawnEnemies(){
 			else if(lvl == 2)
 				et = 2;
 			else
-				et = 1;
+				et = 3;
 			for(int i = 0; i < numS; i++){
 				// Find a random spawn
 				an = newEnemySpawn();
@@ -370,7 +354,8 @@ void scoreBoardText(char* score, char* level, char* lives)
 	glLoadIdentity();
 
 	// Score
-	glPushMatrix();	
+	glPushMatrix();
+	glColor3f(0.0, 0.0, 1.0);
     glTranslatef(120, 190 ,0); //set to this position with respect to the size of TEXT
     glScalef(0.05, 0.05, 0.05);
     for(size_t i = 0 ; i < strlen(score); i++) {
@@ -408,7 +393,13 @@ void display(void){
 
 	// Gameplay
 	if(gameState == 2){
-
+		 
+		glEnable(GL_DEPTH_TEST);
+		glShadeModel(GL_SMOOTH);
+		glEnable (GL_BLEND); 
+		glEnable(GL_NORMALIZE);
+		glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
+		glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA_SATURATE);
 		
 		sprintf(str, "Score %d", gameDiff.getScore());
 		if(gameDiff.getLevel() != 10)
@@ -423,7 +414,7 @@ void display(void){
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glMatrixMode(GL_MODELVIEW);
 		// Light it up everytime
-		//light();
+		light();
 		keyOperations();
 		glLoadIdentity();
 
@@ -456,9 +447,7 @@ void display(void){
   
 		// Draw tower
 		glPushMatrix();		
-		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitLight); 
-		drawTower(pos[3], textures);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
+		drawTower(pos[3], textures);		
 		glPopMatrix();
 
 		// Draw buidling 1
@@ -472,7 +461,9 @@ void display(void){
 		// Bullets
 		for(size_t i = 0; i < bList.size(); i++){
 			glPushMatrix();
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitColorRed);
 			bList[i].Render();
+			glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
 			glPopMatrix();
 		}
 
@@ -496,8 +487,10 @@ void display(void){
 		glPopMatrix();
 
 		//display score
-		glColor4f(0.5, 0.5,  1.0, 1); // Blue	
+
+		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emitColorBlue);	
 		scoreBoardText(str, str2, str3);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Noemit);
 	}else if(gameState == 1){		// Menu State
 		
 		char *start = "New Game";
@@ -872,14 +865,7 @@ void update(int value){
 }
 
 // Basic initalizations - menu setup and loading textures only
-void init(void){
-
-	glEnable(GL_DEPTH_TEST);
-	glShadeModel(GL_SMOOTH);
-	glEnable (GL_BLEND); 
-	glEnable(GL_NORMALIZE);
-	glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR);
-	glBlendFunc(GL_SRC_COLOR, GL_SRC_ALPHA_SATURATE);
+void init(void){	
 
 	initMenus();
 	glGenTextures(3, textures); //specify the number of textures
